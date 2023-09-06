@@ -222,3 +222,5 @@ export function mockNow() {
         Date.now = original;
     };
 }
+
+export const WEB_CLIENT_VERSION = '1.13.4';
