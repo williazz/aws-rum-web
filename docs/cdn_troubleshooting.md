@@ -29,12 +29,13 @@ limit. If you wish to remove this limit completely, set `sessionEventLimit: 0`.
 
 ```typescript
 const config: AwsRumConfig = {
-  // Record an unlimited number of events per session
-  sessionEventLimit: 0
+    // Record an unlimited number of events per session
+    sessionEventLimit: 0
 }
 ```
 
 ---
+
 ## CloudWatch RUM returns 403
 
 CloudWatch RUM's `PutRumEvents` API returns 403 when authentication or
@@ -64,20 +65,20 @@ AppMonitors.
 
 If a new AppMonitor is created and re-uses an existing Cognito Identity Pool and
 IAM Role, the IAM Role will not automatically have permissions to call
-PutRumEvents on the new AppMonitor. 
+PutRumEvents on the new AppMonitor.
 
 Verify the IAM role has the following permission:
- 
+
 ```json
 {
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Effect": "Allow",
-            "Action": "rum:PutRumEvents",
-            "Resource": "arn:aws:rum:[region]:[account]:appmonitor/[AppMonitor name]"
-        }
-    ]
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": "rum:PutRumEvents",
+      "Resource": "arn:aws:rum:[region]:[account]:appmonitor/[AppMonitor name]"
+    }
+  ]
 }
 ```
 
@@ -91,12 +92,14 @@ the `x-amzn-ErrorType` HTTP header.
 ```
 MissingAuthenticationTokenException
 ```
+
 Verify that signing is enabled.
 
 The configuration option [`signing`](configuration.md) controls whether or not
 the web client signs RUM data. Signing is
 enabled by default, so if this configuration option is not present, then signing
 is enabled.
+
 ```
 const config: AwsRumConfig = {
   // Sign RUM data with SigV4 -- required unless using a proxy
@@ -105,6 +108,7 @@ const config: AwsRumConfig = {
 ```
 
 ---
+
 ## AWS token vending (Cognito or STS) fails
 
 The CloudWatch RUM web client has a default authorization mechanism that uses a
@@ -142,7 +146,10 @@ following trust relationship:
 
 ### Cognito's basic authflow is not enabled
 
-When the CloudWatch RUM web client is provided with both `identityPoolId` and `guestRoleArn`, the web client will use Cognito's [basic (classic) authflow](https://docs.aws.amazon.com/cognito/latest/developerguide/authentication-flow.html). If the Cognito `GetCredentialsForIdentity` operation fails, this may be because the basic (classic) authflow is not enabled for the identity pool. In this case, the response may look similar to the following:
+When the CloudWatch RUM web client is provided with both `identityPoolId` and `guestRoleArn`, the web client will use
+Cognito's [basic (classic) authflow](https://docs.aws.amazon.com/cognito/latest/developerguide/authentication-flow.html).
+If the Cognito `GetCredentialsForIdentity` operation fails, this may be because the basic (classic) authflow is not
+enabled for the identity pool. In this case, the response may look similar to the following:
 
 ```
 <Error>
@@ -158,10 +165,13 @@ configuration does **not** contain `AllowClassicFlow: false`. If it does, then
 update the configuration so that it contains `AllowClassicFlow: true`.
 
 See also:
-1. `AllowClassicFlow` in the [update-identity-pool CLI reference](https://docs.aws.amazon.com/cli/latest/reference/cognito-identity/update-identity-pool.html).
+
+1. `AllowClassicFlow` in
+   the [update-identity-pool CLI reference](https://docs.aws.amazon.com/cli/latest/reference/cognito-identity/update-identity-pool.html).
 1. [Identity pool (federated identities) authentication flow](https://docs.aws.amazon.com/cognito/latest/developerguide/authentication-flow.html).
 
 ---
+
 ## Content security policy blocks the web client
 
 If your web application uses a content security policy, it likely needs to be
@@ -176,9 +186,9 @@ The hash method is the recommended method for adding the RUM web client
 installation snippet to the `script-src` directive. A complete CSP for the rum
 web client will contain the following directives and values:
 
-| Directive | Value |
-| --- | --- |
-| script-src | `'sha256-[snippet hash]'`<br/>`https://client.rum.us-east-1.amazonaws.com` |
+| Directive   | Value                                                                                                                                         |
+|-------------|-----------------------------------------------------------------------------------------------------------------------------------------------|
+| script-src  | `'sha256-[snippet hash]'`<br/>`https://client.rum.us-east-1.amazonaws.com`                                                                    |
 | connect-src | `https://dataplane.rum.[region].amazonaws.com`<br/>`https://cognito-identity.[region].amazonaws.com`<br/>`https://sts.[region].amazonaws.com` |
 
 A hash of the snippet can be generated from the command line using openssl:
@@ -189,14 +199,17 @@ echo $SNIPPET | openssl sha256 -binary | openssl base64
 ```
 
 In this case, the output of this command is the following, however the output for your snippet will differ:
+
 ```
 dhFqvDHwFpO34BJSlFlEdnhKI/jmMD2Yl50PvxjyLN0=
 ```
+
 Place the hash in the `'sha256-[snippet hash]'` directive value above. In this
 case, the directive will be `script-src
 sha256-dhFqvDHwFpO34BJSlFlEdnhKI/jmMD2Yl50PvxjyLN0=`.
 
 ---
+
 ## X-Ray tracing does not connect client-side trace with server-side trace
 
 To connect client-side and server-side traces, you must set the
@@ -208,24 +221,26 @@ configurations removed for readability.
 > **:warning: Enabling `addXRayTraceIdHeader` may cause HTTP requests to fail.**
 >
 > Enabling `addXRayTraceIdHeader` adds a header to HTTP requests. Adding headers
-can modify CORS behavior, including causing the request to fail. Adding headers
-may also alter  the request signature, causing the request to fail. Test your
-application before enabling this option in a production environment.
+> can modify CORS behavior, including causing the request to fail. Adding headers
+> may also alter the request signature, causing the request to fail. Test your
+> application before enabling this option in a production environment.
 
 ```html
+
 <script>
-    (function(n,i,v,r,s,c,u,x,z){...})(
-        'cwr',
-        '00000000-0000-0000-0000-000000000000',
-        '1.0.0',
-        'us-west-2',
-        'https://client.rum.us-east-1.amazonaws.com/1.0.2/cwr.js',
-        {
-            enableXRay: true,
-            telemetries: [ 
-                [ 'http', { addXRayTraceIdHeader: true } ]
-            ]
-        }
+    (function (n, i, v, r, s, c, u, x, z) {...
+    })(
+            'cwr',
+            '00000000-0000-0000-0000-000000000000',
+            '1.0.0',
+            'us-west-2',
+            'https://client.rum.us-east-1.amazonaws.com/1.0.2/cwr.js',
+            {
+                enableXRay: true,
+                telemetries: [
+                    ['http', {addXRayTraceIdHeader: true}]
+                ]
+            }
     );
 </script>
 ```
