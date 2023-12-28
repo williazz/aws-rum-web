@@ -83,7 +83,7 @@ describe('Cookies utils tests', () => {
         utils.storeCookie(cookieName, cookieValueB, COOKIE_ATTRIBUTES_B, 3600);
 
         // Assert
-        const cookies: string[] = document.cookie.replace(' ', '').split(';');
+        const cookies: string[] = document.cookie.split('; ');
         expect(cookies).toContain(`${COOKIE_PREFIX}=${cookieValueA}`);
         expect(cookies).toContain(`${COOKIE_PREFIX}=${cookieValueB}`);
 
@@ -119,7 +119,7 @@ describe('Cookies utils tests', () => {
         utils.storeCookie(cookieName, cookieValueB, COOKIE_ATTRIBUTES_B, 3600);
 
         // Assert
-        const cookies: string[] = document.cookie.replace(' ', '').split(';');
+        const cookies: string[] = document.cookie.split('; ');
         expect(cookies).toContain(`${COOKIE_PREFIX}=${cookieValueA}`);
         expect(cookies).toContain(`${COOKIE_PREFIX}=${cookieValueB}`);
 

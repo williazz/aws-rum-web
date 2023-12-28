@@ -1,5 +1,27 @@
 import { CookieAttributes } from '../orchestration/Orchestration';
 
+const buildCookie = (
+    name: string,
+    value: string,
+    attributes: CookieAttributes,
+    ttl?: number,
+    expires?: Date
+): string => {
+    const cookie = [`${name}=${value}`];
+    if (expires !== undefined) {
+        cookie.push(`Expires=${expires.toUTCString()}`);
+    } else if (ttl !== undefined) {
+        cookie.push(`Expires=${getExpiryDate(ttl).toUTCString()}`);
+    }
+    cookie.push(`Domain=${attributes.domain}`);
+    cookie.push(`Path=${attributes.path}`);
+    cookie.push(`SameSite=${attributes.sameSite}`);
+    if (attributes.secure) {
+        cookie.push('Secure');
+    }
+    return cookie.join('; ');
+};
+
 /**
  * Stores a cookie.
  *
@@ -16,18 +38,7 @@ export const storeCookie = (
     ttl?: number,
     expires?: Date
 ) => {
-    let cookie = name + '=';
-    cookie += value || '';
-    if (expires !== undefined) {
-        cookie += `; Expires=${expires.toUTCString()}`;
-    } else if (ttl !== undefined) {
-        cookie += `; Expires=${getExpiryDate(ttl).toUTCString()}`;
-    }
-    cookie += `; Domain=${attributes.domain}`;
-    cookie += `; Path=${attributes.path}`;
-    cookie += `; SameSite=${attributes.sameSite}`;
-    cookie += attributes.secure ? '; Secure' : '';
-    document.cookie = cookie;
+    document.cookie = buildCookie(name, value, attributes, ttl, expires);
 };
 
 /**
@@ -45,13 +56,7 @@ export const getExpiryDate = (ttl: number): Date => {
  * @param name The cookie's name.
  */
 export const removeCookie = (name: string, attributes: CookieAttributes) => {
-    let cookie = name + '=';
-    cookie += `; Expires=${new Date(0)}`;
-    cookie += `; Domain=${attributes.domain}`;
-    cookie += `; Path=${attributes.path}`;
-    cookie += `; SameSite=${attributes.sameSite}`;
-    cookie += attributes.secure ? 'Secure' : '';
-    document.cookie = cookie;
+    document.cookie = buildCookie(name, '', attributes, 0);
 };
 
 /**
