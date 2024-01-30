@@ -8,7 +8,6 @@ import { PERFORMANCE_RESOURCE_EVENT_TYPE } from '../utils/constant';
 import { PerformanceResourceTimingEvent } from '../../events/performance-resource-timing';
 import {
     defaultPerformancePluginConfig,
-    PartialPerformancePluginConfig,
     PerformancePluginConfig,
     PerformanceResourceTimingPolyfill
 } from '../utils/performance-utils';
@@ -24,7 +23,7 @@ export class ResourcePlugin extends InternalPlugin {
     private resourceObserver?: PerformanceObserver;
     private sampleCount: number;
 
-    constructor(config?: PartialPerformancePluginConfig) {
+    constructor(config?: Partial<PerformancePluginConfig>) {
         super(RESOURCE_EVENT_PLUGIN_ID);
         this.config = { ...defaultPerformancePluginConfig, ...config };
         this.sampleCount = 0;

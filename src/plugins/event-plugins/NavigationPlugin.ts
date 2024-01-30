@@ -2,7 +2,6 @@ import { InternalPlugin } from '../InternalPlugin';
 import { PerformanceNavigationTimingEvent } from '../../events/performance-navigation-timing';
 import { PERFORMANCE_NAVIGATION_EVENT_TYPE } from '../utils/constant';
 import {
-    PartialPerformancePluginConfig,
     PerformancePluginConfig,
     defaultPerformancePluginConfig
 } from '../utils/performance-utils';
@@ -14,9 +13,7 @@ const NAVIGATION = 'navigation';
 /** This plugin records performance timing events generated during every page load/re-load activity. */
 export class NavigationPlugin extends InternalPlugin {
     private config: PerformancePluginConfig;
-    private po?: PerformanceObserver;
-
-    constructor(config?: PartialPerformancePluginConfig) {
+    constructor(config?: Partial<PerformancePluginConfig>) {
         super(NAVIGATION_EVENT_PLUGIN_ID);
         this.config = { ...defaultPerformancePluginConfig, ...config };
         this.po = isNavigationSupported()
