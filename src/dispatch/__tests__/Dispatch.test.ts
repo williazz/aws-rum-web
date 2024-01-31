@@ -6,7 +6,12 @@ import { DEFAULT_CONFIG, mockFetch } from '../../test-utils/test-utils';
 import { EventCache } from 'event-cache/EventCache';
 
 global.fetch = mockFetch;
-const sendFetch = jest.fn(() => Promise.resolve());
+let fetchResponse = {
+    response: {
+        statusCode: 200
+    }
+};
+const sendFetch = jest.fn(() => Promise.resolve(fetchResponse));
 const sendBeacon = jest.fn(() => Promise.resolve());
 jest.mock('../DataPlaneClient', () => ({
     DataPlaneClient: jest
@@ -41,7 +46,9 @@ describe('Dispatch tests', () => {
         dispatch.setAwsCredentials(Utils.createAwsCredentials());
 
         // Run
-        await expect(dispatch.dispatchFetch()).resolves.toBe(undefined);
+        await expect(dispatch.dispatchFetch()).resolves.toMatchObject({
+            response: { statusCode: 200 }
+        });
 
         // Assert
         expect(DataPlaneClient).toHaveBeenCalled();
@@ -464,10 +471,41 @@ describe('Dispatch tests', () => {
         );
 
         // Run
-        await expect(dispatch.dispatchFetch()).resolves.toBe(undefined);
+        await expect(dispatch.dispatchFetch()).resolves.toMatchObject({
+            response: { statusCode: 200 }
+        });
 
         // Assert
         expect(DataPlaneClient).toHaveBeenCalled();
         expect(sendFetch).toHaveBeenCalledTimes(1);
+    });
+
+    test('when fetch returns 5xx then retry PutRumEvents once', async () => {
+        const prev = fetchResponse;
+        fetchResponse = {
+            response: { statusCode: 500 }
+        };
+
+        const dispatch = new Dispatch(
+            Utils.AWS_RUM_REGION,
+            Utils.AWS_RUM_ENDPOINT,
+            Utils.createDefaultEventCacheWithEvents(),
+            {
+                ...DEFAULT_CONFIG,
+                ...{ dispatchInterval: Utils.AUTO_DISPATCH_OFF }
+            }
+        );
+        dispatch.setAwsCredentials(Utils.createAwsCredentials());
+        await expect(dispatch.dispatchFetch()).resolves.toMatchObject({
+            response: { statusCode: 500 }
+        });
+
+        // Assert
+        expect(DataPlaneClient).toHaveBeenCalled();
+        expect(sendFetch).toHaveBeenCalledTimes(2);
+        // Run
+
+        // restore
+        fetchResponse = prev;
     });
 });

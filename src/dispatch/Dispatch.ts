@@ -11,6 +11,7 @@ import { PutRumEventsRequest } from './dataplane';
 import { Config } from '../orchestration/Orchestration';
 import { v4 } from 'uuid';
 import { RetryHttpHandler } from './RetryHttpHandler';
+import { is5xx } from '../plugins/utils/http-utils';
 
 type SendFunction = (
     putRumEventsRequest: PutRumEventsRequest
@@ -112,9 +113,18 @@ export class Dispatch {
         { response: HttpResponse } | undefined
     > => {
         if (this.doRequest()) {
-            return this.rum
-                .sendFetch(this.createRequest())
-                .catch(this.handleReject);
+            const request = this.createRequest();
+            return (
+                this.rum
+                    .sendFetch(request)
+                    // Retry once if PutRumEvents response has 5xx status code
+                    .then((e) =>
+                        is5xx(e.response.statusCode)
+                            ? this.rum.sendFetch(request)
+                            : e
+                    )
+                    .catch(this.handleReject)
+            );
         }
     };
 
