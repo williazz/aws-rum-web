@@ -480,7 +480,7 @@ describe('Dispatch tests', () => {
         expect(sendFetch).toHaveBeenCalledTimes(1);
     });
 
-    test('when fetch returns 5xx then retry PutRumEvents once', async () => {
+    test('when PutRumEvents with fetch is 5xx then retry once', async () => {
         const prev = fetchResponse;
         fetchResponse = {
             response: { statusCode: 500 }
