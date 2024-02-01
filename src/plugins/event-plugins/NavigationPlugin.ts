@@ -13,6 +13,8 @@ const NAVIGATION = 'navigation';
 /** This plugin records performance timing events generated during every page load/re-load activity. */
 export class NavigationPlugin extends InternalPlugin {
     private config: PerformancePluginConfig;
+    private po?: PerformanceObserver;
+
     constructor(config?: Partial<PerformancePluginConfig>) {
         super(NAVIGATION_EVENT_PLUGIN_ID);
         this.config = { ...defaultPerformancePluginConfig, ...config };
