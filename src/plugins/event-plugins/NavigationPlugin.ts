@@ -18,6 +18,8 @@ const LOAD = 'load';
  */
 export class NavigationPlugin extends InternalPlugin {
     private config: PerformancePluginConfig;
+    private po?: PerformanceObserver;
+
     constructor(config?: Partial<PerformancePluginConfig>) {
         super(NAVIGATION_EVENT_PLUGIN_ID);
         this.config = { ...defaultPerformancePluginConfig, ...config };
