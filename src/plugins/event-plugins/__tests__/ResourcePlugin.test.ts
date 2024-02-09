@@ -29,7 +29,7 @@ import {
     record
 } from '../../../test-utils/test-utils';
 import { PERFORMANCE_RESOURCE_EVENT_TYPE } from '../../utils/constant';
-import { ResourceEvent } from '../../../events/resource-event';
+import { PerformanceResourceTimingEvent } from '../../../events/performance-resource-timing';
 import { PerformancePluginConfig } from 'plugins/utils/performance-utils';
 
 const buildResourcePlugin = (config?: Partial<PerformancePluginConfig>) => {
