@@ -1,5 +1,5 @@
 /* eslint-disable jsdoc/check-indentation */
-import { isLongTaskSupported } from '../utils/common-utils';
+import { isTTISupported } from '../utils/common-utils';
 import { VisuallyReadySearch } from './VisuallyReadySearch';
 import { QuietWindowSearch } from './QuietWindowSearch';
 
@@ -26,7 +26,7 @@ export type TTIReportCallback = (
 ) => void;
 
 export function onTTI(onReport: TTIReportCallback, opts: TTIReportOpts) {
-    if (isLongTaskSupported()) {
+    if (isTTISupported()) {
         new TimeToInteractive(onReport, opts);
     }
 }

@@ -222,3 +222,5 @@ export const isFCPSupported = () => {
 export const isLongTaskSupported = () => {
     return PerformanceObserver.supportedEntryTypes.includes('longtask');
 };
+
+export const isTTISupported = () => isLongTaskSupported() && isFCPSupported();
