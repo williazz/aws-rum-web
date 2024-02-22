@@ -200,6 +200,9 @@ export interface RumLCPAttribution {
     navigationEntry?: string;
 }
 
+const isSupported = (type: string) =>
+    PerformanceObserver.supportedEntryTypes.includes(type);
+
 /** Checks at runtime if the web vitals package will record LCP
  * If PerformanceAPI ever changes this API, or if WebVitals package implements a polyfill,
  * then this needs to be updated
@@ -210,15 +213,13 @@ export interface RumLCPAttribution {
  * https://github.com/aws-observability/aws-rum-web/pull/448#issuecomment-1734314463
  */
 export const isLCPSupported = () => {
-    return PerformanceObserver.supportedEntryTypes.includes(
-        'largest-contentful-paint'
-    );
+    return isSupported('largest-contentful-paint');
 };
 
 export const isFCPSupported = () => {
-    return PerformanceObserver.supportedEntryTypes.includes('paint');
+    return isSupported('paint');
 };
 
 export const isLongTaskSupported = () => {
-    return PerformanceObserver.supportedEntryTypes.includes('longtask');
+    return isSupported('longtask');
 };
