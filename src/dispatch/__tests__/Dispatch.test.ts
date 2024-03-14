@@ -438,7 +438,11 @@ describe('Dispatch tests', () => {
             eventCache,
             {
                 ...DEFAULT_CONFIG,
-                ...{ dispatchInterval: Utils.AUTO_DISPATCH_OFF, retries: 0 }
+                ...{
+                    dispatchInterval: Utils.AUTO_DISPATCH_OFF,
+                    retries: 0,
+                    disableOnFailure: true
+                }
             }
         );
         dispatch.setAwsCredentials(Utils.createAwsCredentials());
@@ -449,6 +453,43 @@ describe('Dispatch tests', () => {
 
         // Assert
         await expect(dispatch.dispatchFetch()).resolves.toEqual(undefined);
+    });
+
+    test('when fetch is rejected and disableOnFailure is false then dispatch is not disabled', async () => {
+        // Init
+        const ERROR = 'Something went wrong.';
+        const sendFetch = jest.fn(() => Promise.reject(ERROR));
+        (DataPlaneClient as any).mockImplementation(() => {
+            return {
+                sendFetch
+            };
+        });
+
+        const eventCache: EventCache =
+            Utils.createDefaultEventCacheWithEvents();
+
+        const dispatch = new Dispatch(
+            Utils.AWS_RUM_REGION,
+            Utils.AWS_RUM_ENDPOINT,
+            eventCache,
+            {
+                ...DEFAULT_CONFIG,
+                ...{
+                    dispatchInterval: Utils.AUTO_DISPATCH_OFF,
+                    retries: 0,
+                    disableOnFailure: false
+                }
+            }
+        );
+        dispatch.setAwsCredentials(Utils.createAwsCredentials());
+
+        // Run
+        await expect(dispatch.dispatchFetch()).rejects.toEqual(ERROR);
+        eventCache.recordEvent('com.amazon.rum.event1', {});
+
+        // Assert
+        await expect(dispatch.dispatchFetch()).rejects.toEqual(ERROR);
+        expect((dispatch as any).enabled).toBe(true);
     });
 
     test('when signing is disabled then credentials are not needed for dispatch', async () => {

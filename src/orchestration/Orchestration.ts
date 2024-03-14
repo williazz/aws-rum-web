@@ -73,6 +73,7 @@ export const defaultConfig = (cookieAttributes: CookieAttributes): Config => {
         cookieAttributes,
         disableAutoPageView: false,
         dispatchInterval: 5 * 1000,
+        disableOnFailure: true,
         enableRumClient: true,
         enableXRay: false,
         endpoint: DEFAULT_ENDPOINT,
@@ -115,6 +116,7 @@ export interface Config {
     cookieAttributes: CookieAttributes;
     sessionAttributes: { [k: string]: string | number | boolean };
     disableAutoPageView: boolean;
+    disableOnFailure: boolean;
     dispatchInterval: number;
     enableRumClient: boolean;
     enableXRay: boolean;
