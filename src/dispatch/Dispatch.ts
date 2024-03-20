@@ -49,7 +49,7 @@ export class Dispatch {
         this.endpoint = endpoint;
         this.eventCache = eventCache;
         this.enabled = true;
-        this.buildClient = config.clientBuilder || this.defaultClientBuilder;
+        this.buildClient = config.clientBuilder ?? this.defaultClientBuilder;
         this.config = config;
         this.startDispatchTimer();
         if (config.signing) {

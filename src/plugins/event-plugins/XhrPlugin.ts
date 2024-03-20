@@ -135,7 +135,7 @@ export class XhrPlugin extends MonkeyPatched<XMLHttpRequest, 'send' | 'open'> {
     };
 
     private isSessionRecorded = () => {
-        return this.context.getSession()?.record || false;
+        return this.context.getSession()?.record ?? false;
     };
 
     private handleXhrLoadEvent = (e: Event) => {

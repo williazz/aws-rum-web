@@ -78,7 +78,7 @@ export class FetchPlugin extends MonkeyPatched<Window, 'fetch'> {
     };
 
     private isSessionRecorded = () => {
-        return this.context.getSession()?.record || false;
+        return this.context.getSession()?.record ?? false;
     };
 
     private beginTrace = (

@@ -31,7 +31,7 @@ const existingSegmentId = '0000000000000001';
 const existingTraceHeaderValue = `Root=${existingTraceId};Parent=${existingSegmentId};Sampled=1`;
 
 const Headers = function (init?: Record<string, string>) {
-    const headers = init ? init : {};
+    const headers = init ?? {};
     this.get = (name: string) => {
         return headers[name];
     };
@@ -47,11 +47,11 @@ const Request = function (input: RequestInfo, init?: RequestInit) {
         this.headers = new Headers();
     } else {
         this.url = input.url;
-        this.method = input.method ? input.method : 'GET';
-        this.headers = input.headers ? input.headers : new Headers();
+        this.method = input.method ?? 'GET';
+        this.headers = input.headers ?? new Headers();
     }
     if (init) {
-        this.method = init.method ? init.method : this.method;
+        this.method = init.method ?? this.method;
         if (
             this.headers &&
             typeof (init.headers as Headers).get === 'function'

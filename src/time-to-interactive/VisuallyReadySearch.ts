@@ -41,11 +41,9 @@ export class VisuallyReadySearch {
 
         if (this.isOkToResolveVisuallyReady(isCheckTimedOut)) {
             this.visuallyReadyTimestamp = Math.max(
-                this.fcpTime ? this.fcpTime : 0,
-                this.lcpTime ? this.lcpTime : 0,
-                this.domContentLoadedEventEnd
-                    ? this.domContentLoadedEventEnd
-                    : 0
+                this.fcpTime ?? 0,
+                this.lcpTime ?? 0,
+                this.domContentLoadedEventEnd ?? 0
             );
             clearInterval(this.visualReadyInterval);
             this.cleanupVisuallyReadySearch = true;

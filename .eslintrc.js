@@ -143,6 +143,7 @@ module.exports = {
         '@typescript-eslint/typedef': 'off',
         '@typescript-eslint/dot-notation': 'off',
         '@typescript-eslint/unified-signatures': 'error',
+        '@typescript-eslint/prefer-nullish-coalescing': 'error',
         'arrow-parens': ['off', 'always'],
         'brace-style': ['off', 'off'],
         'comma-dangle': 'off',

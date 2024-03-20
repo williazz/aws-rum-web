@@ -94,7 +94,7 @@ export const createXRayTraceEventHttp = (
     traced: boolean
 ): Http => {
     const http: Http = { request: {} };
-    http.request!.method = init?.method ? init.method : 'GET';
+    http.request!.method = init?.method ?? 'GET';
     http.request!.traced = traced;
     http.request!.url = resourceToUrlString(input);
     return http;

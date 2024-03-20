@@ -166,7 +166,7 @@ export class SessionManager {
             this.userId = '00000000-0000-0000-0000-000000000000';
         } else if (this.useCookies()) {
             userId = this.getUserIdCookie();
-            this.userId = userId ? userId : v4();
+            this.userId = userId ?? v4();
             this.createOrRenewUserCookie(userId, this.userExpiry);
         } else {
             this.userId = v4();
@@ -259,14 +259,14 @@ export class SessionManager {
         const ua = new UAParser(navigator.userAgent).getResult();
         this.attributes = {
             browserLanguage: navigator.language,
-            browserName: ua.browser.name ? ua.browser.name : UNKNOWN,
-            browserVersion: ua.browser.version ? ua.browser.version : UNKNOWN,
-            osName: ua.os.name ? ua.os.name : UNKNOWN,
-            osVersion: ua.os.version ? ua.os.version : UNKNOWN,
+            browserName: ua.browser.name ?? UNKNOWN,
+            browserVersion: ua.browser.version ?? UNKNOWN,
+            osName: ua.os.name ?? UNKNOWN,
+            osVersion: ua.os.version ?? UNKNOWN,
             // Possible device types include {console, mobile, tablet, smarttv, wearable, embedded}. If the device
             // type is undefined, there was no information indicating the device is anything other than a desktop,
             // so we assume the device is a desktop.
-            deviceType: ua.device.type ? ua.device.type : DESKTOP_DEVICE_TYPE,
+            deviceType: ua.device.type ?? DESKTOP_DEVICE_TYPE,
             // This client is used exclusively in web applications.
             platformType: WEB_PLATFORM_TYPE,
             domain: window.location.hostname
