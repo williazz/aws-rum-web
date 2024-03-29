@@ -232,8 +232,14 @@ export class EventCache {
             'aws:clientVersion': webClientVersion
         };
 
+        const id = v4();
+        console.log(
+            `EventCache: type=${type}, id=${id}, metadata=`,
+            JSON.stringify(metaData, null, 2)
+        );
+
         const partialEvent = {
-            id: v4(),
+            id,
             timestamp: new Date(),
             type
         };

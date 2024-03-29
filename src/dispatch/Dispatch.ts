@@ -223,11 +223,18 @@ export class Dispatch {
     }
 
     private createRequest(): PutRumEventsRequest {
+        const events = this.eventCache.getEventBatch();
+        for (const e of events) {
+            console.log(
+                `Dispatch: id=${e.id}, metadata=`,
+                JSON.parse(e.metadata!)
+            );
+        }
         return {
             BatchId: v4(),
             AppMonitorDetails: this.eventCache.getAppMonitorDetails(),
             UserDetails: this.eventCache.getUserDetails(),
-            RumEvents: this.eventCache.getEventBatch()
+            RumEvents: events
         };
     }
 
