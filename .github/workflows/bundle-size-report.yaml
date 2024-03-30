@@ -14,8 +14,8 @@ permissions:
     packages: read
 
 jobs:
-    pr-bundle-size:
-        name: pr-size
+    pr-size:
+        name: PR Size
         runs-on: ubuntu-latest
         steps:
             - name: Checkout PR branch
@@ -37,18 +37,13 @@ jobs:
               run: |
                   echo "SIZE_PR=$(stat -c %s build/assets/cwr.js)" >> $GITHUB_ENV
 
-            - name: Print size
-              run: |
-                  echo "SIZE_PR is $SIZE_PR"
-
-    main-bundle-size:
-        name: main-size
+    main-size:
+        name: Main Size
         runs-on: ubuntu-latest
         steps:
             - name: Checkout main branch
               uses: actions/checkout@v4
-              with:
-                  ref: main
+              ref: main
 
             - name: Setup Node
               uses: actions/setup-node@v4
@@ -66,6 +61,12 @@ jobs:
               run: |
                   echo "SIZE_MAIN=$(stat -c %s build/assets/cwr.js)" >> $GITHUB_ENV
 
-            - name: Print size
+    print-size-diff:
+        needs: main-size, pr-size
+        name: Print Sizes
+        runs-on: ubuntu-latest
+        steps:
+        - name: Print sizes
               run: |
+                  echo "SIZE_PR is $SIZE_PR"
                   echo "SIZE_MAIN is $SIZE_MAIN"
