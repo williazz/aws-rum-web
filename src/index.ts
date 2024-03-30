@@ -1,3 +1,7 @@
+import * as react from 'react';
+
+export { react };
+
 export {
     PartialConfig as AwsRumConfig,
     Orchestration as AwsRum,
