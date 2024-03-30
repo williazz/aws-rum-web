@@ -67,6 +67,6 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: Print sizes
-            - run: |
+              run: |
                   echo "SIZE_PR is $SIZE_PR"
                   echo "SIZE_MAIN is $SIZE_MAIN"
