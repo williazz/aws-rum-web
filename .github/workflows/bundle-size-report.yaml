@@ -1,7 +1,8 @@
 name: Bundle Size Report
 
 env:
-    SIZE_PR: DUMMY
+    SIZE_PR: 0
+    SIZE_MAIN: 0
 
 on:
     workflow_dispatch:
@@ -13,11 +14,11 @@ permissions:
     packages: read
 
 jobs:
-    bundle-size-report:
+    pr-bundle-size:
         name: Bundle Size Report
         runs-on: ubuntu-latest
         steps:
-            - name: Checkout branch?
+            - name: Checkout PR branch
               uses: actions/checkout@v4
 
             - name: Setup Node
@@ -39,3 +40,31 @@ jobs:
             - name: Print size
               run: |
                   echo "SIZE_PR is $SIZE_PR"
+
+    main-bundle-size:
+        name: Bundle Size Report
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout main branch
+              uses: actions/checkout@v4
+              ref: main
+
+            - name: Setup Node
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 20
+                  cache: 'npm'
+
+            - name: Install
+              run: npm install
+
+            - name: Build
+              run: npm run build
+
+            - name: Get size
+              run: |
+                  echo "SIZE_MAIN=$(stat -c %s build/assets/cwr.js)" >> $GITHUB_ENV
+
+            - name: Print size
+              run: |
+                  echo "SIZE_MAIN is $SIZE_MAIN"
