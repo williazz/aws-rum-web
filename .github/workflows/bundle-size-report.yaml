@@ -15,7 +15,7 @@ permissions:
 
 jobs:
     pr-bundle-size:
-        name: Bundle Size Report
+        name: pr-size
         runs-on: ubuntu-latest
         steps:
             - name: Checkout PR branch
@@ -42,7 +42,7 @@ jobs:
                   echo "SIZE_PR is $SIZE_PR"
 
     main-bundle-size:
-        name: Bundle Size Report
+        name: main-size
         runs-on: ubuntu-latest
         steps:
             - name: Checkout main branch
