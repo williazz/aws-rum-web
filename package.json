@@ -121,7 +121,9 @@
         "@aws-sdk/querystring-builder": "^3.36.0",
         "@aws-sdk/signature-v4": "^3.36.0",
         "@aws-sdk/util-hex-encoding": "^3.36.0",
+        "@babel/core": "^7.24.7",
         "@babel/runtime": "^7.16.0",
+        "core-js": "^2.6.12",
         "shimmer": "^1.2.1",
         "ua-parser-js": "^1.0.33",
         "uuid": "^9.0.0",
@@ -145,6 +147,10 @@
         ]
     },
     "browserslist": [
-        "defaults"
+        "defaults",
+        "chrome 42",
+        "edge 14",
+        "firefox 39",
+        "safari 11.1"
     ]
 }

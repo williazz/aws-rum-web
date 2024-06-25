@@ -2,6 +2,8 @@ const path = require('path');
 const { merge } = require('webpack-merge');
 const common = require('./webpack.common');
 const TerserPlugin = require('terser-webpack-plugin');
+const BundleAnalyzerPlugin =
+    require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 module.exports = merge(common, {
     mode: 'production',
@@ -15,7 +17,8 @@ module.exports = merge(common, {
                         return `License information can be found in LICENSE and LICENSE-THIRD-PARTY`;
                     }
                 }
-            })
+            }),
+            new BundleAnalyzerPlugin()
         ]
     },
     output: {
