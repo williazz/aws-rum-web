@@ -148,9 +148,7 @@
     },
     "browserslist": [
         "defaults",
-        "chrome 42",
-        "edge 14",
-        "firefox 39",
-        "safari 11.1"
+        "fully supports fetch",
+        "fully supports beacon"
     ]
 }
