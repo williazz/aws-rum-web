@@ -28,6 +28,10 @@ import { PageViewPlugin } from '../plugins/event-plugins/PageViewPlugin';
 import { PageAttributes } from '../sessions/PageManager';
 import { INSTALL_MODULE } from '../utils/constants';
 import EventBus, { Topic } from '../event-bus/EventBus';
+import {
+    CustomAttributes,
+    CustomAttributesCallback
+} from '../sessions/SessionManager';
 
 const DEFAULT_REGION = 'us-west-2';
 const DEFAULT_ENDPOINT = `https://dataplane.rum.${DEFAULT_REGION}.amazonaws.com`;
@@ -268,9 +272,9 @@ export class Orchestration {
      *
      * @param payload object containing custom attribute data in the form of key, value pairs
      */
-    public addSessionAttributes(sessionAttributes: {
-        [key: string]: string | boolean | number;
-    }): void {
+    public addSessionAttributes(
+        sessionAttributes: CustomAttributes | CustomAttributesCallback
+    ): void {
         this.eventCache.addSessionAttributes(sessionAttributes);
     }
 

@@ -49,6 +49,11 @@ export type Attributes = {
     [k: string]: string | number | boolean;
 };
 
+export type CustomAttributes = {
+    [k: string]: string | number | boolean;
+};
+export type CustomAttributesCallback = (attributes: Attributes) => Attributes;
+
 /**
  * The session handler handles user id and session id.
  *
@@ -69,6 +74,7 @@ export class SessionManager {
     private config: Config;
     private record: RecordSessionInitEvent;
     private attributes!: Attributes;
+    private customAttrCB?: CustomAttributesCallback;
 
     constructor(
         appMonitorDetails: AppMonitorDetails,
@@ -128,6 +134,9 @@ export class SessionManager {
     }
 
     public getAttributes(): Attributes {
+        if (this.customAttrCB) {
+            return this.customAttrCB(this.attributes);
+        }
         return this.attributes;
     }
 
@@ -136,10 +145,14 @@ export class SessionManager {
      *
      * @param sessionAttributes object containing custom attribute data in the form of key, value pairs
      */
-    public addSessionAttributes(sessionAttributes: {
-        [k: string]: string | number | boolean;
-    }) {
-        this.attributes = { ...this.attributes, ...sessionAttributes };
+    public addSessionAttributes(
+        sessionAttributes: CustomAttributes | CustomAttributesCallback
+    ) {
+        if (typeof sessionAttributes === 'function') {
+            this.customAttrCB = sessionAttributes;
+        } else {
+            this.attributes = { ...this.attributes, ...sessionAttributes };
+        }
     }
 
     public getUserId(): string {

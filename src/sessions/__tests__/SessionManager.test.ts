@@ -3,7 +3,8 @@ import {
     NIL_UUID,
     Session,
     SessionManager,
-    SESSION_START_EVENT_TYPE
+    SESSION_START_EVENT_TYPE,
+    CustomAttributesCallback
 } from '../SessionManager';
 import {
     getCookie,
@@ -845,5 +846,99 @@ describe('SessionManager tests', () => {
 
         // Assert
         expect(actualSessionAttributes.title).toEqual(sessionAttributes.title);
+    });
+
+    test('when custom attributes are dynamically set then new attributes are used', async () => {
+        // init
+        const sessionManager = defaultSessionManager({
+            ...DEFAULT_CONFIG
+        });
+        const spy = jest.fn();
+        let count = 0;
+        const getCount = () => count++;
+        const customCallback: CustomAttributesCallback = (attr: Attributes) => {
+            spy(attr);
+            return {
+                ...attr,
+                count: getCount()
+            };
+        };
+
+        // run
+        sessionManager.addSessionAttributes(customCallback);
+        expect(spy).not.toHaveBeenCalled();
+        expect((sessionManager as any).customAttrCB).toBeTruthy();
+
+        expect(sessionManager.getAttributes()).toMatchObject(
+            expect.objectContaining({ count: 0 })
+        );
+        expect(sessionManager.getAttributes()).toMatchObject(
+            expect.objectContaining({ count: 1 })
+        );
+        expect(sessionManager.getAttributes()).toMatchObject(
+            expect.objectContaining({ count: 2 })
+        );
+        expect(spy).toHaveBeenCalledTimes(3);
+    });
+
+    test('when custom attributes callback is overriden then the previous callback is overridden', async () => {
+        // init
+        const sessionManager = defaultSessionManager({
+            ...DEFAULT_CONFIG
+        });
+        const one = { one: 'one' };
+        const two = { two: 'two' };
+        sessionManager.addSessionAttributes((attr) => ({
+            ...attr,
+            ...one
+        }));
+        expect((sessionManager as any).customAttrCB).toBeTruthy();
+        expect(sessionManager.getAttributes()).toMatchObject(
+            expect.objectContaining(one)
+        );
+
+        // run
+        sessionManager.addSessionAttributes((attr) => ({
+            ...attr,
+            ...two
+        }));
+        expect(sessionManager.getAttributes()).not.toMatchObject(
+            expect.objectContaining(one)
+        );
+        expect(sessionManager.getAttributes()).toMatchObject(
+            expect.objectContaining(two)
+        );
+    });
+
+    test('when custom attributes callback is provided then hardcoded custom attributes are persisted', async () => {
+        // init
+        const sessionManager = defaultSessionManager({
+            ...DEFAULT_CONFIG
+        });
+        const hardcode = { custom: 'hardcode' };
+        const dynamic = { custom: 'dyanmic' };
+
+        // run
+
+        // hardcoded attributes exist
+        sessionManager.addSessionAttributes(hardcode);
+        expect(sessionManager.getAttributes()).toMatchObject(
+            expect.objectContaining(hardcode)
+        );
+
+        // hardcoded attributes are overriden
+        sessionManager.addSessionAttributes((attr) => ({
+            ...attr,
+            ...dynamic
+        }));
+        expect(sessionManager.getAttributes()).toMatchObject(
+            expect.objectContaining(dynamic)
+        );
+
+        // harcoded attributes persist
+        sessionManager.addSessionAttributes((attr) => attr);
+        expect(sessionManager.getAttributes()).toMatchObject(
+            expect.objectContaining(hardcode)
+        );
     });
 });

@@ -1,4 +1,9 @@
-import { Session, SessionManager } from '../sessions/SessionManager';
+import {
+    CustomAttributes,
+    CustomAttributesCallback,
+    Session,
+    SessionManager
+} from '../sessions/SessionManager';
 import { v4 } from 'uuid';
 import { MetaData } from '../events/meta-data';
 import { Config } from '../orchestration/Orchestration';
@@ -172,9 +177,9 @@ export class EventCache {
      *
      * @param payload object containing custom attribute data in the form of key, value pairs
      */
-    public addSessionAttributes(sessionAttributes: {
-        [k: string]: string | number | boolean;
-    }): void {
+    public addSessionAttributes(
+        sessionAttributes: CustomAttributes | CustomAttributesCallback
+    ): void {
         this.sessionManager.addSessionAttributes(sessionAttributes);
     }
 
