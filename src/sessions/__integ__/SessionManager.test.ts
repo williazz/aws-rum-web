@@ -16,11 +16,20 @@ import { SESSION_START_EVENT_TYPE } from '../SessionManager';
 const randomSessionClickButton: Selector = Selector('#randomSessionClick');
 const disallowCookiesClickButton: Selector = Selector('#disallowCookies');
 
-const addSessionAttributesButton: Selector = Selector(`#addSessionAttributes`);
+const addSessionAttributesButton1: Selector = Selector(
+    `#addSessionAttributes1`
+);
+const addSessionAttributesButton2: Selector = Selector(
+    `#addSessionAttributes2`
+);
+
+const recordPageViewButtonOne: Selector = Selector(`#recordPageViewOne`);
+
+const recordPageViewButtonTwo: Selector = Selector(`#recordPageViewTwo`);
+
 const addSessionAttributesCallbackButton: Selector = Selector(
     `#addSessionAttributesCallback`
 );
-const recordPageViewButton: Selector = Selector(`#recordPageView`);
 
 const BROWSER_LANGUAGE = 'browserLanguage';
 const BROWSER_NAME = 'browserName';
@@ -134,43 +143,13 @@ test('When custom attribute set at init, custom attribute recorded in event meta
         .eql('customAttributeAtInitValue');
 });
 
-test('When custom attribute set at runtime, custom attribute recorded in event metadata', async (t: TestController) => {
+test.only('When custom attribute set at runtime, custom attribute recorded in event metadata', async (t: TestController) => {
     await t.wait(300);
-
-    await t.click(addSessionAttributesButton);
-
-    await t.click(recordPageViewButton);
-
+    await t.click(addSessionAttributesButton1);
+    await t.click(recordPageViewButtonOne);
     await t.wait(300);
-
-    await t
-        .typeText(COMMAND, DISPATCH_COMMAND, { replace: true })
-        .click(PAYLOAD)
-        .pressKey('ctrl+a delete')
-        .click(SUBMIT);
-
-    const events = JSON.parse(await REQUEST_BODY.textContent).RumEvents.filter(
-        (e) => e.type === PAGE_VIEW_EVENT_TYPE
-    );
-
-    const metaData = JSON.parse(events[events.length - 1].metadata);
-
-    await t
-        .expect(metaData.customPageAttributeAtRuntimeString)
-        .eql('stringCustomAttributeAtRunTimeValue')
-        .expect(metaData.customPageAttributeAtRuntimeNumber)
-        .eql(1)
-        .expect(metaData.customPageAttributeAtRuntimeBoolean)
-        .eql(true);
-});
-
-test.only('When custom attribute set at runtime via callback, custom attribute recorded in event metadata', async (t: TestController) => {
-    await t.wait(300);
-    await t.click(addSessionAttributesCallbackButton);
-    await t.wait(300);
-    await t.click(recordPageViewButton);
-    await t.click(recordPageViewButton);
-    await t.click(recordPageViewButton);
+    await t.click(addSessionAttributesButton2);
+    await t.click(recordPageViewButtonTwo);
     await t.wait(300);
 
     await t
@@ -178,19 +157,31 @@ test.only('When custom attribute set at runtime via callback, custom attribute r
         .click(PAYLOAD)
         .pressKey('ctrl+a delete')
         .click(SUBMIT);
+
     const events = JSON.parse(await REQUEST_BODY.textContent)
         .RumEvents.filter((e) => e.type === PAGE_VIEW_EVENT_TYPE)
-        .map((e) => {
+        .map((e: any) => {
             e.metadata = JSON.parse(e.metadata);
             return e;
         });
 
-    await t.expect(events.length).eql(2);
+    await t
+        .expect(events.length)
+        .eql(3)
+        .expect(events[1].metadata.customPageAttributeAtRuntimeString)
+        .eql('stringCustomAttributeAtRunTimeValue')
+        .expect(events[2].metadata.customPageAttributeAtRuntimeString)
+        .eql('stringCustomAttributeAtRunTimeValue')
+        .expect(events[1].metadata.customPageAttributeAtRuntimeBoolean)
+        .eql(true)
+        .expect(events[2].metadata.customPageAttributeAtRuntimeBoolean)
+        .eql(true)
+        .expect(events[1].metadata.customPageAttributeAtRuntimeNumber)
+        .eql(1)
+        .expect(events[2].metadata.customPageAttributeAtRuntimeNumber)
+        .eql(2);
+});
 
-    console.log('events', JSON.stringify(events, null, 4));
-
-    // const zero = JSON.parse(events[0]);
-    // const one = JSON.parse(events[1]);
-
-    // await t.expect(zero.count).eql(0).expect(one.count).eql(1);
+test.only('When custom attribute set at runtime via callback, custom attribute recorded in event metadata', async (t: TestController) => {
+    
 });
