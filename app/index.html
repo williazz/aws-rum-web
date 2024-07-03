@@ -101,12 +101,20 @@
                 });
             }
 
-            let count = 0;
+            let count = 10;
             function addSessionAttributesCallback() {
-                cwr('addSessionAttributes', (attr) => ({
-                    ...attr,
-                    count: count++
-                }));
+                cwr('addSessionAttributes', (attr) => {
+                    count++;
+                    return {
+                        ...attr,
+                        customPageAttributeAtRuntimeNumber: count,
+                        customCount: count,
+                    }
+                });
+            }
+
+            function clearSessionAttributesCallback() {
+                cwr('addSessionAttributes', (attr) => attr);
             }
         </script>
         <button id="createHTTPError" onclick="createHTTPError()">
@@ -124,9 +132,10 @@
             Set Custom Attributes
         </button>
         <button
-            id="addSessionAttributesCallback"
-            onclick="addSessionAttributesCallback()"
+            id="clearSessionAttributesCallback"
+            onclick="clearSessionAttributesCallback()"
         >
+                <button id="addSessionAttributesCallback" onclick="addSessionAttributesCallback()">
             Set Custom Attributes Callback
         </button>
         <button

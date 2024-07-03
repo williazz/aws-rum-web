@@ -30,6 +30,9 @@ const recordPageViewButtonTwo: Selector = Selector(`#recordPageViewTwo`);
 const addSessionAttributesCallbackButton: Selector = Selector(
     `#addSessionAttributesCallback`
 );
+const clearSessionAttributesCallbackButton: Selector = Selector(
+    `#clearSessionAttributesCallback`
+);
 
 const BROWSER_LANGUAGE = 'browserLanguage';
 const BROWSER_NAME = 'browserName';
@@ -143,14 +146,12 @@ test('When custom attribute set at init, custom attribute recorded in event meta
         .eql('customAttributeAtInitValue');
 });
 
-test.only('When custom attribute set at runtime, custom attribute recorded in event metadata', async (t: TestController) => {
+test('When custom attribute set at runtime, custom attribute recorded in event metadata', async (t: TestController) => {
     await t.wait(300);
     await t.click(addSessionAttributesButton1);
     await t.click(recordPageViewButtonOne);
-    await t.wait(300);
     await t.click(addSessionAttributesButton2);
     await t.click(recordPageViewButtonTwo);
-    await t.wait(300);
 
     await t
         .typeText(COMMAND, DISPATCH_COMMAND, { replace: true })
@@ -158,30 +159,90 @@ test.only('When custom attribute set at runtime, custom attribute recorded in ev
         .pressKey('ctrl+a delete')
         .click(SUBMIT);
 
-    const events = JSON.parse(await REQUEST_BODY.textContent)
+    const metadata = JSON.parse(await REQUEST_BODY.textContent)
         .RumEvents.filter((e) => e.type === PAGE_VIEW_EVENT_TYPE)
-        .map((e: any) => {
-            e.metadata = JSON.parse(e.metadata);
-            return e;
-        });
+        .map((e: any) => JSON.parse(e.metadata));
 
     await t
-        .expect(events.length)
+        .expect(metadata.length)
         .eql(3)
-        .expect(events[1].metadata.customPageAttributeAtRuntimeString)
+        .expect(metadata[1].customPageAttributeAtRuntimeString)
         .eql('stringCustomAttributeAtRunTimeValue')
-        .expect(events[2].metadata.customPageAttributeAtRuntimeString)
+        .expect(metadata[2].customPageAttributeAtRuntimeString)
         .eql('stringCustomAttributeAtRunTimeValue')
-        .expect(events[1].metadata.customPageAttributeAtRuntimeBoolean)
+        .expect(metadata[1].customPageAttributeAtRuntimeBoolean)
         .eql(true)
-        .expect(events[2].metadata.customPageAttributeAtRuntimeBoolean)
+        .expect(metadata[2].customPageAttributeAtRuntimeBoolean)
         .eql(true)
-        .expect(events[1].metadata.customPageAttributeAtRuntimeNumber)
+        .expect(metadata[1].customPageAttributeAtRuntimeNumber)
         .eql(1)
-        .expect(events[2].metadata.customPageAttributeAtRuntimeNumber)
+        .expect(metadata[2].customPageAttributeAtRuntimeNumber)
         .eql(2);
 });
 
 test.only('When custom attribute set at runtime via callback, custom attribute recorded in event metadata', async (t: TestController) => {
-    
+    await t.wait(300);
+    await t.click(addSessionAttributesButton1);
+    await t.click(recordPageViewButtonOne);
+    await t.click(addSessionAttributesCallbackButton);
+    await t.click(recordPageViewButtonTwo);
+    await t.click(recordPageViewButtonOne);
+    await t.click(clearSessionAttributesCallbackButton);
+    await t.click(recordPageViewButtonTwo);
+
+    await t
+        .typeText(COMMAND, DISPATCH_COMMAND, { replace: true })
+        .click(PAYLOAD)
+        .pressKey('ctrl+a delete')
+        .click(SUBMIT);
+
+    const metadata = JSON.parse(await REQUEST_BODY.textContent)
+        .RumEvents.filter((e) => e.type === PAGE_VIEW_EVENT_TYPE)
+        .map((e: any) => JSON.parse(e.metadata));
+
+    // sanity check
+    await t.expect(metadata.length).eql(5);
+
+    // check hard coded page attributes
+    await t
+        .expect(metadata[1].customPageAttributeAtRuntimeString)
+        .eql('stringCustomAttributeAtRunTimeValue')
+        .expect(metadata[1].customPageAttributeAtRuntimeBoolean)
+        .eql(true)
+        .expect(metadata[1].customPageAttributeAtRuntimeNumber)
+        .eql(1)
+        .expect(metadata[1].customCount)
+        .eql(undefined);
+
+    // check dynamic overrides
+    let prevCount = 0;
+    await t
+        // override
+        .expect(
+            (function () {
+                prevCount = metadata[2].customPageAttributeAtRuntimeNumber;
+                return prevCount;
+            })()
+        )
+        .gt(10)
+        .expect(metadata[2].customCount)
+        .eql(prevCount)
+        // other attributes not overridden
+        .expect(metadata[2].customPageAttributeAtRuntimeString)
+        .eql('stringCustomAttributeAtRunTimeValue')
+        .expect(metadata[2].customPageAttributeAtRuntimeBoolean)
+        .eql(true)
+        .expect(metadata[3].customPageAttributeAtRuntimeNumber)
+        .gt(prevCount);
+
+    // check clear callback
+    await t
+        .expect(metadata[4].customPageAttributeAtRuntimeString)
+        .eql('stringCustomAttributeAtRunTimeValue')
+        .expect(metadata[4].customPageAttributeAtRuntimeBoolean)
+        .eql(true)
+        .expect(metadata[4].customPageAttributeAtRuntimeNumber)
+        .eql(1)
+        .expect(metadata[4].customCount)
+        .eql(undefined);
 });
