@@ -17,6 +17,9 @@ const randomSessionClickButton: Selector = Selector('#randomSessionClick');
 const disallowCookiesClickButton: Selector = Selector('#disallowCookies');
 
 const addSessionAttributesButton: Selector = Selector(`#addSessionAttributes`);
+const addSessionAttributesCallbackButton: Selector = Selector(
+    `#addSessionAttributesCallback`
+);
 const recordPageViewButton: Selector = Selector(`#recordPageView`);
 
 const BROWSER_LANGUAGE = 'browserLanguage';
@@ -159,4 +162,35 @@ test('When custom attribute set at runtime, custom attribute recorded in event m
         .eql(1)
         .expect(metaData.customPageAttributeAtRuntimeBoolean)
         .eql(true);
+});
+
+test.only('When custom attribute set at runtime via callback, custom attribute recorded in event metadata', async (t: TestController) => {
+    await t.wait(300);
+    await t.click(addSessionAttributesCallbackButton);
+    await t.wait(300);
+    await t.click(recordPageViewButton);
+    await t.click(recordPageViewButton);
+    await t.click(recordPageViewButton);
+    await t.wait(300);
+
+    await t
+        .typeText(COMMAND, DISPATCH_COMMAND, { replace: true })
+        .click(PAYLOAD)
+        .pressKey('ctrl+a delete')
+        .click(SUBMIT);
+    const events = JSON.parse(await REQUEST_BODY.textContent)
+        .RumEvents.filter((e) => e.type === PAGE_VIEW_EVENT_TYPE)
+        .map((e) => {
+            e.metadata = JSON.parse(e.metadata);
+            return e;
+        });
+
+    await t.expect(events.length).eql(2);
+
+    console.log('events', JSON.stringify(events, null, 4));
+
+    // const zero = JSON.parse(events[0]);
+    // const one = JSON.parse(events[1]);
+
+    // await t.expect(zero.count).eql(0).expect(one.count).eql(1);
 });
