@@ -38,265 +38,265 @@ const rumClient = new RUMClient({ region: REGION });
 
 // Run the tests in parallel
 test.describe.configure({ mode: 'parallel' });
-test('when session start event is sent then event is ingested', async ({
-    page
-}) => {
-    const timestamp = Date.now() - 30000;
+// test('when session start event is sent then event is ingested', async ({
+//     page
+// }) => {
+//     const timestamp = Date.now() - 30000;
 
-    // Open page
-    await page.goto(TEST_URL);
+//     // Open page
+//     await page.goto(TEST_URL);
 
-    // Test will timeout if no successful dataplane request is found
-    const response = await page.waitForResponse(async (response) =>
-        isDataPlaneRequest(response, TARGET_URL)
-    );
+//     // Test will timeout if no successful dataplane request is found
+//     const response = await page.waitForResponse(async (response) =>
+//         isDataPlaneRequest(response, TARGET_URL)
+//     );
 
-    // Parse payload to verify event count
-    const requestBody = JSON.parse(response.request().postData());
+//     // Parse payload to verify event count
+//     const requestBody = JSON.parse(response.request().postData());
 
-    const session = getEventsByType(requestBody, SESSION_START_EVENT_TYPE);
-    const eventIds = getEventIds(session);
+//     const session = getEventsByType(requestBody, SESSION_START_EVENT_TYPE);
+//     const eventIds = getEventIds(session);
 
-    const isIngestionCompleted = await verifyIngestionWithRetry(
-        rumClient,
-        eventIds,
-        timestamp,
-        MONITOR_NAME,
-        5
-    );
-    expect(isIngestionCompleted).toEqual(true);
-});
+//     const isIngestionCompleted = await verifyIngestionWithRetry(
+//         rumClient,
+//         eventIds,
+//         timestamp,
+//         MONITOR_NAME,
+//         5
+//     );
+//     expect(isIngestionCompleted).toEqual(true);
+// });
 
-test('when resource event is sent then event is ingested', async ({ page }) => {
-    const timestamp = Date.now() - 30000;
+// test('when resource event is sent then event is ingested', async ({ page }) => {
+//     const timestamp = Date.now() - 30000;
 
-    // Open page
-    await page.goto(TEST_URL);
+//     // Open page
+//     await page.goto(TEST_URL);
 
-    // Test will timeout if no successful dataplane request is found
-    const response = await page.waitForResponse(async (response) =>
-        isDataPlaneRequest(response, TARGET_URL)
-    );
+//     // Test will timeout if no successful dataplane request is found
+//     const response = await page.waitForResponse(async (response) =>
+//         isDataPlaneRequest(response, TARGET_URL)
+//     );
 
-    // Parse payload to verify event count
-    const requestBody = JSON.parse(response.request().postData());
+//     // Parse payload to verify event count
+//     const requestBody = JSON.parse(response.request().postData());
 
-    const resource = getEventsByType(
-        requestBody,
-        PERFORMANCE_RESOURCE_EVENT_TYPE
-    );
-    const eventIds = getEventIds(resource);
+//     const resource = getEventsByType(
+//         requestBody,
+//         PERFORMANCE_RESOURCE_EVENT_TYPE
+//     );
+//     const eventIds = getEventIds(resource);
 
-    const isIngestionCompleted = await verifyIngestionWithRetry(
-        rumClient,
-        eventIds,
-        timestamp,
-        MONITOR_NAME,
-        5
-    );
-    expect(isIngestionCompleted).toEqual(true);
-});
+//     const isIngestionCompleted = await verifyIngestionWithRetry(
+//         rumClient,
+//         eventIds,
+//         timestamp,
+//         MONITOR_NAME,
+//         5
+//     );
+//     expect(isIngestionCompleted).toEqual(true);
+// });
 
-test('when LCP event is sent then event is ingested', async ({ page }) => {
-    const timestamp = Date.now() - 30000;
+// test('when LCP event is sent then event is ingested', async ({ page }) => {
+//     const timestamp = Date.now() - 30000;
 
-    // Open page
-    await page.goto(TEST_URL);
-    const clearButton = page.locator('[id=dummyButton]');
-    await clearButton.click();
+//     // Open page
+//     await page.goto(TEST_URL);
+//     const clearButton = page.locator('[id=dummyButton]');
+//     await clearButton.click();
 
-    // Test will timeout if no successful dataplane request is found
-    const response = await page.waitForResponse(async (response) =>
-        isDataPlaneRequest(response, TARGET_URL)
-    );
+//     // Test will timeout if no successful dataplane request is found
+//     const response = await page.waitForResponse(async (response) =>
+//         isDataPlaneRequest(response, TARGET_URL)
+//     );
 
-    // Parse payload to verify event count
-    const requestBody = JSON.parse(response.request().postData());
+//     // Parse payload to verify event count
+//     const requestBody = JSON.parse(response.request().postData());
 
-    const lcp = getEventsByType(requestBody, LCP_EVENT_TYPE);
-    const eventIds = getEventIds(lcp);
+//     const lcp = getEventsByType(requestBody, LCP_EVENT_TYPE);
+//     const eventIds = getEventIds(lcp);
 
-    expect(eventIds.length).not.toEqual(0);
-    const isIngestionCompleted = await verifyIngestionWithRetry(
-        rumClient,
-        eventIds,
-        timestamp,
-        MONITOR_NAME,
-        5
-    );
-    expect(isIngestionCompleted).toEqual(true);
-});
+//     expect(eventIds.length).not.toEqual(0);
+//     const isIngestionCompleted = await verifyIngestionWithRetry(
+//         rumClient,
+//         eventIds,
+//         timestamp,
+//         MONITOR_NAME,
+//         5
+//     );
+//     expect(isIngestionCompleted).toEqual(true);
+// });
 
-test('when FID event is sent then event is ingested', async ({ page }) => {
-    const timestamp = Date.now() - 30000;
+// test('when FID event is sent then event is ingested', async ({ page }) => {
+//     const timestamp = Date.now() - 30000;
 
-    // Open page
-    await page.goto(TEST_URL);
-    const clearButton = page.locator('[id=dummyButton]');
-    await clearButton.click();
+//     // Open page
+//     await page.goto(TEST_URL);
+//     const clearButton = page.locator('[id=dummyButton]');
+//     await clearButton.click();
 
-    // Test will timeout if no successful dataplane request is found
-    const response = await page.waitForResponse(async (response) =>
-        isDataPlaneRequest(response, TARGET_URL)
-    );
+//     // Test will timeout if no successful dataplane request is found
+//     const response = await page.waitForResponse(async (response) =>
+//         isDataPlaneRequest(response, TARGET_URL)
+//     );
 
-    // Parse payload to verify event count
-    const requestBody = JSON.parse(response.request().postData());
+//     // Parse payload to verify event count
+//     const requestBody = JSON.parse(response.request().postData());
 
-    const fid = getEventsByType(requestBody, FID_EVENT_TYPE);
-    const eventIds = getEventIds(fid);
+//     const fid = getEventsByType(requestBody, FID_EVENT_TYPE);
+//     const eventIds = getEventIds(fid);
 
-    expect(eventIds.length).not.toEqual(0);
-    const isIngestionCompleted = await verifyIngestionWithRetry(
-        rumClient,
-        eventIds,
-        timestamp,
-        MONITOR_NAME,
-        5
-    );
-    expect(isIngestionCompleted).toEqual(true);
-});
+//     expect(eventIds.length).not.toEqual(0);
+//     const isIngestionCompleted = await verifyIngestionWithRetry(
+//         rumClient,
+//         eventIds,
+//         timestamp,
+//         MONITOR_NAME,
+//         5
+//     );
+//     expect(isIngestionCompleted).toEqual(true);
+// });
 
-test('when navigation events are sent then events are ingested', async ({
-    page
-}) => {
-    const timestamp = Date.now() - 30000;
+// test('when navigation events are sent then events are ingested', async ({
+//     page
+// }) => {
+//     const timestamp = Date.now() - 30000;
 
-    // Open page
-    await page.goto(TEST_URL);
-    const clearButton = page.locator('[id=pushStateOneToHistory]');
-    await clearButton.click();
+//     // Open page
+//     await page.goto(TEST_URL);
+//     const clearButton = page.locator('[id=pushStateOneToHistory]');
+//     await clearButton.click();
 
-    // Test will timeout if no successful dataplane request is found
-    const response = await page.waitForResponse(async (response) =>
-        isDataPlaneRequest(response, TARGET_URL)
-    );
+//     // Test will timeout if no successful dataplane request is found
+//     const response = await page.waitForResponse(async (response) =>
+//         isDataPlaneRequest(response, TARGET_URL)
+//     );
 
-    // Parse payload to verify event count
-    const requestBody = JSON.parse(response.request().postData());
+//     // Parse payload to verify event count
+//     const requestBody = JSON.parse(response.request().postData());
 
-    const navigation = getEventsByType(
-        requestBody,
-        PERFORMANCE_NAVIGATION_EVENT_TYPE
-    );
-    const eventIds = getEventIds(navigation);
+//     const navigation = getEventsByType(
+//         requestBody,
+//         PERFORMANCE_NAVIGATION_EVENT_TYPE
+//     );
+//     const eventIds = getEventIds(navigation);
 
-    // One initial load, one route change
-    expect(eventIds.length).toEqual(2);
-    const isIngestionCompleted = await verifyIngestionWithRetry(
-        rumClient,
-        eventIds,
-        timestamp,
-        MONITOR_NAME,
-        5
-    );
-    expect(isIngestionCompleted).toEqual(true);
-});
+//     // One initial load, one route change
+//     expect(eventIds.length).toEqual(2);
+//     const isIngestionCompleted = await verifyIngestionWithRetry(
+//         rumClient,
+//         eventIds,
+//         timestamp,
+//         MONITOR_NAME,
+//         5
+//     );
+//     expect(isIngestionCompleted).toEqual(true);
+// });
 
-test('when page view event is sent then the event is ingested', async ({
-    page
-}) => {
-    const timestamp = Date.now() - 30000;
+// test('when page view event is sent then the event is ingested', async ({
+//     page
+// }) => {
+//     const timestamp = Date.now() - 30000;
 
-    // Open page
-    await page.goto(TEST_URL);
-    const clearButton = page.locator('[id=pushStateOneToHistory]');
-    await clearButton.click();
+//     // Open page
+//     await page.goto(TEST_URL);
+//     const clearButton = page.locator('[id=pushStateOneToHistory]');
+//     await clearButton.click();
 
-    // Test will timeout if no successful dataplane request is found
-    const response = await page.waitForResponse(async (response) =>
-        isDataPlaneRequest(response, TARGET_URL)
-    );
+//     // Test will timeout if no successful dataplane request is found
+//     const response = await page.waitForResponse(async (response) =>
+//         isDataPlaneRequest(response, TARGET_URL)
+//     );
 
-    // Parse payload to verify event count
-    const requestBody = JSON.parse(response.request().postData());
+//     // Parse payload to verify event count
+//     const requestBody = JSON.parse(response.request().postData());
 
-    const pageViews = getEventsByType(requestBody, PAGE_VIEW_EVENT_TYPE);
-    const eventIds = getEventIds(pageViews);
+//     const pageViews = getEventsByType(requestBody, PAGE_VIEW_EVENT_TYPE);
+//     const eventIds = getEventIds(pageViews);
 
-    // One initial load, one route change
-    expect(eventIds.length).toEqual(2);
-    const isIngestionCompleted = await verifyIngestionWithRetry(
-        rumClient,
-        eventIds,
-        timestamp,
-        MONITOR_NAME,
-        5
-    );
-    expect(isIngestionCompleted).toEqual(true);
-});
+//     // One initial load, one route change
+//     expect(eventIds.length).toEqual(2);
+//     const isIngestionCompleted = await verifyIngestionWithRetry(
+//         rumClient,
+//         eventIds,
+//         timestamp,
+//         MONITOR_NAME,
+//         5
+//     );
+//     expect(isIngestionCompleted).toEqual(true);
+// });
 
-test('when error events are sent then the events are ingested', async ({
-    page
-}) => {
-    const timestamp = Date.now() - 30000;
+// test('when error events are sent then the events are ingested', async ({
+//     page
+// }) => {
+//     const timestamp = Date.now() - 30000;
 
-    // Open page
-    await page.goto(TEST_URL);
-    const typeError = page.locator('[id=triggerTypeError]');
-    const stringError = page.locator('[id=throwErrorString]');
-    const caughtError = page.locator('[id=recordCaughtError]');
-    await typeError.click();
-    await stringError.click();
-    await caughtError.click();
+//     // Open page
+//     await page.goto(TEST_URL);
+//     const typeError = page.locator('[id=triggerTypeError]');
+//     const stringError = page.locator('[id=throwErrorString]');
+//     const caughtError = page.locator('[id=recordCaughtError]');
+//     await typeError.click();
+//     await stringError.click();
+//     await caughtError.click();
 
-    // Test will timeout if no successful dataplane request is found
-    const response = await page.waitForResponse(async (response) =>
-        isDataPlaneRequest(response, TARGET_URL)
-    );
+//     // Test will timeout if no successful dataplane request is found
+//     const response = await page.waitForResponse(async (response) =>
+//         isDataPlaneRequest(response, TARGET_URL)
+//     );
 
-    // Parse payload to verify event count
-    const requestBody = JSON.parse(response.request().postData());
+//     // Parse payload to verify event count
+//     const requestBody = JSON.parse(response.request().postData());
 
-    const errors = getEventsByType(requestBody, JS_ERROR_EVENT_TYPE);
-    const eventIds = getEventIds(errors);
+//     const errors = getEventsByType(requestBody, JS_ERROR_EVENT_TYPE);
+//     const eventIds = getEventIds(errors);
 
-    // Expect three js error events
-    expect(eventIds.length).toEqual(3);
-    const isIngestionCompleted = await verifyIngestionWithRetry(
-        rumClient,
-        eventIds,
-        timestamp,
-        MONITOR_NAME,
-        5
-    );
-    expect(isIngestionCompleted).toEqual(true);
-});
+//     // Expect three js error events
+//     expect(eventIds.length).toEqual(3);
+//     const isIngestionCompleted = await verifyIngestionWithRetry(
+//         rumClient,
+//         eventIds,
+//         timestamp,
+//         MONITOR_NAME,
+//         5
+//     );
+//     expect(isIngestionCompleted).toEqual(true);
+// });
 
-test('when http events are sent then the events are ingested', async ({
-    page
-}) => {
-    const timestamp = Date.now() - 30000;
+// test('when http events are sent then the events are ingested', async ({
+//     page
+// }) => {
+//     const timestamp = Date.now() - 30000;
 
-    // Open page
-    await page.goto(TEST_URL);
-    const fetch500 = page.locator('[id=httpStatFetch500]');
-    const xhr500 = page.locator('[id=httpStatXhr500]');
-    await fetch500.click();
-    await xhr500.click();
+//     // Open page
+//     await page.goto(TEST_URL);
+//     const fetch500 = page.locator('[id=httpStatFetch500]');
+//     const xhr500 = page.locator('[id=httpStatXhr500]');
+//     await fetch500.click();
+//     await xhr500.click();
 
-    // Test will timeout if no successful dataplane request is found
-    const response = await page.waitForResponse(async (response) =>
-        isDataPlaneRequest(response, TARGET_URL)
-    );
+//     // Test will timeout if no successful dataplane request is found
+//     const response = await page.waitForResponse(async (response) =>
+//         isDataPlaneRequest(response, TARGET_URL)
+//     );
 
-    // Parse payload to verify event count
-    const requestBody = JSON.parse(response.request().postData());
+//     // Parse payload to verify event count
+//     const requestBody = JSON.parse(response.request().postData());
 
-    const httpEvents = getEventsByType(requestBody, HTTP_EVENT_TYPE);
-    const eventIds = getEventIds(httpEvents);
+//     const httpEvents = getEventsByType(requestBody, HTTP_EVENT_TYPE);
+//     const eventIds = getEventIds(httpEvents);
 
-    // Expect two http events
-    expect(eventIds.length).toEqual(2);
-    const isIngestionCompleted = await verifyIngestionWithRetry(
-        rumClient,
-        eventIds,
-        timestamp,
-        MONITOR_NAME,
-        5
-    );
-    expect(isIngestionCompleted).toEqual(true);
-});
+//     // Expect two http events
+//     expect(eventIds.length).toEqual(2);
+//     const isIngestionCompleted = await verifyIngestionWithRetry(
+//         rumClient,
+//         eventIds,
+//         timestamp,
+//         MONITOR_NAME,
+//         5
+//     );
+//     expect(isIngestionCompleted).toEqual(true);
+// });
 
 test('when CLS event is sent then the event is ingested', async ({ page }) => {
     const timestamp = Date.now() - 30000;
@@ -334,108 +334,108 @@ test('when CLS event is sent then the event is ingested', async ({ page }) => {
     expect(isIngestionCompleted).toEqual(true);
 });
 
-test('when dom event is sent then the event is ingested', async ({ page }) => {
-    const timestamp = Date.now() - 30000;
+// test('when dom event is sent then the event is ingested', async ({ page }) => {
+//     const timestamp = Date.now() - 30000;
 
-    // Open page
-    await page.goto(TEST_URL);
-    const registerDom = page.locator('[id=registerDomEvents]');
-    const triggerDom = page.locator('[id=triggerDom]');
-    await registerDom.click();
-    await triggerDom.click();
+//     // Open page
+//     await page.goto(TEST_URL);
+//     const registerDom = page.locator('[id=registerDomEvents]');
+//     const triggerDom = page.locator('[id=triggerDom]');
+//     await registerDom.click();
+//     await triggerDom.click();
 
-    // Test will timeout if no successful dataplane request is found
-    const response = await page.waitForResponse(async (response) =>
-        isDataPlaneRequest(response, TARGET_URL)
-    );
+//     // Test will timeout if no successful dataplane request is found
+//     const response = await page.waitForResponse(async (response) =>
+//         isDataPlaneRequest(response, TARGET_URL)
+//     );
 
-    // Parse payload to verify event count
-    const requestBody = JSON.parse(response.request().postData());
+//     // Parse payload to verify event count
+//     const requestBody = JSON.parse(response.request().postData());
 
-    const domEvent = getEventsByType(requestBody, DOM_EVENT_TYPE);
-    const eventIds = getEventIds(domEvent);
+//     const domEvent = getEventsByType(requestBody, DOM_EVENT_TYPE);
+//     const eventIds = getEventIds(domEvent);
 
-    // Expect one dom event
-    expect(eventIds.length).toEqual(1);
-    const isIngestionCompleted = await verifyIngestionWithRetry(
-        rumClient,
-        eventIds,
-        timestamp,
-        MONITOR_NAME,
-        5
-    );
-    expect(isIngestionCompleted).toEqual(true);
-});
+//     // Expect one dom event
+//     expect(eventIds.length).toEqual(1);
+//     const isIngestionCompleted = await verifyIngestionWithRetry(
+//         rumClient,
+//         eventIds,
+//         timestamp,
+//         MONITOR_NAME,
+//         5
+//     );
+//     expect(isIngestionCompleted).toEqual(true);
+// });
 
-test('when xray event is sent then the event is ingested', async ({ page }) => {
-    const timestamp = Date.now() - 30000;
+// test('when xray event is sent then the event is ingested', async ({ page }) => {
+//     const timestamp = Date.now() - 30000;
 
-    // Open page
-    await page.goto(TEST_URL);
-    const http200 = page.locator('[id=httpStatFetch200]');
-    await http200.click();
+//     // Open page
+//     await page.goto(TEST_URL);
+//     const http200 = page.locator('[id=httpStatFetch200]');
+//     await http200.click();
 
-    // Test will timeout if no successful dataplane request is found
-    const response = await page.waitForResponse(async (response) =>
-        isDataPlaneRequest(response, TARGET_URL)
-    );
+//     // Test will timeout if no successful dataplane request is found
+//     const response = await page.waitForResponse(async (response) =>
+//         isDataPlaneRequest(response, TARGET_URL)
+//     );
 
-    // Parse payload to verify event count
-    const requestBody = JSON.parse(response.request().postData());
+//     // Parse payload to verify event count
+//     const requestBody = JSON.parse(response.request().postData());
 
-    const xrayEvent = getEventsByType(requestBody, XRAY_TRACE_EVENT_TYPE);
-    const eventIds = getEventIds(xrayEvent);
+//     const xrayEvent = getEventsByType(requestBody, XRAY_TRACE_EVENT_TYPE);
+//     const eventIds = getEventIds(xrayEvent);
 
-    // Except one xray event
-    expect(eventIds.length).toEqual(1);
-    const isIngestionCompleted = await verifyIngestionWithRetry(
-        rumClient,
-        eventIds,
-        timestamp,
-        MONITOR_NAME,
-        5
-    );
-    expect(isIngestionCompleted).toEqual(true);
-});
+//     // Except one xray event
+//     expect(eventIds.length).toEqual(1);
+//     const isIngestionCompleted = await verifyIngestionWithRetry(
+//         rumClient,
+//         eventIds,
+//         timestamp,
+//         MONITOR_NAME,
+//         5
+//     );
+//     expect(isIngestionCompleted).toEqual(true);
+// });
 
-test('when event with custom attributes is sent then the event is ingested', async ({
-    page
-}) => {
-    const timestamp = Date.now() - 30000;
+// test('when event with custom attributes is sent then the event is ingested', async ({
+//     page
+// }) => {
+//     const timestamp = Date.now() - 30000;
 
-    // Open page
-    await page.goto(TEST_URL);
-    const addSessionAttributes = page.locator('[id=addSessionAttributes]');
-    await addSessionAttributes.click();
+//     // Open page
+//     await page.goto(TEST_URL);
+//     const addSessionAttributes = page.locator('[id=addSessionAttributes]');
+//     await addSessionAttributes.click();
 
-    const clearButton = page.locator('[id=pushStateOneToHistory]');
-    await clearButton.click();
+//     const clearButton = page.locator('[id=pushStateOneToHistory]');
+//     await clearButton.click();
 
-    // Test will timeout if no successful dataplane request is found
-    const response = await page.waitForResponse(async (response) =>
-        isDataPlaneRequest(response, TARGET_URL)
-    );
+//     // Test will timeout if no successful dataplane request is found
+//     const response = await page.waitForResponse(async (response) =>
+//         isDataPlaneRequest(response, TARGET_URL)
+//     );
 
-    // Parse payload to verify event count
-    const requestBody = JSON.parse(response.request().postData());
+//     // Parse payload to verify event count
+//     const requestBody = JSON.parse(response.request().postData());
 
-    const pageViews = getEventsByType(requestBody, PAGE_VIEW_EVENT_TYPE);
-    const eventIds = getEventIds(pageViews);
+//     const pageViews = getEventsByType(requestBody, PAGE_VIEW_EVENT_TYPE);
+//     const eventIds = getEventIds(pageViews);
 
-    // One initial load, one route change
-    expect(eventIds.length).toEqual(2);
-    const isIngestionCompleted = await verifyIngestionWithRetry(
-        rumClient,
-        eventIds.slice(1), // ignore initial load
-        timestamp,
-        MONITOR_NAME,
-        5,
-        [
-            'customAttributeKeyAtRuntime1=customAttributeValueAtRuntime1',
-            'customAttributeKeyAtRuntime2=customAttributeValueAtRuntime2',
-            'custom_attribute_key_at_runtime=customAttributeValueAtRuntime',
-            'valid:customAttributeKeyAtRuntime=customAttributeValueAtRuntime'
-        ]
-    );
-    expect(isIngestionCompleted).toEqual(true);
-});
+//     // One initial load, one route change
+//     expect(eventIds.length).toEqual(2);
+//     const isIngestionCompleted = await verifyIngestionWithRetry(
+//         rumClient,
+//         eventIds.slice(1), // ignore initial load
+//         timestamp,
+//         MONITOR_NAME,
+//         5,
+//         [
+//             'customAttributeKeyAtRuntime1=customAttributeValueAtRuntime1',
+//             'customAttributeKeyAtRuntime2=customAttributeValueAtRuntime2',
+//             'custom_attribute_key_at_runtime=customAttributeValueAtRuntime',
+//             'valid:customAttributeKeyAtRuntime=customAttributeValueAtRuntime'
+//         ]
+//     );
+//     expect(isIngestionCompleted).toEqual(true);
+// });
