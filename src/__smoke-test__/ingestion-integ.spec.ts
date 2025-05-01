@@ -457,13 +457,13 @@ test('when INP event is sent then event is ingested', async ({ page }) => {
     const clearButton = page.locator('[id=dummyButton]');
 
     // trigger a slow interaction
-    await clearButton.click();
-    await clearButton.click();
-    await clearButton.click();
-    await clearButton.click();
-    await clearButton.click();
-    await clearButton.click();
-    await clearButton.click();
+    for (let i = 0; i < 10; i++) {
+        await clearButton.click();
+    }
+
+    // trigger visibility change event
+    const cls = page.locator('[id=dispatchCLS]');
+    await cls.click();
 
     // Test will timeout if no successful dataplane request is found
     const response = await page.waitForResponse(async (response) =>
