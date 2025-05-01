@@ -458,7 +458,11 @@ test('when INP event is sent then event is ingested', async ({ page }) => {
 
     // trigger a slow interaction
     for (let i = 0; i < 10; i++) {
-        await clearButton.click();
+        await Promise.all(
+            new Array(10).fill(null).map(async () => {
+                await clearButton.click();
+            })
+        );
     }
 
     // trigger visibility change event
