@@ -334,16 +334,14 @@ test('when INP event is sent then event is ingested', async ({ page }) => {
 
     // Open page
     await page.goto(TEST_URL);
-    const clearButton = page.locator('[id=dummyButton]');
+    const dummyButton = page.locator('[id=dummyButton]');
 
     // trigger a slow interaction
-    for (let i = 0; i < 10; i++) {
-        await Promise.all(
-            new Array(10).fill(null).map(async () => {
-                await clearButton.click();
-            })
-        );
-    }
+    await Promise.all(
+        new Array(30).fill(null).map(async () => {
+            return await dummyButton.click();
+        })
+    );
 
     // trigger visibility change event
     const cls = page.locator('[id=dispatchCLS]');
@@ -353,6 +351,8 @@ test('when INP event is sent then event is ingested', async ({ page }) => {
     const response = await page.waitForResponse(async (response) =>
         isDataPlaneRequest(response, TARGET_URL)
     );
+
+    expect(response).toBeTruthy();
 
     // Parse payload to verify event count
     const requestBody = JSON.parse(response.request().postData());
