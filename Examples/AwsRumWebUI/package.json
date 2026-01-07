@@ -14,9 +14,13 @@
     "dependencies": {
         "@cloudscape-design/components": "^3.0.0",
         "@cloudscape-design/global-styles": "^1.0.0",
+        "@types/react-router-dom": "^5.3.3",
         "express": "^4.18.2",
         "react": "^19.2.0",
-        "react-dom": "^19.2.0"
+        "react-dom": "^19.2.0",
+        "react-router-dom": "^7.12.0",
+        "rrweb": "^2.0.0-alpha.4",
+        "rrweb-player": "^1.0.0-alpha.4"
     },
     "devDependencies": {
         "@eslint/js": "^9.39.1",

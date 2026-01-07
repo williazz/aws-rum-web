@@ -26,4 +26,6 @@ test-results/
 playwright/.cache/
 
 # AwsRumWebUI
-logs.jsonl
+events.jsonl
+requests.jsonl
+sessionreplay.jsonl
