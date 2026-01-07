@@ -1,5 +1,7 @@
 const unknownCaller = '[aws-rum-web:unknown.unknown]';
 export class InternalLogger {
+    public static isDebugMode = false;
+
     private static getCallerInfo(): string {
         try {
             const stack = new Error().stack;
@@ -38,26 +40,34 @@ export class InternalLogger {
     }
 
     static info(message: any, ...optionalParams: any[]): void {
-        const prefix = this.getCallerInfo();
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-        console.info(prefix, message, ...optionalParams);
+        if (this.isDebugMode) {
+            const prefix = this.getCallerInfo();
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+            console.info(prefix, message, ...optionalParams);
+        }
     }
 
     static debug(message: any, ...optionalParams: any[]): void {
-        const prefix = this.getCallerInfo();
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-        console.debug(prefix, message, ...optionalParams);
+        if (this.isDebugMode) {
+            const prefix = this.getCallerInfo();
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+            console.debug(prefix, message, ...optionalParams);
+        }
     }
 
     static warn(message: any, ...optionalParams: any[]): void {
-        const prefix = this.getCallerInfo();
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-        console.warn(prefix, message, ...optionalParams);
+        if (this.isDebugMode) {
+            const prefix = this.getCallerInfo();
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+            console.warn(prefix, message, ...optionalParams);
+        }
     }
 
     static error(message: any, ...optionalParams: any[]): void {
-        const prefix = this.getCallerInfo();
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-        console.error(prefix, message, ...optionalParams);
+        if (this.isDebugMode) {
+            const prefix = this.getCallerInfo();
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+            console.error(prefix, message, ...optionalParams);
+        }
     }
 }

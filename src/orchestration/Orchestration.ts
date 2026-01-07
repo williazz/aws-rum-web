@@ -26,6 +26,7 @@ import { WebVitalsPlugin } from '../plugins/event-plugins/WebVitalsPlugin';
 import { XhrPlugin } from '../plugins/event-plugins/XhrPlugin';
 import { FetchPlugin } from '../plugins/event-plugins/FetchPlugin';
 import { PageViewPlugin } from '../plugins/event-plugins/PageViewPlugin';
+import { RRWebPlugin } from '../plugins/event-plugins/RRWebPlugin';
 import { PageAttributes } from '../sessions/PageManager';
 import { INSTALL_MODULE } from '../utils/constants';
 import EventBus, { Topic } from '../event-bus/EventBus';
@@ -38,7 +39,8 @@ export enum TelemetryEnum {
     Errors = 'errors',
     Performance = 'performance',
     Interaction = 'interaction',
-    Http = 'http'
+    Http = 'http',
+    SessionReplay = 'sessionreplay'
 }
 
 export enum PageIdFormatEnum {
@@ -246,6 +248,9 @@ export class Orchestration {
 
         this.config.endpoint = this.getDataPlaneEndpoint(region, partialConfig);
 
+        // Set InternalLogger debug mode based on config
+        InternalLogger.isDebugMode = this.config.debug;
+
         // If the URL is not formatted correctly, a TypeError will be thrown.
         // This breaks our convention to fail-safe here for the sake of
         // debugging. It is expected that the application has wrapped the call
@@ -264,16 +269,12 @@ export class Orchestration {
             applicationVersion
         );
 
-        if (this.config.debug) {
-            InternalLogger.info(
-                `RUM client initialized for app: ${applicationId}`
-            );
-            InternalLogger.info(
-                `Telemetries enabled: ${
-                    this.config.telemetries.join(', ') || 'none'
-                }`
-            );
-        }
+        InternalLogger.info(`RUM client initialized for app: ${applicationId}`);
+        InternalLogger.info(
+            `Telemetries enabled: ${
+                this.config.telemetries.join(', ') || 'none'
+            }`
+        );
 
         if (this.config.enableRumClient) {
             this.enable();
@@ -530,6 +531,11 @@ export class Orchestration {
             },
             [TelemetryEnum.Http]: (config: object): InternalPlugin[] => {
                 return [new XhrPlugin(config), new FetchPlugin(config)];
+            },
+            [TelemetryEnum.SessionReplay]: (
+                config: object
+            ): InternalPlugin[] => {
+                return [new RRWebPlugin(config)];
             }
         };
     }
