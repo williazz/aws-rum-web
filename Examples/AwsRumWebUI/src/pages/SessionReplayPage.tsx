@@ -4,39 +4,58 @@ import Container from '@cloudscape-design/components/container';
 import Button from '@cloudscape-design/components/button';
 import SessionReplayViewer from '../SessionReplayViewer';
 
-interface LogEntry {
-    timestamp: string;
-    method: string;
-    appmonitorId: string;
-    headers: Record<string, string>;
-    body: Record<string, unknown>;
-    query: Record<string, string>;
+interface RRWebEvent {
+    type: number;
+    data: Record<string, unknown>;
+    timestamp: number;
+}
+
+interface SessionReplayEvent {
+    sessionId: string;
+    recordingId: string;
+    events: RRWebEvent[];
+    metadata: {
+        recordingStartTime: number;
+        recordingEndTime?: number;
+        userAgent: string;
+        viewport: {
+            width: number;
+            height: number;
+        };
+        url: string;
+        title: string;
+        samplingRate: number;
+    };
 }
 
 function SessionReplayPage() {
-    const [logs, setLogs] = useState<LogEntry[]>([]);
+    const [sessionReplays, setSessionReplays] = useState<SessionReplayEvent[]>(
+        []
+    );
     const [loading, setLoading] = useState(false);
 
-    const fetchLogs = async () => {
+    const fetchSessionReplays = async () => {
         setLoading(true);
         try {
-            const response = await fetch('http://localhost:3000/api/session-replay');
+            const response = await fetch(
+                'http://localhost:3000/api/session-replay'
+            );
             const data = await response.json();
-            setLogs(data);
+            setSessionReplays(data);
         } catch (error) {
-            console.error('Failed to fetch logs:', error);
+            console.error('Failed to fetch session replays:', error);
         }
         setLoading(false);
     };
 
     useEffect(() => {
-        // Fetch logs on component mount and set up interval
+        // Fetch session replays on component mount and set up interval
         const loadData = async () => {
-            await fetchLogs();
+            await fetchSessionReplays();
         };
 
         loadData();
-        const interval = setInterval(fetchLogs, 5000);
+        const interval = setInterval(fetchSessionReplays, 5000);
         return () => clearInterval(interval);
     }, []);
 
@@ -46,7 +65,7 @@ function SessionReplayPage() {
                 <Header
                     variant="h1"
                     actions={
-                        <Button onClick={fetchLogs} loading={loading}>
+                        <Button onClick={fetchSessionReplays} loading={loading}>
                             Refresh
                         </Button>
                     }
@@ -55,7 +74,7 @@ function SessionReplayPage() {
                 </Header>
             }
         >
-            <SessionReplayViewer logs={logs} />
+            <SessionReplayViewer logs={sessionReplays} />
         </Container>
     );
 }

@@ -33,58 +33,22 @@ interface SessionReplayEvent {
     };
 }
 
-interface RumEvent {
-    type: string;
-    details: string;
-}
-
-interface RequestBody {
-    RumEvents?: RumEvent[];
-}
-
-interface LogEntry {
-    timestamp: string;
-    method: string;
-    appmonitorId: string;
-    headers: Record<string, string>;
-    body: RequestBody;
-    query: Record<string, string>;
-}
-
 interface SessionReplayViewerProps {
-    logs: LogEntry[];
+    logs: SessionReplayEvent[];
 }
 
 const SessionReplayViewer: React.FC<SessionReplayViewerProps> = ({ logs }) => {
-    const [sessionReplays, setSessionReplays] = useState<SessionReplayEvent[]>([]);
-    const [selectedReplay, setSelectedReplay] = useState<SessionReplayEvent | null>(null);
+    const [sessionReplays, setSessionReplays] = useState<SessionReplayEvent[]>(
+        []
+    );
+    const [selectedReplay, setSelectedReplay] =
+        useState<SessionReplayEvent | null>(null);
     const [replayer, setReplayer] = useState<Replayer | null>(null);
     const replayContainerRef = useRef<HTMLDivElement>(null);
 
-    // Extract session replay events from logs
+    // Use logs directly as they are already session replay events
     useEffect(() => {
-        const extractSessionReplays = () => {
-            const replays: SessionReplayEvent[] = [];
-            
-            logs.forEach(log => {
-                if (log.body && log.body.RumEvents) {
-                    log.body.RumEvents.forEach((event: RumEvent) => {
-                        if (event.type === 'com.amazon.rum.rrweb') {
-                            try {
-                                const replayData = JSON.parse(event.details) as SessionReplayEvent;
-                                replays.push(replayData);
-                            } catch (error) {
-                                console.error('Failed to parse RRWeb event:', error);
-                            }
-                        }
-                    });
-                }
-            });
-
-            setSessionReplays(replays);
-        };
-
-        extractSessionReplays();
+        setSessionReplays(logs);
     }, [logs]);
 
     // Initialize or update replayer when selection changes
@@ -99,20 +63,34 @@ const SessionReplayViewer: React.FC<SessionReplayViewerProps> = ({ logs }) => {
             replayContainerRef.current.innerHTML = '';
 
             try {
-                // Create new replayer with basic configuration
-                const newReplayer = new Replayer(selectedReplay.events, {
+                // Sort events by timestamp to ensure proper playback order
+                const sortedEvents = [...selectedReplay.events].sort(
+                    (a, b) => a.timestamp - b.timestamp
+                );
+
+                // Create new replayer with enhanced configuration
+                const newReplayer = new Replayer(sortedEvents, {
                     root: replayContainerRef.current,
+                    speed: 1,
+                    skipInactive: true,
+                    showWarning: false,
+                    showDebug: false,
                     mouseTail: {
                         duration: 500,
                         lineCap: 'round',
                         lineWidth: 3,
-                        strokeStyle: 'red',
+                        strokeStyle: 'red'
                     },
+                    UNSAFE_replayCanvas: true,
+                    insertStyleRules: [
+                        'iframe { sandbox: allow-same-origin allow-scripts allow-popups allow-forms; }'
+                    ]
                 });
 
                 setReplayer(newReplayer);
             } catch (error) {
                 console.error('Failed to create replayer:', error);
+                console.error('Events data:', selectedReplay.events);
             }
         }
 
@@ -123,12 +101,20 @@ const SessionReplayViewer: React.FC<SessionReplayViewerProps> = ({ logs }) => {
         };
     }, [selectedReplay]);
 
-    const handleReplaySelection = (selectedOption: { value: string; label?: string; description?: string } | null) => {
+    const handleReplaySelection = (
+        selectedOption: {
+            value: string;
+            label?: string;
+            description?: string;
+        } | null
+    ) => {
         if (!selectedOption) {
             setSelectedReplay(null);
             return;
         }
-        const replay = sessionReplays.find(r => r.recordingId === selectedOption.value);
+        const replay = sessionReplays.find(
+            (r) => r.recordingId === selectedOption.value
+        );
         setSelectedReplay(replay || null);
     };
 
@@ -150,19 +136,20 @@ const SessionReplayViewer: React.FC<SessionReplayViewerProps> = ({ logs }) => {
         }
     };
 
-    const replayOptions = sessionReplays.map(replay => ({
-        label: `Recording ${replay.recordingId.substring(0, 8)}... - ${new Date(replay.metadata.recordingStartTime).toLocaleString()}`,
+    const replayOptions = sessionReplays.map((replay) => ({
+        label: `Recording ${replay.recordingId.substring(0, 8)}... - ${new Date(
+            replay.metadata.recordingStartTime
+        ).toLocaleString()}`,
         value: replay.recordingId,
-        description: `Session: ${replay.sessionId.substring(0, 8)}... | URL: ${replay.metadata.url}`
+        description: `Session: ${replay.sessionId.substring(0, 8)}... | URL: ${
+            replay.metadata.url
+        }`
     }));
 
     return (
         <Container
             header={
-                <Header
-                    variant="h2"
-                    counter={`(${sessionReplays.length})`}
-                >
+                <Header variant="h2" counter={`(${sessionReplays.length})`}>
                     Session Replay Events
                 </Header>
             }
@@ -170,19 +157,37 @@ const SessionReplayViewer: React.FC<SessionReplayViewerProps> = ({ logs }) => {
             <SpaceBetween direction="vertical" size="l">
                 {sessionReplays.length === 0 ? (
                     <Box textAlign="center" color="text-status-inactive">
-                        <Badge color="grey">No session replay events found</Badge>
-                        <p>Session replay events with type 'com.amazon.rum.rrweb' will appear here when captured.</p>
+                        <Badge color="grey">
+                            No session replay events found
+                        </Badge>
+                        <p>
+                            Session replay events with type
+                            'com.amazon.rum.rrweb' will appear here when
+                            captured.
+                        </p>
                     </Box>
                 ) : (
                     <>
                         <SpaceBetween direction="horizontal" size="s">
                             <Select
                                 selectedOption={
-                                    selectedReplay 
-                                        ? replayOptions.find(opt => opt.value === selectedReplay.recordingId) || null
+                                    selectedReplay
+                                        ? replayOptions.find(
+                                              (opt) =>
+                                                  opt.value ===
+                                                  selectedReplay.recordingId
+                                          ) || null
                                         : null
                                 }
-                                onChange={({ detail }) => handleReplaySelection(detail.selectedOption as { value: string; label?: string; description?: string } | null)}
+                                onChange={({ detail }) =>
+                                    handleReplaySelection(
+                                        detail.selectedOption as {
+                                            value: string;
+                                            label?: string;
+                                            description?: string;
+                                        } | null
+                                    )
+                                }
                                 options={replayOptions}
                                 placeholder="Select a recording to replay"
                                 expandToViewport
@@ -196,32 +201,56 @@ const SessionReplayViewer: React.FC<SessionReplayViewerProps> = ({ logs }) => {
                                         <div>
                                             <strong>Session Details:</strong>
                                         </div>
-                                        <SpaceBetween direction="horizontal" size="m">
+                                        <SpaceBetween
+                                            direction="horizontal"
+                                            size="m"
+                                        >
                                             <div>
-                                                <strong>Recording ID:</strong> {selectedReplay.recordingId}
+                                                <strong>Recording ID:</strong>{' '}
+                                                {selectedReplay.recordingId}
                                             </div>
                                             <div>
-                                                <strong>Session ID:</strong> {selectedReplay.sessionId}
-                                            </div>
-                                        </SpaceBetween>
-                                        <SpaceBetween direction="horizontal" size="m">
-                                            <div>
-                                                <strong>URL:</strong> {selectedReplay.metadata.url}
-                                            </div>
-                                            <div>
-                                                <strong>Title:</strong> {selectedReplay.metadata.title}
+                                                <strong>Session ID:</strong>{' '}
+                                                {selectedReplay.sessionId}
                                             </div>
                                         </SpaceBetween>
-                                        <SpaceBetween direction="horizontal" size="m">
+                                        <SpaceBetween
+                                            direction="horizontal"
+                                            size="m"
+                                        >
                                             <div>
-                                                <strong>Viewport:</strong> {selectedReplay.metadata.viewport.width} x {selectedReplay.metadata.viewport.height}
+                                                <strong>URL:</strong>{' '}
+                                                {selectedReplay.metadata.url}
                                             </div>
                                             <div>
-                                                <strong>Events:</strong> {selectedReplay.events.length}
+                                                <strong>Title:</strong>{' '}
+                                                {selectedReplay.metadata.title}
+                                            </div>
+                                        </SpaceBetween>
+                                        <SpaceBetween
+                                            direction="horizontal"
+                                            size="m"
+                                        >
+                                            <div>
+                                                <strong>Viewport:</strong>{' '}
+                                                {
+                                                    selectedReplay.metadata
+                                                        .viewport.width
+                                                }{' '}
+                                                x{' '}
+                                                {
+                                                    selectedReplay.metadata
+                                                        .viewport.height
+                                                }
+                                            </div>
+                                            <div>
+                                                <strong>Events:</strong>{' '}
+                                                {selectedReplay.events.length}
                                             </div>
                                         </SpaceBetween>
                                         <div>
-                                            <strong>User Agent:</strong> {selectedReplay.metadata.userAgent}
+                                            <strong>User Agent:</strong>{' '}
+                                            {selectedReplay.metadata.userAgent}
                                         </div>
                                     </SpaceBetween>
                                 </Container>
@@ -231,8 +260,14 @@ const SessionReplayViewer: React.FC<SessionReplayViewerProps> = ({ logs }) => {
                                         <Header variant="h3">
                                             Replay Controls
                                         </Header>
-                                        <SpaceBetween direction="horizontal" size="s">
-                                            <Button onClick={playReplay} variant="primary">
+                                        <SpaceBetween
+                                            direction="horizontal"
+                                            size="s"
+                                        >
+                                            <Button
+                                                onClick={playReplay}
+                                                variant="primary"
+                                            >
                                                 Play
                                             </Button>
                                             <Button onClick={pauseReplay}>
@@ -246,9 +281,7 @@ const SessionReplayViewer: React.FC<SessionReplayViewerProps> = ({ logs }) => {
                                 </Container>
 
                                 <Container>
-                                    <Header variant="h3">
-                                        Session Replay
-                                    </Header>
+                                    <Header variant="h3">Session Replay</Header>
                                     <Box>
                                         <div
                                             ref={replayContainerRef}

@@ -6,6 +6,7 @@ import Badge from '@cloudscape-design/components/badge';
 import Button from '@cloudscape-design/components/button';
 import Modal from '@cloudscape-design/components/modal';
 import Box from '@cloudscape-design/components/box';
+import { formatBytes } from '../utils/formatBytes';
 
 interface LogEntry {
     timestamp: string;
@@ -39,7 +40,7 @@ function RawRequestsPage() {
         const loadData = async () => {
             await fetchLogs();
         };
-        
+
         loadData();
         const interval = setInterval(fetchLogs, 5000);
         return () => clearInterval(interval);
@@ -86,7 +87,7 @@ function RawRequestsPage() {
             id: 'bodySize',
             header: 'Body Size',
             cell: (item: LogEntry) =>
-                JSON.stringify(item.body).length + ' bytes'
+                formatBytes(JSON.stringify(item.body).length)
         },
         {
             id: 'actions',
@@ -106,10 +107,7 @@ function RawRequestsPage() {
                     <Header
                         variant="h1"
                         actions={
-                            <Button
-                                onClick={fetchLogs}
-                                loading={loading}
-                            >
+                            <Button onClick={fetchLogs} loading={loading}>
                                 Refresh
                             </Button>
                         }

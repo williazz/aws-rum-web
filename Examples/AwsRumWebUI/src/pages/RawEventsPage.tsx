@@ -6,6 +6,9 @@ import Badge from '@cloudscape-design/components/badge';
 import Button from '@cloudscape-design/components/button';
 import Modal from '@cloudscape-design/components/modal';
 import Box from '@cloudscape-design/components/box';
+import SpaceBetween from '@cloudscape-design/components/space-between';
+import Toggle from '@cloudscape-design/components/toggle';
+import { formatBytes } from '../utils/formatBytes';
 
 interface RawEvent {
     appmonitorId: string;
@@ -26,6 +29,7 @@ function RawEventsPage() {
     const [loading, setLoading] = useState(false);
     const [selectedEvent, setSelectedEvent] = useState<RawEvent | null>(null);
     const [modalVisible, setModalVisible] = useState(false);
+    const [showRawFormat, setShowRawFormat] = useState(false);
 
     const fetchEvents = async () => {
         setLoading(true);
@@ -53,11 +57,43 @@ function RawEventsPage() {
     const openModal = (event: RawEvent) => {
         setSelectedEvent(event);
         setModalVisible(true);
+        setShowRawFormat(false);
     };
 
     const closeModal = () => {
         setModalVisible(false);
         setSelectedEvent(null);
+        setShowRawFormat(false);
+    };
+
+    // Function to recursively parse stringified JSON
+    const parseNestedJSON = (obj: unknown): unknown => {
+        if (typeof obj === 'string') {
+            try {
+                const parsed = JSON.parse(obj);
+                return parseNestedJSON(parsed);
+            } catch {
+                return obj;
+            }
+        } else if (Array.isArray(obj)) {
+            return obj.map((item) => parseNestedJSON(item));
+        } else if (obj !== null && typeof obj === 'object') {
+            const result: Record<string, unknown> = {};
+            for (const key in obj) {
+                if (Object.prototype.hasOwnProperty.call(obj, key)) {
+                    result[key] = parseNestedJSON(
+                        (obj as Record<string, unknown>)[key]
+                    );
+                }
+            }
+            return result;
+        }
+        return obj;
+    };
+
+    const getDisplayData = () => {
+        if (!selectedEvent) return null;
+        return showRawFormat ? selectedEvent : parseNestedJSON(selectedEvent);
     };
 
     const getEventTypeColor = (
@@ -126,6 +162,11 @@ function RawEventsPage() {
                     : 'N/A'
         },
         {
+            id: 'eventSize',
+            header: 'Event Size',
+            cell: (item: RawEvent) => formatBytes(JSON.stringify(item).length)
+        },
+        {
             id: 'actions',
             header: 'Actions',
             cell: (item: RawEvent) => (
@@ -169,8 +210,24 @@ function RawEventsPage() {
             <Modal
                 visible={modalVisible}
                 onDismiss={closeModal}
-                header="Raw Event Details"
-                size="large"
+                header={
+                    <SpaceBetween
+                        direction="horizontal"
+                        size="m"
+                        alignItems="center"
+                    >
+                        <span>Raw Event Details</span>
+                        <Toggle
+                            checked={showRawFormat}
+                            onChange={({ detail }) =>
+                                setShowRawFormat(detail.checked)
+                            }
+                        >
+                            Show Raw Format
+                        </Toggle>
+                    </SpaceBetween>
+                }
+                size="max"
                 footer={<Button onClick={closeModal}>Close</Button>}
             >
                 {selectedEvent && (
@@ -181,10 +238,11 @@ function RawEventsPage() {
                                 padding: '16px',
                                 borderRadius: '4px',
                                 overflow: 'auto',
-                                fontSize: '12px'
+                                fontSize: '12px',
+                                maxHeight: '70vh'
                             }}
                         >
-                            {JSON.stringify(selectedEvent, null, 2)}
+                            {JSON.stringify(getDisplayData(), null, 2)}
                         </pre>
                     </Box>
                 )}

@@ -29,3 +29,8 @@ playwright/.cache/
 events.jsonl
 requests.jsonl
 sessionreplay.jsonl
+
+# Kiro CLI
+.kiro/settings/
+.kiro/**/*.log
+.kiro/.history

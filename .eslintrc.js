@@ -2,7 +2,11 @@ module.exports = {
     env: {
         browser: true
     },
-    ignorePatterns: ['playwright*.config.ts', '**/*.spec.ts'],
+    ignorePatterns: [
+        'playwright*.config.ts',
+        '**/*.spec.ts',
+        'Examples/AwsRumWebUI/**'
+    ],
     extends: [
         'plugin:@typescript-eslint/recommended',
         'plugin:@typescript-eslint/recommended-requiring-type-checking',
