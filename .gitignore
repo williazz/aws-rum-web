@@ -34,3 +34,6 @@ sessionreplay.jsonl
 .kiro/settings/
 .kiro/**/*.log
 .kiro/.history
+
+# Misc
+scratch.json

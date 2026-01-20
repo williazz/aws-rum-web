@@ -92,6 +92,53 @@ app.all('/appmonitors/:appmonitorId', (req, res) => {
                             );
                     }
                 );
+
+                // Update recording IDs index
+                const recordingIdsPath = path.join(
+                    __dirname,
+                    'api/recordingids.json'
+                );
+                fs.readFile(recordingIdsPath, 'utf8', (err, data) => {
+                    let recordingsMap = {};
+                    if (!err && data) {
+                        try {
+                            recordingsMap = JSON.parse(data);
+                        } catch (e) {
+                            recordingsMap = {};
+                        }
+                    }
+
+                    const recordingId = sessionReplayData.recordingId;
+                    if (!recordingsMap[recordingId]) {
+                        recordingsMap[recordingId] = {
+                            recordingId,
+                            timestamp: sessionReplayData.timestamp,
+                            eventCount: sessionReplayData.events.length
+                        };
+                    } else {
+                        recordingsMap[recordingId].eventCount +=
+                            sessionReplayData.events.length;
+                        if (
+                            sessionReplayData.timestamp <
+                            recordingsMap[recordingId].timestamp
+                        ) {
+                            recordingsMap[recordingId].timestamp =
+                                sessionReplayData.timestamp;
+                        }
+                    }
+
+                    fs.writeFile(
+                        recordingIdsPath,
+                        JSON.stringify(recordingsMap, null, 2),
+                        (err) => {
+                            if (err)
+                                console.error(
+                                    'Failed to update recording IDs:',
+                                    err
+                                );
+                        }
+                    );
+                });
             }
 
             // Write individual to events.jsonl
@@ -142,6 +189,44 @@ app.get('/api/events', (req, res) => {
     }
 });
 
+app.get('/api/session-replay/ids', (req, res) => {
+    try {
+        const data = fs.readFileSync(
+            path.join(__dirname, 'api/recordingids.json'),
+            'utf8'
+        );
+        const recordingsMap = JSON.parse(data);
+        const recordings = Object.values(recordingsMap).sort(
+            (a, b) => b.timestamp - a.timestamp
+        );
+        res.json(recordings);
+    } catch (err) {
+        res.json([]);
+    }
+});
+
+app.get('/api/session-replay/:recordingId', (req, res) => {
+    try {
+        const { recordingId } = req.params;
+        const data = fs.readFileSync(
+            path.join(__dirname, 'api/sessionreplay.jsonl'),
+            'utf8'
+        );
+        const events = data
+            .trim()
+            .split('\n')
+            .filter((line) => line)
+            .map((line) => JSON.parse(line))
+            .filter((event) => event.recordingId === recordingId);
+
+        // Merge all rrweb events for this recording
+        const allEvents = events.flatMap((e) => e.events);
+        res.json(allEvents);
+    } catch (err) {
+        res.json([]);
+    }
+});
+
 app.get('/api/session-replay', (req, res) => {
     try {
         const data = fs.readFileSync(
@@ -153,7 +238,29 @@ app.get('/api/session-replay', (req, res) => {
             .split('\n')
             .filter((line) => line)
             .map((line) => JSON.parse(line));
-        res.json(events);
+
+        // Merge events by recordingId
+        const recordingsMap = new Map();
+        events.forEach((event) => {
+            const recordingId = event.recordingId;
+            if (!recordingsMap.has(recordingId)) {
+                recordingsMap.set(recordingId, {
+                    sessionId: event.sessionId,
+                    recordingId: event.recordingId,
+                    timestamp: event.timestamp,
+                    events: [],
+                    metadata: event.metadata
+                });
+            }
+            const recording = recordingsMap.get(recordingId);
+            recording.events.push(...event.events);
+            // Update timestamp to earliest
+            if (event.timestamp < recording.timestamp) {
+                recording.timestamp = event.timestamp;
+            }
+        });
+
+        res.json(Array.from(recordingsMap.values()));
     } catch (err) {
         res.json([]);
     }
