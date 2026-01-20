@@ -29,6 +29,7 @@ playwright/.cache/
 events.jsonl
 requests.jsonl
 sessionreplay.jsonl
+recordingids.json
 
 # Kiro CLI
 .kiro/settings/

@@ -2,6 +2,7 @@ import { InternalPlugin } from '../InternalPlugin';
 import { RRWEB_EVENT_TYPE } from '../utils/constant';
 import { InternalLogger } from '../../utils/InternalLogger';
 import { record } from 'rrweb';
+import type { recordOptions } from 'rrweb/typings/types';
 
 export const RRWEB_PLUGIN_ID = 'rrweb';
 
@@ -10,12 +11,7 @@ export type RRWebPluginConfig = {
     batchSize: number; // Number of events to batch before sending
     flushInterval: number; // MS between automatic flushes
     maxRecordingDuration: number; // Max recording duration in MS
-    recordOptions: {
-        maskAllInputs?: boolean;
-        blockClass?: string;
-        ignoreClass?: string;
-        maskTextClass?: string;
-    };
+    recordOptions?: recordOptions<any>;
 };
 
 const defaultConfig: RRWebPluginConfig = {
@@ -25,9 +21,15 @@ const defaultConfig: RRWebPluginConfig = {
     maxRecordingDuration: 300000, // 5 minutes
     recordOptions: {
         maskAllInputs: true,
+        maskTextSelector: '*',
         blockClass: 'rr-block',
         ignoreClass: 'rr-ignore',
-        maskTextClass: 'rr-mask'
+        maskTextClass: 'rr-mask',
+        slimDOMOptions: 'all',
+        recordCanvas: false,
+        recordCrossOriginIframes: false,
+        inlineImages: false,
+        collectFonts: false
     }
 };
 

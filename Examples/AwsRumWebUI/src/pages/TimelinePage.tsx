@@ -500,7 +500,7 @@ function TimelinePage() {
                         selectedReplayEvents.length === 0 ? (
                             <Container
                                 header={
-                                    <Header variant="h2">rrweb Events</Header>
+                                    <Header variant="h2">RRWeb Events</Header>
                                 }
                             >
                                 <div className="events-list">
@@ -520,7 +520,7 @@ function TimelinePage() {
                         ) : (
                             <Container
                                 header={
-                                    <Header variant="h2">rrweb Events</Header>
+                                    <Header variant="h2">RRWeb Events</Header>
                                 }
                             >
                                 <div className="events-list">
