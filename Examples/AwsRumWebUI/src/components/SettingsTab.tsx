@@ -15,7 +15,12 @@ export function SettingsTab({ themeMode, onThemeChange }: SettingsTabProps) {
                 <FormField label="Theme Mode">
                     <Select
                         selectedOption={themeMode}
-                        onChange={({ detail }) => onThemeChange(detail.selectedOption)}
+                        onChange={({ detail }) => {
+                            const option = detail.selectedOption;
+                            if (option.label && option.value) {
+                                onThemeChange({ label: option.label, value: option.value });
+                            }
+                        }}
                         options={[
                             { label: 'Auto', value: 'auto' },
                             { label: 'Light', value: 'light' },

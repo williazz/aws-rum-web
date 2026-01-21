@@ -21,10 +21,12 @@ interface RawRequest {
     query: Record<string, string>;
 }
 
-interface RecordingMetadata {
-    recordingId: string;
-    timestamp: number;
+interface SessionMetadata {
+    sessionId: string;
     eventCount: number;
+    recordingIds: string[];
+    firstSeen: number;
+    lastSeen: number;
 }
 
 function TimelinePage() {
@@ -35,10 +37,11 @@ function TimelinePage() {
     const [activeTab, setActiveTab] = useState(searchParams.get('tab') || 'session-replay');
     const [requests, setRequests] = useState<RawRequest[]>([]);
     const [selectedRequest, setSelectedRequest] = useState<RawRequest | null>(null);
-    const [recordingIds, setRecordingIds] = useState<RecordingMetadata[]>([]);
+    const [sessions, setSessions] = useState<SessionMetadata[]>([]);
+    const [selectedSessionId, setSelectedSessionId] = useState<string | null>(null);
     const [selectedRecordingId, setSelectedRecordingId] = useState<string | null>(null);
     const [selectedReplayEvents, setSelectedReplayEvents] = useState<any[]>([]);
-    const [loadingRecordings, setLoadingRecordings] = useState(true);
+    const [loadingSessions, setLoadingSessions] = useState(true);
     const [loadingEvents, setLoadingEvents] = useState(false);
     const [initialLoad, setInitialLoad] = useState(true);
 
@@ -64,12 +67,52 @@ function TimelinePage() {
         }
     };
 
-    const fetchRecordingIds = async () => {
+    const fetchSessions = async () => {
         try {
-            setLoadingRecordings(true);
+            setLoadingSessions(true);
             const startTime = Date.now();
-            const response = await fetch('http://localhost:3000/api/session-replay/ids');
-            const data: RecordingMetadata[] = await response.json();
+            
+            // Fetch events and session replay data
+            const [eventsRes, replayRes] = await Promise.all([
+                fetch('http://localhost:3000/api/events'),
+                fetch('http://localhost:3000/api/session-replay/ids')
+            ]);
+            
+            const events = await eventsRes.json();
+            const recordings = await replayRes.json();
+
+            // Group events by sessionId
+            const sessionMap = new Map<string, { events: any[], recordings: Set<string>, firstSeen: number, lastSeen: number }>();
+            
+            events.forEach((event: any) => {
+                const sid = event.sessionId || 'unknown';
+                if (!sessionMap.has(sid)) {
+                    sessionMap.set(sid, { events: [], recordings: new Set(), firstSeen: Infinity, lastSeen: 0 });
+                }
+                const session = sessionMap.get(sid)!;
+                session.events.push(event);
+                const ts = event.event.timestamp < 946684800000 ? event.event.timestamp * 1000 : event.event.timestamp;
+                session.firstSeen = Math.min(session.firstSeen, ts);
+                session.lastSeen = Math.max(session.lastSeen, ts);
+            });
+
+            // Add recording IDs to sessions
+            recordings.forEach((rec: any) => {
+                // Recording ID is the sessionId
+                if (sessionMap.has(rec.recordingId)) {
+                    sessionMap.get(rec.recordingId)!.recordings.add(rec.recordingId);
+                }
+            });
+
+            const sessionList: SessionMetadata[] = Array.from(sessionMap.entries()).map(([sessionId, data]) => ({
+                sessionId,
+                eventCount: data.events.length,
+                recordingIds: Array.from(data.recordings),
+                firstSeen: data.firstSeen,
+                lastSeen: data.lastSeen
+            }));
+
+            sessionList.sort((a, b) => b.lastSeen - a.lastSeen);
 
             const elapsed = Date.now() - startTime;
             const minDelay = 500;
@@ -77,14 +120,18 @@ function TimelinePage() {
                 await new Promise((resolve) => setTimeout(resolve, minDelay - elapsed));
             }
 
-            setRecordingIds(data);
-            if (data.length > 0 && !selectedRecordingId) {
-                setSelectedRecordingId(data[0].recordingId);
+            setSessions(sessionList);
+            if (sessionList.length > 0 && !selectedSessionId) {
+                const firstSession = sessionList[0];
+                setSelectedSessionId(firstSession.sessionId);
+                if (firstSession.recordingIds.length > 0) {
+                    setSelectedRecordingId(firstSession.recordingIds[0]);
+                }
             }
         } catch (error) {
-            console.error('Failed to fetch recording IDs:', error);
+            console.error('Failed to fetch sessions:', error);
         } finally {
-            setLoadingRecordings(false);
+            setLoadingSessions(false);
         }
     };
 
@@ -120,7 +167,7 @@ function TimelinePage() {
 
     useEffect(() => {
         fetchRequests();
-        fetchRecordingIds();
+        fetchSessions();
     }, []);
 
     const recursiveParse = (obj: any): any => {
@@ -164,12 +211,18 @@ function TimelinePage() {
 
             {activeTab === 'session-replay' && (
                 <SessionReplayTab
-                    recordingIds={recordingIds}
-                    selectedRecordingId={selectedRecordingId}
+                    sessions={sessions}
+                    selectedSessionId={selectedSessionId}
                     selectedReplayEvents={selectedReplayEvents}
-                    loadingRecordings={loadingRecordings}
+                    loadingSessions={loadingSessions}
                     loadingEvents={loadingEvents}
-                    onSelectRecording={setSelectedRecordingId}
+                    onSelectSession={(sessionId) => {
+                        setSelectedSessionId(sessionId);
+                        const session = sessions.find(s => s.sessionId === sessionId);
+                        if (session && session.recordingIds.length > 0) {
+                            setSelectedRecordingId(session.recordingIds[0]);
+                        }
+                    }}
                     onEventClick={(event, idx) => {
                         setSelectedEvent({
                             event: {

@@ -3,29 +3,31 @@ import Header from '@cloudscape-design/components/header';
 import Box from '@cloudscape-design/components/box';
 import { RrwebPlayer } from './RrwebPlayer';
 
-interface RecordingMetadata {
-    recordingId: string;
-    timestamp: number;
+interface SessionMetadata {
+    sessionId: string;
     eventCount: number;
+    recordingIds: string[];
+    firstSeen: number;
+    lastSeen: number;
 }
 
 interface SessionReplayTabProps {
-    recordingIds: RecordingMetadata[];
-    selectedRecordingId: string | null;
+    sessions: SessionMetadata[];
+    selectedSessionId: string | null;
     selectedReplayEvents: any[];
-    loadingRecordings: boolean;
+    loadingSessions: boolean;
     loadingEvents: boolean;
-    onSelectRecording: (recordingId: string) => void;
+    onSelectSession: (sessionId: string) => void;
     onEventClick: (event: any, idx: number) => void;
 }
 
 export function SessionReplayTab({
-    recordingIds,
-    selectedRecordingId,
+    sessions,
+    selectedSessionId,
     selectedReplayEvents,
-    loadingRecordings,
+    loadingSessions,
     loadingEvents,
-    onSelectRecording,
+    onSelectSession,
     onEventClick
 }: SessionReplayTabProps) {
     const eventTypeNames: Record<number, string> = {
@@ -41,8 +43,8 @@ export function SessionReplayTab({
     return (
         <div className="timeline-layout">
             <div className="sessions-sidebar">
-                <Container header={<Header variant="h2">Recordings</Header>}>
-                    {loadingRecordings ? (
+                <Container header={<Header variant="h2">Sessions</Header>}>
+                    {loadingSessions ? (
                         <div className="session-list">
                             {[1, 2, 3, 4, 5].map((i) => (
                                 <div key={i} className="skeleton-item">
@@ -52,34 +54,41 @@ export function SessionReplayTab({
                                 </div>
                             ))}
                         </div>
-                    ) : recordingIds.length === 0 ? (
+                    ) : sessions.length === 0 ? (
                         <Box padding={{ vertical: 'l' }}>
                             <Box variant="strong" fontSize="heading-m" color="text-body-secondary">
-                                No recordings yet
+                                No sessions yet
                             </Box>
                             <Box variant="p" color="text-body-secondary" padding={{ top: 's' }}>
-                                Session recordings will appear here once captured
+                                Sessions will appear here once captured
                             </Box>
                         </Box>
                     ) : (
                         <div className="session-list">
-                            {recordingIds.map((recording) => (
-                                <div
-                                    key={recording.recordingId}
-                                    className={`session-item ${selectedRecordingId === recording.recordingId ? 'selected' : ''}`}
-                                    onClick={() => onSelectRecording(recording.recordingId)}
-                                >
-                                    <Box variant="strong">{recording.recordingId.slice(0, 16)}...</Box>
-                                    <div style={{ marginTop: '4px' }}>
-                                        <Box variant="small" color="text-body-secondary">
-                                            {recording.eventCount} events
-                                        </Box>
-                                        <Box variant="small" color="text-body-secondary">
-                                            {new Date(recording.timestamp).toLocaleString()}
-                                        </Box>
+                            {sessions.map((session) => {
+                                const duration = Math.round((session.lastSeen - session.firstSeen) / 1000);
+                                const minutes = Math.floor(duration / 60);
+                                const seconds = duration % 60;
+                                const durationStr = minutes > 0 ? `${minutes}m ${seconds}s` : `${seconds}s`;
+
+                                return (
+                                    <div
+                                        key={session.sessionId}
+                                        className={`session-item ${selectedSessionId === session.sessionId ? 'selected' : ''}`}
+                                        onClick={() => onSelectSession(session.sessionId)}
+                                    >
+                                        <Box variant="strong">{session.sessionId.slice(0, 16)}...</Box>
+                                        <div style={{ marginTop: '4px' }}>
+                                            <Box variant="small" color="text-body-secondary">
+                                                {session.eventCount} events • {durationStr}
+                                            </Box>
+                                            <Box variant="small" color="text-body-secondary">
+                                                {new Date(session.lastSeen).toLocaleString()}
+                                            </Box>
+                                        </div>
                                     </div>
-                                </div>
-                            ))}
+                                );
+                            })}
                         </div>
                     )}
                 </Container>
@@ -87,7 +96,7 @@ export function SessionReplayTab({
 
             <div className="replay-main">
                 <Container header={<Header variant="h2">Session Replay Player</Header>}>
-                    {loadingRecordings || loadingEvents ? (
+                    {loadingSessions || loadingEvents ? (
                         <div className="skeleton-player">
                             <div className="skeleton-player-screen">
                                 <div className="skeleton skeleton-player-screen-inner" />
@@ -105,15 +114,15 @@ export function SessionReplayTab({
                                 </div>
                             </div>
                         </div>
-                    ) : recordingIds.length === 0 || !selectedRecordingId || selectedReplayEvents.length === 0 ? (
+                    ) : sessions.length === 0 || !selectedSessionId || selectedReplayEvents.length === 0 ? (
                         <div className="skeleton-player">
                             <div className="skeleton-player-screen">
                                 <Box textAlign="center" padding={{ vertical: 'xxl' }}>
                                     <Box variant="strong" fontSize="heading-m" color="text-body-secondary">
-                                        {recordingIds.length === 0 ? 'No replay to display' : 'Loading...'}
+                                        {sessions.length === 0 ? 'No replay to display' : 'Loading...'}
                                     </Box>
                                     <Box variant="p" color="text-body-secondary" padding={{ top: 's' }}>
-                                        {recordingIds.length === 0 ? 'Select a recording to view the session replay' : 'Please wait'}
+                                        {sessions.length === 0 ? 'Select a session to view the replay' : 'Please wait'}
                                     </Box>
                                 </Box>
                             </div>
@@ -138,7 +147,7 @@ export function SessionReplayTab({
 
             <div className="events-sidebar">
                 <Container header={<Header variant="h2">RRWeb Events</Header>}>
-                    {loadingRecordings || loadingEvents ? (
+                    {loadingSessions || loadingEvents ? (
                         <div className="events-list">
                             {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((i) => (
                                 <div key={i} className="skeleton-item">
@@ -147,13 +156,13 @@ export function SessionReplayTab({
                                 </div>
                             ))}
                         </div>
-                    ) : recordingIds.length === 0 || !selectedRecordingId || selectedReplayEvents.length === 0 ? (
+                    ) : sessions.length === 0 || !selectedSessionId || selectedReplayEvents.length === 0 ? (
                         <Box padding={{ vertical: 'l' }}>
                             <Box variant="strong" fontSize="heading-m" color="text-body-secondary">
                                 No events to display
                             </Box>
                             <Box variant="p" color="text-body-secondary" padding={{ top: 's' }}>
-                                Events will appear here when a recording is selected
+                                Events will appear here when a session is selected
                             </Box>
                         </Box>
                     ) : (
