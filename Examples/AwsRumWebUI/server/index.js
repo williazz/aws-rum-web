@@ -73,7 +73,7 @@ app.all('/appmonitors/:appmonitorId', (req, res) => {
                                 ? unpacked
                                 : Object.values(unpacked);
                             console.log('Decompressed session replay events', {
-                                recordingId: details.recordingId,
+                                sessionId: UserDetails?.sessionId,
                                 compressedSize:
                                     details.metadata?.compressedSize,
                                 uncompressedSize:
@@ -95,7 +95,7 @@ app.all('/appmonitors/:appmonitorId', (req, res) => {
 
                     sessionReplayData = {
                         sessionId: UserDetails?.sessionId,
-                        recordingId: details.recordingId || event.id,
+                        recordingId: UserDetails?.sessionId || event.id,
                         timestamp: event.timestamp,
                         events: events,
                         metadata: details.metadata || {}

@@ -71,11 +71,24 @@ export class RRWebPlugin extends InternalPlugin {
             return;
         }
 
-        // Check if we should record this session (sampling)
+        // Check if the current session is being recorded
+        const session = this.context?.getSession();
+        if (!session || !session.record) {
+            InternalLogger.warn(
+                'RRWebPlugin skipping - session not being recorded',
+                {
+                    hasSession: !!session,
+                    sessionRecord: session?.record
+                }
+            );
+            return; // Don't record if session is not being recorded
+        }
+
+        // Check if we should record this session (session replay sampling)
         const randomValue = Math.random();
         if (randomValue > this.config.sampling) {
-            InternalLogger.info(
-                'RRWebPlugin skipping session due to sampling',
+            InternalLogger.warn(
+                'RRWebPlugin skipping - session replay sampling',
                 {
                     randomValue,
                     samplingRate: this.config.sampling
@@ -117,7 +130,9 @@ export class RRWebPlugin extends InternalPlugin {
     }
 
     private startRecording(): void {
-        this.recordingId = this.context?.getVisitId();
+        const session = this.context?.getSession();
+        this.recordingId = session?.sessionId || null;
+        this.sessionId = session?.sessionId || null;
         this.recordingStartTime = Date.now();
         this.recordingEvents = [];
         this.isRecording = true;
@@ -255,7 +270,6 @@ export class RRWebPlugin extends InternalPlugin {
 
         const eventData = {
             version: '1.0.0',
-            recordingId: this.recordingId!,
             events: compressedEvents,
             metadata: {
                 recordingStartTime: this.recordingStartTime!,
