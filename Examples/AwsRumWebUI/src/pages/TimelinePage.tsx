@@ -400,6 +400,15 @@ function TimelinePage() {
                                         </div>
                                     ))}
                                 </div>
+                            ) : recordingIds.length === 0 ? (
+                                <Box padding={{ vertical: 'l' }}>
+                                    <Box variant="strong" fontSize="heading-m" color="text-body-secondary">
+                                        No recordings yet
+                                    </Box>
+                                    <Box variant="p" color="text-body-secondary" padding={{ top: 's' }}>
+                                        Session recordings will appear here once captured
+                                    </Box>
+                                </Box>
                             ) : (
                                 <div className="session-list">
                                     {recordingIds.map((recording) => {
@@ -453,8 +462,70 @@ function TimelinePage() {
                     </div>
 
                     <div className="replay-main">
-                        {!selectedRecordingId ||
-                        selectedReplayEvents.length === 0 ? (
+                        {loadingRecordings ? (
+                            <Container
+                                header={
+                                    <Header variant="h2">
+                                        Session Replay Player
+                                    </Header>
+                                }
+                            >
+                                <div className="skeleton-player">
+                                    <div className="skeleton-player-screen">
+                                        <div className="skeleton skeleton-player-screen-inner" />
+                                    </div>
+                                    <div className="skeleton-player-controls">
+                                        <div className="skeleton-player-timeline">
+                                            <div className="skeleton skeleton-player-time" />
+                                            <div className="skeleton skeleton-player-progress" />
+                                            <div className="skeleton skeleton-player-time" />
+                                        </div>
+                                        <div className="skeleton-player-buttons">
+                                            <div className="skeleton skeleton-player-button" />
+                                            <div className="skeleton skeleton-player-button" />
+                                            <div className="skeleton skeleton-player-button" />
+                                            <div className="skeleton skeleton-player-button" />
+                                            <div className="skeleton skeleton-player-button" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </Container>
+                        ) : recordingIds.length === 0 ? (
+                            <Container
+                                header={
+                                    <Header variant="h2">
+                                        Session Replay Player
+                                    </Header>
+                                }
+                            >
+                                <div className="skeleton-player">
+                                    <div className="skeleton-player-screen">
+                                        <Box textAlign="center" padding={{ vertical: 'xxl' }}>
+                                            <Box variant="strong" fontSize="heading-m" color="text-body-secondary">
+                                                No replay to display
+                                            </Box>
+                                            <Box variant="p" color="text-body-secondary" padding={{ top: 's' }}>
+                                                Select a recording to view the session replay
+                                            </Box>
+                                        </Box>
+                                    </div>
+                                    <div className="skeleton-player-controls">
+                                        <div className="skeleton-player-timeline">
+                                            <div className="skeleton skeleton-player-time" />
+                                            <div className="skeleton skeleton-player-progress" />
+                                            <div className="skeleton skeleton-player-time" />
+                                        </div>
+                                        <div className="skeleton-player-buttons">
+                                            <div className="skeleton skeleton-player-button" />
+                                            <div className="skeleton skeleton-player-button" />
+                                            <div className="skeleton skeleton-player-button" />
+                                            <div className="skeleton skeleton-player-button" />
+                                            <div className="skeleton skeleton-player-button" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </Container>
+                        ) : !selectedRecordingId || selectedReplayEvents.length === 0 ? (
                             <Container
                                 header={
                                     <Header variant="h2">
@@ -496,7 +567,42 @@ function TimelinePage() {
                     </div>
 
                     <div className="events-sidebar">
-                        {!selectedRecordingId ||
+                        {loadingRecordings ? (
+                            <Container
+                                header={
+                                    <Header variant="h2">RRWeb Events</Header>
+                                }
+                            >
+                                <div className="events-list">
+                                    {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(
+                                        (i) => (
+                                            <div
+                                                key={i}
+                                                className="skeleton-item"
+                                            >
+                                                <div className="skeleton skeleton-line title" />
+                                                <div className="skeleton skeleton-line short" />
+                                            </div>
+                                        )
+                                    )}
+                                </div>
+                            </Container>
+                        ) : recordingIds.length === 0 ? (
+                            <Container
+                                header={
+                                    <Header variant="h2">RRWeb Events</Header>
+                                }
+                            >
+                                <Box padding={{ vertical: 'l' }}>
+                                    <Box variant="strong" fontSize="heading-m" color="text-body-secondary">
+                                        No events to display
+                                    </Box>
+                                    <Box variant="p" color="text-body-secondary" padding={{ top: 's' }}>
+                                        Events will appear here when a recording is selected
+                                    </Box>
+                                </Box>
+                            </Container>
+                        ) : !selectedRecordingId ||
                         selectedReplayEvents.length === 0 ? (
                             <Container
                                 header={
