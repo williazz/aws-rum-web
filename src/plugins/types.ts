@@ -5,6 +5,7 @@ import EventBus, { Topic } from '../event-bus/EventBus';
 export type RecordEvent = (type: string, eventData: object) => void;
 export type RecordPageView = (pageId: string) => void;
 export type GetSession = () => Session | undefined;
+export type GetVisitId = () => string;
 
 export type PluginContext = {
     applicationId: string;
@@ -13,6 +14,7 @@ export type PluginContext = {
     record: RecordEvent;
     recordPageView: RecordPageView;
     getSession: GetSession;
+    getVisitId: GetVisitId;
     eventBus: EventBus<Topic>;
 };
 

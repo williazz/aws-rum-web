@@ -63,6 +63,7 @@ export class SessionManager {
     private userExpiry!: Date;
     private sessionExpiry!: Date;
     private userId!: string;
+    private visitId: string;
     private session: Session;
     private config: Config;
     private recordEvent: RecordEvent;
@@ -79,6 +80,7 @@ export class SessionManager {
         this.config = config;
         this.recordEvent = recordEvent;
         this.pageManager = pageManager;
+        this.visitId = v4();
 
         this.sessionCookieName = this.config.cookieAttributes.unique
             ? `${SESSION_COOKIE_NAME}_${this.appMonitorDetails.id}`
@@ -148,6 +150,10 @@ export class SessionManager {
             return this.userId;
         }
         return NIL_UUID;
+    }
+
+    public getVisitId(): string {
+        return this.visitId;
     }
 
     public incrementSessionEventCount() {

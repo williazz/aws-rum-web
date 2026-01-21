@@ -459,6 +459,7 @@ export class Orchestration {
             recordCandidate: this.eventCache.recordCandidate,
             recordPageView: this.eventCache.recordPageView,
             getSession: this.eventCache.getSession,
+            getVisitId: this.eventCache.getVisitId,
             eventBus: this.eventBus
         };
 

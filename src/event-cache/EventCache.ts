@@ -169,6 +169,13 @@ export class EventCache {
     };
 
     /**
+     * Returns the visit ID.
+     */
+    public getVisitId = (): string => {
+        return this.sessionManager.getVisitId();
+    };
+
+    /**
      * Returns true if there are one or more events in the cache.
      */
     public hasEvents(): boolean {
@@ -294,7 +301,8 @@ export class EventCache {
     public getUserDetails(): UserDetails {
         return {
             userId: this.sessionManager.getUserId(),
-            sessionId: this.sessionManager.getSession().sessionId
+            sessionId: this.sessionManager.getSession().sessionId,
+            visitId: this.sessionManager.getVisitId()
         };
     }
 

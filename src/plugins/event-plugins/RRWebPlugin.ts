@@ -14,24 +14,59 @@ export type RRWebPluginConfig = {
     recordOptions?: recordOptions<any>;
 };
 
-const defaultConfig: RRWebPluginConfig = {
-    sampling: 1.0, // Record 10% of sessions by default
-    batchSize: 50,
-    flushInterval: 10000, // 10 seconds
-    maxRecordingDuration: 300000, // 5 minutes
-    recordOptions: {
-        maskAllInputs: true,
-        maskTextSelector: '*',
-        blockClass: 'rr-block',
-        ignoreClass: 'rr-ignore',
-        maskTextClass: 'rr-mask',
-        slimDOMOptions: 'all',
-        recordCanvas: false,
-        recordCrossOriginIframes: false,
-        inlineImages: false,
-        collectFonts: false
-    }
+export const RRWEB_CONFIG = {
+    PROD: {
+        sampling: 1.0,
+        batchSize: 50,
+        flushInterval: 10000,
+        maxRecordingDuration: 300000,
+        recordOptions: {
+            maskAllInputs: true,
+            maskTextSelector: '*',
+            blockClass: 'rr-block',
+            blockSelector: 'svg[class*="icon"], svg[width], svg[height]',
+            ignoreClass: 'rr-ignore',
+            maskTextClass: 'rr-mask',
+            slimDOMOptions: 'all',
+            recordCanvas: false,
+            recordCrossOriginIframes: false,
+            inlineImages: false,
+            collectFonts: false,
+            inlineStylesheet: false,
+            ignoreCSSAttributes: new Set([
+                'background-image',
+                'background',
+                'filter',
+                'backdrop-filter'
+            ]),
+            mousemoveWait: 500,
+            sampling: {
+                mousemove: true,
+                mouseInteraction: false,
+                scroll: 150,
+                input: 'last'
+            }
+        }
+    } as RRWebPluginConfig,
+    DEV: {
+        sampling: 1.0,
+        batchSize: 100,
+        flushInterval: 5000,
+        maxRecordingDuration: 600000,
+        recordOptions: {
+            maskAllInputs: false,
+            blockClass: 'rr-block',
+            ignoreClass: 'rr-ignore',
+            recordCanvas: true,
+            recordCrossOriginIframes: true,
+            inlineImages: true,
+            collectFonts: true,
+            inlineStylesheet: true
+        }
+    } as RRWebPluginConfig
 };
+
+const defaultConfig: RRWebPluginConfig = RRWEB_CONFIG.PROD;
 
 export class RRWebPlugin extends InternalPlugin {
     private config: RRWebPluginConfig;
@@ -108,17 +143,7 @@ export class RRWebPlugin extends InternalPlugin {
     }
 
     private startRecording(): void {
-        if (this.isRecording || !this.enabled) {
-            InternalLogger.info('RRWebPlugin cannot start recording', {
-                isRecording: this.isRecording,
-                enabled: this.enabled
-            });
-            return;
-        }
-
-        this.recordingId = this.generateId();
-        this.sessionId =
-            this.context?.getSession?.()?.sessionId || this.generateId();
+        this.recordingId = this.context?.getVisitId();
         this.recordingStartTime = Date.now();
         this.recordingEvents = [];
         this.isRecording = true;
@@ -227,7 +252,6 @@ export class RRWebPlugin extends InternalPlugin {
 
         const eventData = {
             version: '1.0.0',
-            sessionId: this.sessionId!,
             recordingId: this.recordingId!,
             events: [...this.recordingEvents],
             metadata: {
@@ -261,10 +285,10 @@ export class RRWebPlugin extends InternalPlugin {
         this.recordingEvents = [];
     }
 
-    private generateId(): string {
-        // Simple ID generator
-        return (
-            Math.random().toString(36).substring(2) + Date.now().toString(36)
-        );
-    }
+    // private generateId(): string {
+    //     // Simple ID generator
+    //     return (
+    //         Math.random().toString(36).substring(2) + Date.now().toString(36)
+    //     );
+    // }
 }

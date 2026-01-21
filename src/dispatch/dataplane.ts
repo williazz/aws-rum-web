@@ -23,6 +23,7 @@ export interface AppMonitorDetails {
 export interface UserDetails {
     userId?: string;
     sessionId?: string;
+    visitId?: string;
 }
 
 export interface RumEvent {
