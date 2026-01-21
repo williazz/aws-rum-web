@@ -402,11 +402,20 @@ function TimelinePage() {
                                 </div>
                             ) : recordingIds.length === 0 ? (
                                 <Box padding={{ vertical: 'l' }}>
-                                    <Box variant="strong" fontSize="heading-m" color="text-body-secondary">
+                                    <Box
+                                        variant="strong"
+                                        fontSize="heading-m"
+                                        color="text-body-secondary"
+                                    >
                                         No recordings yet
                                     </Box>
-                                    <Box variant="p" color="text-body-secondary" padding={{ top: 's' }}>
-                                        Session recordings will appear here once captured
+                                    <Box
+                                        variant="p"
+                                        color="text-body-secondary"
+                                        padding={{ top: 's' }}
+                                    >
+                                        Session recordings will appear here once
+                                        captured
                                     </Box>
                                 </Box>
                             ) : (
@@ -500,12 +509,24 @@ function TimelinePage() {
                             >
                                 <div className="skeleton-player">
                                     <div className="skeleton-player-screen">
-                                        <Box textAlign="center" padding={{ vertical: 'xxl' }}>
-                                            <Box variant="strong" fontSize="heading-m" color="text-body-secondary">
+                                        <Box
+                                            textAlign="center"
+                                            padding={{ vertical: 'xxl' }}
+                                        >
+                                            <Box
+                                                variant="strong"
+                                                fontSize="heading-m"
+                                                color="text-body-secondary"
+                                            >
                                                 No replay to display
                                             </Box>
-                                            <Box variant="p" color="text-body-secondary" padding={{ top: 's' }}>
-                                                Select a recording to view the session replay
+                                            <Box
+                                                variant="p"
+                                                color="text-body-secondary"
+                                                padding={{ top: 's' }}
+                                            >
+                                                Select a recording to view the
+                                                session replay
                                             </Box>
                                         </Box>
                                     </div>
@@ -525,7 +546,8 @@ function TimelinePage() {
                                     </div>
                                 </div>
                             </Container>
-                        ) : !selectedRecordingId || selectedReplayEvents.length === 0 ? (
+                        ) : !selectedRecordingId ||
+                          selectedReplayEvents.length === 0 ? (
                             <Container
                                 header={
                                     <Header variant="h2">
@@ -594,16 +616,25 @@ function TimelinePage() {
                                 }
                             >
                                 <Box padding={{ vertical: 'l' }}>
-                                    <Box variant="strong" fontSize="heading-m" color="text-body-secondary">
+                                    <Box
+                                        variant="strong"
+                                        fontSize="heading-m"
+                                        color="text-body-secondary"
+                                    >
                                         No events to display
                                     </Box>
-                                    <Box variant="p" color="text-body-secondary" padding={{ top: 's' }}>
-                                        Events will appear here when a recording is selected
+                                    <Box
+                                        variant="p"
+                                        color="text-body-secondary"
+                                        padding={{ top: 's' }}
+                                    >
+                                        Events will appear here when a recording
+                                        is selected
                                     </Box>
                                 </Box>
                             </Container>
                         ) : !selectedRecordingId ||
-                        selectedReplayEvents.length === 0 ? (
+                          selectedReplayEvents.length === 0 ? (
                             <Container
                                 header={
                                     <Header variant="h2">RRWeb Events</Header>

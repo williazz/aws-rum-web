@@ -2,6 +2,7 @@ import express from 'express';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { unpack } from '@rrweb/packer';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
@@ -59,11 +60,44 @@ app.all('/appmonitors/:appmonitorId', (req, res) => {
                         typeof event.details === 'string'
                             ? JSON.parse(event.details)
                             : event.details;
+
+                    // Decompress events if they're compressed
+                    let events = details.events || [];
+
+                    // Check if events is a string (compressed by pack())
+                    if (typeof events === 'string') {
+                        try {
+                            const unpacked = unpack(events);
+                            // unpack() returns an object with numeric keys, convert to array
+                            events = Array.isArray(unpacked)
+                                ? unpacked
+                                : Object.values(unpacked);
+                            console.log('Decompressed session replay events', {
+                                recordingId: details.recordingId,
+                                compressedSize:
+                                    details.metadata?.compressedSize,
+                                uncompressedSize:
+                                    details.metadata?.uncompressedSize,
+                                eventsCount: events.length
+                            });
+                        } catch (unpackError) {
+                            console.error(
+                                'Failed to decompress events:',
+                                unpackError
+                            );
+                            // Keep original events
+                        }
+                    } else {
+                        console.log(
+                            'Session replay events not compressed (array format)'
+                        );
+                    }
+
                     sessionReplayData = {
                         sessionId: UserDetails?.sessionId,
                         recordingId: details.recordingId || event.id,
                         timestamp: event.timestamp,
-                        events: details.events || [],
+                        events: events,
                         metadata: details.metadata || {}
                     };
                 } catch (err) {
