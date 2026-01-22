@@ -6,19 +6,23 @@ import SegmentedControl from '@cloudscape-design/components/segmented-control';
 import SpaceBetween from '@cloudscape-design/components/space-between';
 import ColumnLayout from '@cloudscape-design/components/column-layout';
 import { RrwebPlayer } from './RrwebPlayer';
-import type { SessionMetadata, RumEvent } from '../types/session';
+import type { SessionMetadata, RumEvent, RawRequest } from '../types/session';
 import { RRWEB_EVENT_TYPE_NAMES, getEventColor, getEventLabel } from '../utils/eventFormatters';
+import './SessionReplayTab.css';
+import '../styles/skeleton.css';
 
 interface SessionReplayTabProps {
     sessions: SessionMetadata[];
     selectedSessionId: string | null;
     selectedReplayEvents: any[];
     selectedRumEvents: RumEvent[];
+    selectedRequests: RawRequest[];
     loadingSessions: boolean;
     loadingEvents: boolean;
     onSelectSession: (sessionId: string) => void;
     onEventClick: (event: any, idx: number) => void;
     onRumEventClick: (event: RumEvent) => void;
+    onRequestClick: (request: RawRequest) => void;
 }
 
 export function SessionReplayTab({
@@ -26,11 +30,13 @@ export function SessionReplayTab({
     selectedSessionId,
     selectedReplayEvents,
     selectedRumEvents,
+    selectedRequests,
     loadingSessions,
     loadingEvents,
     onSelectSession,
     onEventClick,
-    onRumEventClick
+    onRumEventClick,
+    onRequestClick
 }: SessionReplayTabProps) {
     const [eventView, setEventView] = useState<'rum' | 'rrweb'>('rum');
 
@@ -162,6 +168,38 @@ export function SessionReplayTab({
                                 </div>
                             </ColumnLayout>
                             <RrwebPlayer events={selectedReplayEvents} />
+                            <Container header={<Header variant="h3">Payloads ({selectedRequests.length})</Header>}>
+                                {selectedRequests.length === 0 ? (
+                                    <Box padding={{ vertical: 'l' }} textAlign="center">
+                                        <Box variant="strong" fontSize="heading-m" color="text-body-secondary">
+                                            No payloads
+                                        </Box>
+                                        <Box variant="p" color="text-body-secondary" padding={{ top: 's' }}>
+                                            No HTTP requests found for this session
+                                        </Box>
+                                    </Box>
+                                ) : (
+                                    <div className="events-list">
+                                        {selectedRequests.map((request, idx) => {
+                                            const requestSize = new Blob([JSON.stringify(request)]).size / 1024;
+
+                                            return (
+                                                <div key={idx} className="event-item" onClick={() => onRequestClick(request)}>
+                                                    <div className="event-marker" style={{ backgroundColor: '#0972d3' }} />
+                                                    <div className="event-content">
+                                                        <Box variant="strong" fontSize="body-s">
+                                                            {request.method} {request.appmonitorId}
+                                                        </Box>
+                                                        <Box variant="small" color="text-body-secondary">
+                                                            {new Date(request.timestamp).toLocaleString()} • {requestSize.toFixed(2)} KB
+                                                        </Box>
+                                                    </div>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                )}
+                            </Container>
                         </SpaceBetween>
                     )}
                 </Container>
@@ -172,6 +210,9 @@ export function SessionReplayTab({
                     header={
                         <Header 
                             variant="h2"
+                            description={eventView === 'rum' 
+                                ? `${selectedRumEvents.length} RUM events` 
+                                : `${selectedReplayEvents.length} RRWeb events`}
                             actions={
                                 <SegmentedControl
                                     selectedId={eventView}

@@ -20,10 +20,13 @@ app.use(express.text());
 app.use(express.raw());
 
 app.all('/appmonitors/:appmonitorId', (req, res) => {
+    const { UserDetails } = req.body || {};
+    
     const requestEntry = {
         timestamp: new Date().toISOString(),
         method: req.method,
         appmonitorId: req.params.appmonitorId,
+        sessionId: UserDetails?.sessionId,
         headers: req.headers,
         body: req.body,
         query: req.query

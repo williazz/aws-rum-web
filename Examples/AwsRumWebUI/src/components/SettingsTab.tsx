@@ -2,6 +2,7 @@ import Container from '@cloudscape-design/components/container';
 import Header from '@cloudscape-design/components/header';
 import FormField from '@cloudscape-design/components/form-field';
 import Select from '@cloudscape-design/components/select';
+import './SettingsTab.css';
 
 interface SettingsTabProps {
     themeMode: { label: string; value: string };

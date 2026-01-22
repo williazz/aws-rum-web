@@ -269,22 +269,10 @@ export class RRWebPlugin extends InternalPlugin {
         }
 
         const eventData = {
-            version: '1.0.0',
             events: compressedEvents,
-            metadata: {
-                recordingStartTime: this.recordingStartTime!,
-                recordingEndTime: isFinal ? Date.now() : undefined,
-                userAgent: navigator.userAgent,
-                viewport: {
-                    width: window.innerWidth,
-                    height: window.innerHeight
-                },
-                url: window.location.href,
-                title: document.title,
-                samplingRate: this.config.sampling,
-                uncompressedSize,
-                compressedSize
-            }
+            eventCount: events.length,
+            uncompressedSize,
+            compressedSize
         };
 
         // Send to RUM with event type com.amazon.rum.rrweb

@@ -165,6 +165,7 @@ function TimelinePage() {
                     selectedSessionId={selectedSessionId}
                     selectedReplayEvents={selectedReplayEvents}
                     selectedRumEvents={allEvents.filter(e => e.sessionId === selectedSessionId)}
+                    selectedRequests={requests.filter(r => (r.sessionId === selectedSessionId || !r.sessionId) && r.method === 'POST')}
                     loadingSessions={loadingSessions}
                     loadingEvents={false}
                     onSelectSession={(sessionId) => {
@@ -189,6 +190,11 @@ function TimelinePage() {
                     onRumEventClick={(event) => {
                         setSelectedEvent(event);
                         setSelectedRequest(null);
+                        setModalVisible(true);
+                    }}
+                    onRequestClick={(request) => {
+                        setSelectedRequest(request);
+                        setSelectedEvent(null);
                         setModalVisible(true);
                     }}
                 />
