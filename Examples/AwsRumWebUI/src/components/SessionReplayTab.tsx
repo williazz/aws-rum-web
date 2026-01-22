@@ -1,44 +1,38 @@
+import { useState } from 'react';
 import Container from '@cloudscape-design/components/container';
 import Header from '@cloudscape-design/components/header';
 import Box from '@cloudscape-design/components/box';
+import SegmentedControl from '@cloudscape-design/components/segmented-control';
+import SpaceBetween from '@cloudscape-design/components/space-between';
+import ColumnLayout from '@cloudscape-design/components/column-layout';
 import { RrwebPlayer } from './RrwebPlayer';
-
-interface SessionMetadata {
-    sessionId: string;
-    eventCount: number;
-    recordingIds: string[];
-    firstSeen: number;
-    lastSeen: number;
-}
+import type { SessionMetadata, RumEvent } from '../types/session';
+import { RRWEB_EVENT_TYPE_NAMES, getEventColor, getEventLabel } from '../utils/eventFormatters';
 
 interface SessionReplayTabProps {
     sessions: SessionMetadata[];
     selectedSessionId: string | null;
     selectedReplayEvents: any[];
+    selectedRumEvents: RumEvent[];
     loadingSessions: boolean;
     loadingEvents: boolean;
     onSelectSession: (sessionId: string) => void;
     onEventClick: (event: any, idx: number) => void;
+    onRumEventClick: (event: RumEvent) => void;
 }
 
 export function SessionReplayTab({
     sessions,
     selectedSessionId,
     selectedReplayEvents,
+    selectedRumEvents,
     loadingSessions,
     loadingEvents,
     onSelectSession,
-    onEventClick
+    onEventClick,
+    onRumEventClick
 }: SessionReplayTabProps) {
-    const eventTypeNames: Record<number, string> = {
-        0: 'DomContentLoaded',
-        1: 'Load',
-        2: 'FullSnapshot',
-        3: 'IncrementalSnapshot',
-        4: 'Meta',
-        5: 'Custom',
-        6: 'Plugin'
-    };
+    const [eventView, setEventView] = useState<'rum' | 'rrweb'>('rum');
 
     return (
         <div className="timeline-layout">
@@ -77,7 +71,7 @@ export function SessionReplayTab({
                                         className={`session-item ${selectedSessionId === session.sessionId ? 'selected' : ''}`}
                                         onClick={() => onSelectSession(session.sessionId)}
                                     >
-                                        <Box variant="strong">{session.sessionId.slice(0, 16)}...</Box>
+                                        <Box variant="strong">{session.sessionId}</Box>
                                         <div style={{ marginTop: '4px' }}>
                                             <Box variant="small" color="text-body-secondary">
                                                 {session.eventCount} events • {durationStr}
@@ -95,7 +89,7 @@ export function SessionReplayTab({
             </div>
 
             <div className="replay-main">
-                <Container header={<Header variant="h2">Session Replay Player</Header>}>
+                <Container header={<Header variant="h2">Session Replay</Header>}>
                     {loadingSessions || loadingEvents ? (
                         <div className="skeleton-player">
                             <div className="skeleton-player-screen">
@@ -114,15 +108,15 @@ export function SessionReplayTab({
                                 </div>
                             </div>
                         </div>
-                    ) : sessions.length === 0 || !selectedSessionId || selectedReplayEvents.length === 0 ? (
+                    ) : sessions.length === 0 || !selectedSessionId ? (
                         <div className="skeleton-player">
                             <div className="skeleton-player-screen">
                                 <Box textAlign="center" padding={{ vertical: 'xxl' }}>
                                     <Box variant="strong" fontSize="heading-m" color="text-body-secondary">
-                                        {sessions.length === 0 ? 'No replay to display' : 'Loading...'}
+                                        No replay to display
                                     </Box>
                                     <Box variant="p" color="text-body-secondary" padding={{ top: 's' }}>
-                                        {sessions.length === 0 ? 'Select a session to view the replay' : 'Please wait'}
+                                        Select a session to view the replay
                                     </Box>
                                 </Box>
                             </div>
@@ -139,14 +133,60 @@ export function SessionReplayTab({
                                 </div>
                             </div>
                         </div>
+                    ) : selectedReplayEvents.length === 0 ? (
+                        <div className="skeleton-player">
+                            <div className="skeleton-player-screen">
+                                <div className="skeleton skeleton-player-screen-inner" />
+                            </div>
+                            <div className="skeleton-player-controls">
+                                <div className="skeleton-player-timeline">
+                                    <div className="skeleton skeleton-player-time" />
+                                    <div className="skeleton skeleton-player-progress" />
+                                    <div className="skeleton skeleton-player-time" />
+                                </div>
+                                <div className="skeleton-player-buttons">
+                                    {[1, 2, 3, 4, 5].map((i) => (
+                                        <div key={i} className="skeleton skeleton-player-button" />
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
                     ) : (
-                        <RrwebPlayer events={selectedReplayEvents} />
+                        <SpaceBetween size="m">
+                            <ColumnLayout columns={1}>
+                                <div>
+                                    <Box variant="awsui-key-label">Session ID</Box>
+                                    <div style={{ fontFamily: 'monospace', fontSize: '14px', userSelect: 'all' }}>
+                                        {selectedSessionId}
+                                    </div>
+                                </div>
+                            </ColumnLayout>
+                            <RrwebPlayer events={selectedReplayEvents} />
+                        </SpaceBetween>
                     )}
                 </Container>
             </div>
 
             <div className="events-sidebar">
-                <Container header={<Header variant="h2">RRWeb Events</Header>}>
+                <Container 
+                    header={
+                        <Header 
+                            variant="h2"
+                            actions={
+                                <SegmentedControl
+                                    selectedId={eventView}
+                                    onChange={({ detail }) => setEventView(detail.selectedId as 'rum' | 'rrweb')}
+                                    options={[
+                                        { id: 'rum', text: 'RUM' },
+                                        { id: 'rrweb', text: 'RRWeb' }
+                                    ]}
+                                />
+                            }
+                        >
+                            Events
+                        </Header>
+                    }
+                >
                     {loadingSessions || loadingEvents ? (
                         <div className="events-list">
                             {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((i) => (
@@ -156,7 +196,7 @@ export function SessionReplayTab({
                                 </div>
                             ))}
                         </div>
-                    ) : sessions.length === 0 || !selectedSessionId || selectedReplayEvents.length === 0 ? (
+                    ) : sessions.length === 0 || !selectedSessionId ? (
                         <Box padding={{ vertical: 'l' }}>
                             <Box variant="strong" fontSize="heading-m" color="text-body-secondary">
                                 No events to display
@@ -165,33 +205,79 @@ export function SessionReplayTab({
                                 Events will appear here when a session is selected
                             </Box>
                         </Box>
-                    ) : (
-                        <div className="events-list">
-                            {selectedReplayEvents.map((event, idx) => {
-                                const eventSize = new Blob([JSON.stringify(event)]).size / 1024;
-                                const timestamp = event.timestamp < 946684800000 ? event.timestamp * 1000 : event.timestamp;
+                    ) : eventView === 'rum' ? (
+                        selectedRumEvents.length === 0 ? (
+                            <Box padding={{ vertical: 'l' }}>
+                                <Box variant="strong" fontSize="heading-m" color="text-body-secondary">
+                                    No RUM events
+                                </Box>
+                            </Box>
+                        ) : (
+                            <div className="events-list">
+                                {selectedRumEvents.map((event, idx) => {
+                                    const eventSize = new Blob([JSON.stringify(event)]).size / 1024;
+                                    const timestamp = event.event.timestamp < 946684800000 
+                                        ? event.event.timestamp * 1000 
+                                        : event.event.timestamp;
+                                    const color = getEventColor(event.event.type);
 
-                                return (
-                                    <div key={idx} className="event-item" onClick={() => onEventClick(event, idx)}>
-                                        <div className="event-marker" style={{ backgroundColor: '#8b6ccf' }} />
-                                        <div className="event-content">
-                                            <Box variant="strong" fontSize="body-s">
-                                                {eventTypeNames[event.type] || `Type ${event.type}`}
-                                            </Box>
-                                            <Box variant="small" color="text-body-secondary">
-                                                {new Date(timestamp).toLocaleTimeString('en-US', {
-                                                    hour12: false,
-                                                    hour: '2-digit',
-                                                    minute: '2-digit',
-                                                    second: '2-digit'
-                                                })}{' '}
-                                                • {eventSize.toFixed(2)} KB
-                                            </Box>
+                                    return (
+                                        <div key={idx} className="event-item" onClick={() => onRumEventClick(event)}>
+                                            <div className="event-marker" style={{ backgroundColor: color }} />
+                                            <div className="event-content">
+                                                <Box variant="strong" fontSize="body-s">
+                                                    {getEventLabel(event.event.type)}
+                                                </Box>
+                                                <Box variant="small" color="text-body-secondary">
+                                                    {new Date(timestamp).toLocaleTimeString('en-US', {
+                                                        hour12: false,
+                                                        hour: '2-digit',
+                                                        minute: '2-digit',
+                                                        second: '2-digit'
+                                                    })}{' '}
+                                                    • {eventSize.toFixed(2)} KB
+                                                </Box>
+                                            </div>
                                         </div>
-                                    </div>
-                                );
-                            })}
-                        </div>
+                                    );
+                                })}
+                            </div>
+                        )
+                    ) : (
+                        selectedReplayEvents.length === 0 ? (
+                            <Box padding={{ vertical: 'l' }}>
+                                <Box variant="strong" fontSize="heading-m" color="text-body-secondary">
+                                    No RRWeb events
+                                </Box>
+                            </Box>
+                        ) : (
+                            <div className="events-list">
+                                {selectedReplayEvents.map((event, idx) => {
+                                    const eventSize = new Blob([JSON.stringify(event)]).size / 1024;
+                                    const timestamp = event.timestamp < 946684800000 ? event.timestamp * 1000 : event.timestamp;
+
+                                    return (
+                                        <div key={idx} className="event-item" onClick={() => onEventClick(event, idx)}>
+                                            <div className="event-marker" style={{ backgroundColor: '#8b6ccf' }} />
+                                            <div className="event-content">
+                                                <Box variant="strong" fontSize="body-s">
+                                                    {RRWEB_EVENT_TYPE_NAMES[event.type] || `Type ${event.type}`}
+                                                </Box>
+                                                <Box variant="small" color="text-body-secondary">
+                                                    {new Date(timestamp).toLocaleTimeString('en-US', {
+                                                        hour12: false,
+                                                        hour: '2-digit',
+                                                        minute: '2-digit',
+                                                        second: '2-digit'
+                                                    })}{' '}
+                                                    • {eventSize.toFixed(2)} KB
+                                                </Box>
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        )
                     )}
                 </Container>
             </div>

@@ -10,24 +10,9 @@ import Tabs from '@cloudscape-design/components/tabs';
 import { SessionReplayTab } from '../components/SessionReplayTab';
 import { PayloadsTab } from '../components/PayloadsTab';
 import { SettingsTab } from '../components/SettingsTab';
+import type { SessionMetadata, RumEvent, RawRequest } from '../types/session';
+import { recursiveParse } from '../utils/jsonUtils';
 import './TimelinePage.css';
-
-interface RawRequest {
-    timestamp: string;
-    method: string;
-    appmonitorId: string;
-    headers: Record<string, string>;
-    body: any;
-    query: Record<string, string>;
-}
-
-interface SessionMetadata {
-    sessionId: string;
-    eventCount: number;
-    recordingIds: string[];
-    firstSeen: number;
-    lastSeen: number;
-}
 
 function TimelinePage() {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -38,12 +23,11 @@ function TimelinePage() {
     const [requests, setRequests] = useState<RawRequest[]>([]);
     const [selectedRequest, setSelectedRequest] = useState<RawRequest | null>(null);
     const [sessions, setSessions] = useState<SessionMetadata[]>([]);
+    const [allEvents, setAllEvents] = useState<RumEvent[]>([]);
     const [selectedSessionId, setSelectedSessionId] = useState<string | null>(null);
     const [selectedRecordingId, setSelectedRecordingId] = useState<string | null>(null);
     const [selectedReplayEvents, setSelectedReplayEvents] = useState<any[]>([]);
     const [loadingSessions, setLoadingSessions] = useState(true);
-    const [loadingEvents, setLoadingEvents] = useState(false);
-    const [initialLoad, setInitialLoad] = useState(true);
 
     const savedTheme = localStorage.getItem('themeMode') || 'auto';
     const [themeMode, setThemeMode] = useState<{ label: string; value: string }>({
@@ -80,6 +64,8 @@ function TimelinePage() {
             
             const events = await eventsRes.json();
             const recordings = await replayRes.json();
+
+            setAllEvents(events);
 
             // Group events by sessionId
             const sessionMap = new Map<string, { events: any[], recordings: Set<string>, firstSeen: number, lastSeen: number }>();
@@ -137,25 +123,11 @@ function TimelinePage() {
 
     const fetchRecordingEvents = async (recordingId: string) => {
         try {
-            setLoadingEvents(true);
-            const startTime = Date.now();
             const response = await fetch(`http://localhost:3000/api/session-replay/${recordingId}`);
             const events: any[] = await response.json();
-
-            if (initialLoad) {
-                const elapsed = Date.now() - startTime;
-                const minDelay = 500;
-                if (elapsed < minDelay) {
-                    await new Promise((resolve) => setTimeout(resolve, minDelay - elapsed));
-                }
-                setInitialLoad(false);
-            }
-
             setSelectedReplayEvents(events);
         } catch (error) {
             console.error('Failed to fetch recording events:', error);
-        } finally {
-            setLoadingEvents(false);
         }
     };
 
@@ -169,28 +141,6 @@ function TimelinePage() {
         fetchRequests();
         fetchSessions();
     }, []);
-
-    const recursiveParse = (obj: any): any => {
-        if (typeof obj === 'string') {
-            try {
-                const parsed = JSON.parse(obj);
-                return recursiveParse(parsed);
-            } catch {
-                return obj;
-            }
-        }
-        if (Array.isArray(obj)) {
-            return obj.map((item) => recursiveParse(item));
-        }
-        if (obj && typeof obj === 'object') {
-            const result: any = {};
-            for (const key in obj) {
-                result[key] = recursiveParse(obj[key]);
-            }
-            return result;
-        }
-        return obj;
-    };
 
     return (
         <div className="page-container">
@@ -214,8 +164,9 @@ function TimelinePage() {
                     sessions={sessions}
                     selectedSessionId={selectedSessionId}
                     selectedReplayEvents={selectedReplayEvents}
+                    selectedRumEvents={allEvents.filter(e => e.sessionId === selectedSessionId)}
                     loadingSessions={loadingSessions}
-                    loadingEvents={loadingEvents}
+                    loadingEvents={false}
                     onSelectSession={(sessionId) => {
                         setSelectedSessionId(sessionId);
                         const session = sessions.find(s => s.sessionId === sessionId);
@@ -232,6 +183,11 @@ function TimelinePage() {
                                 details: event
                             }
                         });
+                        setSelectedRequest(null);
+                        setModalVisible(true);
+                    }}
+                    onRumEventClick={(event) => {
+                        setSelectedEvent(event);
                         setSelectedRequest(null);
                         setModalVisible(true);
                     }}

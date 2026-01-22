@@ -1,15 +1,7 @@
 import Container from '@cloudscape-design/components/container';
 import Header from '@cloudscape-design/components/header';
 import Box from '@cloudscape-design/components/box';
-
-interface RawRequest {
-    timestamp: string;
-    method: string;
-    appmonitorId: string;
-    headers: Record<string, string>;
-    body: any;
-    query: Record<string, string>;
-}
+import type { RawRequest } from '../types/session';
 
 interface PayloadsTabProps {
     requests: RawRequest[];
