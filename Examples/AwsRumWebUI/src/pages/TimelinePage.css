@@ -223,9 +223,10 @@
 }
 
 .session-item.selected {
-    background-color: var(--awsui-color-background-item-selected);
-    border-color: var(--awsui-color-border-item-selected);
-    border-width: 2px;
+    background-color: rgba(9, 114, 211, 0.1) !important;
+    border-color: #0972d3 !important;
+    border-width: 2px !important;
+    border-left: 4px solid #0972d3 !important;
 }
 
 .replay-placeholder {
