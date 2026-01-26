@@ -38,7 +38,15 @@ export function SessionReplayTab({
     onRumEventClick,
     onRequestClick
 }: SessionReplayTabProps) {
-    const [eventView, setEventView] = useState<'rum' | 'rrweb'>('rum');
+    const [eventView, setEventView] = useState<'rum' | 'rrweb'>(() => {
+        const saved = localStorage.getItem('eventView');
+        return (saved === 'rum' || saved === 'rrweb') ? saved : 'rum';
+    });
+
+    const handleEventViewChange = (view: 'rum' | 'rrweb') => {
+        setEventView(view);
+        localStorage.setItem('eventView', view);
+    };
 
     return (
         <div className="timeline-layout">
@@ -139,24 +147,6 @@ export function SessionReplayTab({
                                 </div>
                             </div>
                         </div>
-                    ) : selectedReplayEvents.length === 0 ? (
-                        <div className="skeleton-player">
-                            <div className="skeleton-player-screen">
-                                <div className="skeleton skeleton-player-screen-inner" />
-                            </div>
-                            <div className="skeleton-player-controls">
-                                <div className="skeleton-player-timeline">
-                                    <div className="skeleton skeleton-player-time" />
-                                    <div className="skeleton skeleton-player-progress" />
-                                    <div className="skeleton skeleton-player-time" />
-                                </div>
-                                <div className="skeleton-player-buttons">
-                                    {[1, 2, 3, 4, 5].map((i) => (
-                                        <div key={i} className="skeleton skeleton-player-button" />
-                                    ))}
-                                </div>
-                            </div>
-                        </div>
                     ) : (
                         <SpaceBetween size="m">
                             <ColumnLayout columns={1}>
@@ -167,7 +157,34 @@ export function SessionReplayTab({
                                     </div>
                                 </div>
                             </ColumnLayout>
-                            <RrwebPlayer events={selectedReplayEvents} />
+                            {selectedReplayEvents.length === 0 ? (
+                                <div className="skeleton-player">
+                                    <div className="skeleton-player-screen">
+                                        <Box textAlign="center" padding={{ vertical: 'xxl' }}>
+                                            <Box variant="strong" fontSize="heading-m" color="text-body-secondary">
+                                                No replay available
+                                            </Box>
+                                            <Box variant="p" color="text-body-secondary" padding={{ top: 's' }}>
+                                                This session does not have replay data
+                                            </Box>
+                                        </Box>
+                                    </div>
+                                    <div className="skeleton-player-controls">
+                                        <div className="skeleton-player-timeline">
+                                            <div className="skeleton skeleton-player-time" />
+                                            <div className="skeleton skeleton-player-progress" />
+                                            <div className="skeleton skeleton-player-time" />
+                                        </div>
+                                        <div className="skeleton-player-buttons">
+                                            {[1, 2, 3, 4, 5].map((i) => (
+                                                <div key={i} className="skeleton skeleton-player-button" />
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
+                            ) : (
+                                <RrwebPlayer key={selectedSessionId} events={selectedReplayEvents} />
+                            )}
                             <Container header={<Header variant="h3">Payloads ({selectedRequests.length})</Header>}>
                                 {selectedRequests.length === 0 ? (
                                     <Box padding={{ vertical: 'l' }} textAlign="center">
@@ -210,13 +227,15 @@ export function SessionReplayTab({
                     header={
                         <Header 
                             variant="h2"
-                            description={eventView === 'rum' 
+                            description={loadingSessions || loadingEvents ? (
+                                <div className="skeleton skeleton-line short" style={{ width: '100px', height: '14px' }} />
+                            ) : eventView === 'rum' 
                                 ? `${selectedRumEvents.length} RUM events` 
                                 : `${selectedReplayEvents.length} RRWeb events`}
                             actions={
                                 <SegmentedControl
                                     selectedId={eventView}
-                                    onChange={({ detail }) => setEventView(detail.selectedId as 'rum' | 'rrweb')}
+                                    onChange={({ detail }) => handleEventViewChange(detail.selectedId as 'rum' | 'rrweb')}
                                     options={[
                                         { id: 'rum', text: 'RUM' },
                                         { id: 'rrweb', text: 'RRWeb' }

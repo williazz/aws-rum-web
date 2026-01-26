@@ -27,7 +27,7 @@
 .events-sidebar {
     width: 350px;
     flex-shrink: 0;
-    overflow-y: auto;
+    overflow-y: scroll;
 }
 
 .session-list {
