@@ -19,29 +19,18 @@ function TimelinePage() {
     const [selectedEvent, setSelectedEvent] = useState<any | null>(null);
     const [modalVisible, setModalVisible] = useState(false);
     const [jsonView, setJsonView] = useState<'parsed' | 'raw'>('parsed');
-    const [activeTab, setActiveTab] = useState(
-        searchParams.get('tab') || 'session-replay'
-    );
+    const [activeTab, setActiveTab] = useState(searchParams.get('tab') || 'session-replay');
     const [requests, setRequests] = useState<RawRequest[]>([]);
-    const [selectedRequest, setSelectedRequest] = useState<RawRequest | null>(
-        null
-    );
+    const [selectedRequest, setSelectedRequest] = useState<RawRequest | null>(null);
     const [sessions, setSessions] = useState<SessionMetadata[]>([]);
     const [allEvents, setAllEvents] = useState<RumEvent[]>([]);
-    const [selectedSessionId, setSelectedSessionId] = useState<string | null>(
-        null
-    );
-    const [selectedRecordingId, setSelectedRecordingId] = useState<
-        string | null
-    >(null);
+    const [selectedSessionId, setSelectedSessionId] = useState<string | null>(null);
+    const [selectedRecordingId, setSelectedRecordingId] = useState<string | null>(null);
     const [selectedReplayEvents, setSelectedReplayEvents] = useState<any[]>([]);
     const [loadingSessions, setLoadingSessions] = useState(true);
 
     const savedTheme = localStorage.getItem('themeMode') || 'auto';
-    const [themeMode, setThemeMode] = useState<{
-        label: string;
-        value: string;
-    }>({
+    const [themeMode, setThemeMode] = useState<{ label: string; value: string }>({
         label: savedTheme.charAt(0).toUpperCase() + savedTheme.slice(1),
         value: savedTheme
     });
@@ -56,13 +45,7 @@ function TimelinePage() {
         try {
             const response = await fetch('http://localhost:3000/api/requests');
             const data: RawRequest[] = await response.json();
-            setRequests(
-                data.sort(
-                    (a, b) =>
-                        new Date(b.timestamp).getTime() -
-                        new Date(a.timestamp).getTime()
-                )
-            );
+            setRequests(data.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()));
         } catch (error) {
             console.error('Failed to fetch requests:', error);
         }
@@ -72,45 +55,29 @@ function TimelinePage() {
         try {
             setLoadingSessions(true);
             const startTime = Date.now();
-
+            
             // Fetch events and session replay data
             const [eventsRes, replayRes] = await Promise.all([
                 fetch('http://localhost:3000/api/events'),
                 fetch('http://localhost:3000/api/session-replay/ids')
             ]);
-
+            
             const events = await eventsRes.json();
             const recordings = await replayRes.json();
 
             setAllEvents(events);
 
             // Group events by sessionId
-            const sessionMap = new Map<
-                string,
-                {
-                    events: any[];
-                    recordings: Set<string>;
-                    firstSeen: number;
-                    lastSeen: number;
-                }
-            >();
-
+            const sessionMap = new Map<string, { events: any[], recordings: Set<string>, firstSeen: number, lastSeen: number }>();
+            
             events.forEach((event: any) => {
                 const sid = event.sessionId || 'unknown';
                 if (!sessionMap.has(sid)) {
-                    sessionMap.set(sid, {
-                        events: [],
-                        recordings: new Set(),
-                        firstSeen: Infinity,
-                        lastSeen: 0
-                    });
+                    sessionMap.set(sid, { events: [], recordings: new Set(), firstSeen: Infinity, lastSeen: 0 });
                 }
                 const session = sessionMap.get(sid)!;
                 session.events.push(event);
-                const ts =
-                    event.event.timestamp < 946684800000
-                        ? event.event.timestamp * 1000
-                        : event.event.timestamp;
+                const ts = event.event.timestamp < 946684800000 ? event.event.timestamp * 1000 : event.event.timestamp;
                 session.firstSeen = Math.min(session.firstSeen, ts);
                 session.lastSeen = Math.max(session.lastSeen, ts);
             });
@@ -119,15 +86,11 @@ function TimelinePage() {
             recordings.forEach((rec: any) => {
                 // Recording ID is the sessionId
                 if (sessionMap.has(rec.recordingId)) {
-                    sessionMap
-                        .get(rec.recordingId)!
-                        .recordings.add(rec.recordingId);
+                    sessionMap.get(rec.recordingId)!.recordings.add(rec.recordingId);
                 }
             });
 
-            const sessionList: SessionMetadata[] = Array.from(
-                sessionMap.entries()
-            ).map(([sessionId, data]) => ({
+            const sessionList: SessionMetadata[] = Array.from(sessionMap.entries()).map(([sessionId, data]) => ({
                 sessionId,
                 eventCount: data.events.length,
                 recordingIds: Array.from(data.recordings),
@@ -140,9 +103,7 @@ function TimelinePage() {
             const elapsed = Date.now() - startTime;
             const minDelay = 500;
             if (elapsed < minDelay) {
-                await new Promise((resolve) =>
-                    setTimeout(resolve, minDelay - elapsed)
-                );
+                await new Promise((resolve) => setTimeout(resolve, minDelay - elapsed));
             }
 
             setSessions(sessionList);
@@ -162,9 +123,7 @@ function TimelinePage() {
 
     const fetchRecordingEvents = async (recordingId: string) => {
         try {
-            const response = await fetch(
-                `http://localhost:3000/api/session-replay/${recordingId}`
-            );
+            const response = await fetch(`http://localhost:3000/api/session-replay/${recordingId}`);
             const events: any[] = await response.json();
             setSelectedReplayEvents(events);
         } catch (error) {
@@ -193,7 +152,7 @@ function TimelinePage() {
                         setSearchParams({ tab: detail.activeTabId });
                     }}
                     tabs={[
-                        { id: 'session-replay', label: 'Sessions' },
+                        { id: 'session-replay', label: 'Session Replay' },
                         { id: 'payloads', label: 'Payloads' },
                         { id: 'settings', label: 'Settings' }
                     ]}
@@ -205,22 +164,13 @@ function TimelinePage() {
                     sessions={sessions}
                     selectedSessionId={selectedSessionId}
                     selectedReplayEvents={selectedReplayEvents}
-                    selectedRumEvents={allEvents.filter(
-                        (e) => e.sessionId === selectedSessionId
-                    )}
-                    selectedRequests={requests.filter(
-                        (r) =>
-                            (r.sessionId === selectedSessionId ||
-                                !r.sessionId) &&
-                            r.method === 'POST'
-                    )}
+                    selectedRumEvents={allEvents.filter(e => e.sessionId === selectedSessionId)}
+                    selectedRequests={requests.filter(r => (r.sessionId === selectedSessionId || !r.sessionId) && r.method === 'POST')}
                     loadingSessions={loadingSessions}
                     loadingEvents={false}
                     onSelectSession={(sessionId) => {
                         setSelectedSessionId(sessionId);
-                        const session = sessions.find(
-                            (s) => s.sessionId === sessionId
-                        );
+                        const session = sessions.find(s => s.sessionId === sessionId);
                         if (session && session.recordingIds.length > 0) {
                             setSelectedRecordingId(session.recordingIds[0]);
                         }
@@ -262,10 +212,7 @@ function TimelinePage() {
             )}
 
             {activeTab === 'settings' && (
-                <SettingsTab
-                    themeMode={themeMode}
-                    onThemeChange={setThemeMode}
-                />
+                <SettingsTab themeMode={themeMode} onThemeChange={setThemeMode} />
             )}
 
             <Modal
@@ -285,26 +232,16 @@ function TimelinePage() {
                             <Button
                                 variant="normal"
                                 onClick={() => {
-                                    const data = selectedEvent
-                                        ? selectedEvent.event
-                                        : selectedRequest;
-                                    const json =
-                                        jsonView === 'parsed'
-                                            ? JSON.stringify(
-                                                  recursiveParse(data),
-                                                  null,
-                                                  2
-                                              )
-                                            : JSON.stringify(data, null, 2);
+                                    const data = selectedEvent ? selectedEvent.event : selectedRequest;
+                                    const json = jsonView === 'parsed'
+                                        ? JSON.stringify(recursiveParse(data), null, 2)
+                                        : JSON.stringify(data, null, 2);
                                     navigator.clipboard.writeText(json);
                                 }}
                             >
                                 Copy
                             </Button>
-                            <Button
-                                variant="primary"
-                                onClick={() => setModalVisible(false)}
-                            >
+                            <Button variant="primary" onClick={() => setModalVisible(false)}>
                                 Close
                             </Button>
                         </SpaceBetween>
@@ -315,11 +252,7 @@ function TimelinePage() {
                     <SpaceBetween size="m">
                         <SegmentedControl
                             selectedId={jsonView}
-                            onChange={({ detail }) =>
-                                setJsonView(
-                                    detail.selectedId as 'parsed' | 'raw'
-                                )
-                            }
+                            onChange={({ detail }) => setJsonView(detail.selectedId as 'parsed' | 'raw')}
                             options={[
                                 { id: 'parsed', text: 'Parsed' },
                                 { id: 'raw', text: 'Raw' }
@@ -328,18 +261,12 @@ function TimelinePage() {
                         <pre className="json-viewer">
                             {jsonView === 'parsed'
                                 ? JSON.stringify(
-                                      recursiveParse(
-                                          selectedEvent
-                                              ? selectedEvent.event
-                                              : selectedRequest
-                                      ),
+                                      recursiveParse(selectedEvent ? selectedEvent.event : selectedRequest),
                                       null,
                                       2
                                   )
                                 : JSON.stringify(
-                                      selectedEvent
-                                          ? selectedEvent.event
-                                          : selectedRequest,
+                                      selectedEvent ? selectedEvent.event : selectedRequest,
                                       null,
                                       2
                                   )}
