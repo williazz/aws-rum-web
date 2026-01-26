@@ -79,6 +79,10 @@
     background-color: var(--awsui-color-background-container-header);
 }
 
+.event-item.past {
+    opacity: 0.5;
+}
+
 .event-marker {
     width: 12px;
     height: 12px;

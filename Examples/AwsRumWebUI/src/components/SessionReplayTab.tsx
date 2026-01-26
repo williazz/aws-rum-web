@@ -39,6 +39,17 @@ export function SessionReplayTab({
     onRequestClick
 }: SessionReplayTabProps) {
     const [eventView, setEventView] = useState<'rum' | 'rrweb'>('rum');
+    const [currentTimestamp, setCurrentTimestamp] = useState<number>(0);
+    
+    // Calculate relative timestamps for events
+    const eventsWithRelativeTime = selectedReplayEvents.map((event, idx) => {
+        const firstEventTime = selectedReplayEvents[0]?.timestamp || 0;
+        return {
+            ...event,
+            relativeTime: event.timestamp - firstEventTime,
+            index: idx
+        };
+    });
 
     return (
         <div className="timeline-layout">
@@ -167,7 +178,10 @@ export function SessionReplayTab({
                                     </div>
                                 </div>
                             </ColumnLayout>
-                            <RrwebPlayer events={selectedReplayEvents} />
+                            <RrwebPlayer 
+                                events={selectedReplayEvents} 
+                                onTimeUpdate={setCurrentTimestamp}
+                            />
                             <Container header={<Header variant="h3">Payloads ({selectedRequests.length})</Header>}>
                                 {selectedRequests.length === 0 ? (
                                     <Box padding={{ vertical: 'l' }} textAlign="center">
@@ -261,9 +275,21 @@ export function SessionReplayTab({
                                         ? event.event.timestamp * 1000 
                                         : event.event.timestamp;
                                     const color = getEventColor(event.event.type);
+                                    
+                                    // Calculate relative time for RUM event
+                                    const firstEventTime = selectedReplayEvents[0]?.timestamp || 0;
+                                    const relativeEventTime = timestamp - firstEventTime;
+                                    const isActive = relativeEventTime <= currentTimestamp &&
+                                        (idx === selectedRumEvents.length - 1 || 
+                                         ((selectedRumEvents[idx + 1].event.timestamp < 946684800000 ? selectedRumEvents[idx + 1].event.timestamp * 1000 : selectedRumEvents[idx + 1].event.timestamp) - firstEventTime) > currentTimestamp);
+                                    const isPast = relativeEventTime < currentTimestamp && !isActive;
 
                                     return (
-                                        <div key={idx} className="event-item" onClick={() => onRumEventClick(event)}>
+                                        <div 
+                                            key={idx} 
+                                            className={`event-item ${isPast ? 'past' : ''}`}
+                                            onClick={() => onRumEventClick(event)}
+                                        >
                                             <div className="event-marker" style={{ backgroundColor: color }} />
                                             <div className="event-content">
                                                 <Box variant="strong" fontSize="body-s">
@@ -293,12 +319,24 @@ export function SessionReplayTab({
                             </Box>
                         ) : (
                             <div className="events-list">
-                                {selectedReplayEvents.map((event, idx) => {
+                                {eventsWithRelativeTime.map((eventData) => {
+                                    const event = eventData;
                                     const eventSize = new Blob([JSON.stringify(event)]).size / 1024;
                                     const timestamp = event.timestamp < 946684800000 ? event.timestamp * 1000 : event.timestamp;
+                                    
+                                    // Check if this is the active event
+                                    const isActive = eventData.relativeTime <= currentTimestamp && 
+                                        (eventData.index === eventsWithRelativeTime.length - 1 || 
+                                         eventsWithRelativeTime[eventData.index + 1]?.relativeTime > currentTimestamp);
+                                    
+                                    const isPast = eventData.relativeTime < currentTimestamp && !isActive;
 
                                     return (
-                                        <div key={idx} className="event-item" onClick={() => onEventClick(event, idx)}>
+                                        <div 
+                                            key={eventData.index} 
+                                            className={`event-item ${isPast ? 'past' : ''}`}
+                                            onClick={() => onEventClick(event, eventData.index)}
+                                        >
                                             <div className="event-marker" style={{ backgroundColor: '#8b6ccf' }} />
                                             <div className="event-content">
                                                 <Box variant="strong" fontSize="body-s">

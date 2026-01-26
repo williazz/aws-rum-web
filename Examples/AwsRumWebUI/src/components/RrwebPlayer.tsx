@@ -4,9 +4,10 @@ import 'rrweb-player/dist/style.css';
 
 interface RrwebPlayerProps {
     events: any[];
+    onTimeUpdate?: (timestamp: number) => void;
 }
 
-export function RrwebPlayer({ events }: RrwebPlayerProps) {
+export function RrwebPlayer({ events, onTimeUpdate }: RrwebPlayerProps) {
     const containerRef = useRef<HTMLDivElement>(null);
     const playerRef = useRef<any>(null);
 
@@ -26,9 +27,33 @@ export function RrwebPlayer({ events }: RrwebPlayerProps) {
         playerRef.current = new rrwebPlayer({
             target: containerRef.current,
             props: {
-                events: sortedEvents
+                events: sortedEvents,
+                logConfig: {
+                    level: ['error'], // Suppress warning logs
+                },
             }
         });
+
+        // Set up time update listener
+        if (onTimeUpdate && playerRef.current) {
+            const interval = setInterval(() => {
+                if (playerRef.current?.getReplayer) {
+                    const replayer = playerRef.current.getReplayer();
+                    if (replayer) {
+                        const currentTime = replayer.getCurrentTime();
+                        onTimeUpdate(currentTime);
+                    }
+                }
+            }, 100); // Update every 100ms
+
+            return () => {
+                clearInterval(interval);
+                if (containerRef.current) {
+                    containerRef.current.innerHTML = '';
+                }
+                playerRef.current = null;
+            };
+        }
 
         return () => {
             if (containerRef.current) {
@@ -36,7 +61,7 @@ export function RrwebPlayer({ events }: RrwebPlayerProps) {
             }
             playerRef.current = null;
         };
-    }, [events]);
+    }, [events, onTimeUpdate]);
 
     return <div ref={containerRef} />;
 }
