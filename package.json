@@ -129,8 +129,12 @@
         "web-vitals": "^4.0.0"
     },
     "lint-staged": {
-        "*.ts": "npm run lint:errors",
-        "*.{js,ts,json,html,yml,md}": "npx prettier --check"
+        "src/**/*.ts": [
+            "npm run lint:errors"
+        ],
+        "*.{js,ts,json,html,yml,md}": [
+            "npx prettier --check"
+        ]
     },
     "jest": {
         "setupFiles": [

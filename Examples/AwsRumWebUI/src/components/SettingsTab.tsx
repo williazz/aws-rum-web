@@ -19,7 +19,10 @@ export function SettingsTab({ themeMode, onThemeChange }: SettingsTabProps) {
                         onChange={({ detail }) => {
                             const option = detail.selectedOption;
                             if (option.label && option.value) {
-                                onThemeChange({ label: option.label, value: option.value });
+                                onThemeChange({
+                                    label: option.label,
+                                    value: option.value
+                                });
                             }
                         }}
                         options={[

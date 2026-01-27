@@ -21,7 +21,7 @@ app.use(express.raw());
 
 app.all('/appmonitors/:appmonitorId', (req, res) => {
     const { UserDetails } = req.body || {};
-    
+
     const requestEntry = {
         timestamp: new Date().toISOString(),
         method: req.method,

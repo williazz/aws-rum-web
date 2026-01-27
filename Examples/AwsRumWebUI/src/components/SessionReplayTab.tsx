@@ -7,7 +7,11 @@ import SpaceBetween from '@cloudscape-design/components/space-between';
 import ColumnLayout from '@cloudscape-design/components/column-layout';
 import { RrwebPlayer } from './RrwebPlayer';
 import type { SessionMetadata, RumEvent, RawRequest } from '../types/session';
-import { RRWEB_EVENT_TYPE_NAMES, getEventColor, getEventLabel } from '../utils/eventFormatters';
+import {
+    RRWEB_EVENT_TYPE_NAMES,
+    getEventColor,
+    getEventLabel
+} from '../utils/eventFormatters';
 import './SessionReplayTab.css';
 import '../styles/skeleton.css';
 
@@ -40,7 +44,7 @@ export function SessionReplayTab({
 }: SessionReplayTabProps) {
     const [eventView, setEventView] = useState<'rum' | 'rrweb'>(() => {
         const saved = localStorage.getItem('eventView');
-        return (saved === 'rum' || saved === 'rrweb') ? saved : 'rum';
+        return saved === 'rum' || saved === 'rrweb' ? saved : 'rum';
     });
 
     const handleEventViewChange = (view: 'rum' | 'rrweb') => {
@@ -58,40 +62,75 @@ export function SessionReplayTab({
                                 <div key={i} className="skeleton-item">
                                     <div className="skeleton skeleton-line title" />
                                     <div className="skeleton skeleton-line short" />
-                                    <div className="skeleton skeleton-line short" style={{ width: '40%' }} />
+                                    <div
+                                        className="skeleton skeleton-line short"
+                                        style={{ width: '40%' }}
+                                    />
                                 </div>
                             ))}
                         </div>
                     ) : sessions.length === 0 ? (
                         <Box padding={{ vertical: 'l' }}>
-                            <Box variant="strong" fontSize="heading-m" color="text-body-secondary">
+                            <Box
+                                variant="strong"
+                                fontSize="heading-m"
+                                color="text-body-secondary"
+                            >
                                 No sessions yet
                             </Box>
-                            <Box variant="p" color="text-body-secondary" padding={{ top: 's' }}>
+                            <Box
+                                variant="p"
+                                color="text-body-secondary"
+                                padding={{ top: 's' }}
+                            >
                                 Sessions will appear here once captured
                             </Box>
                         </Box>
                     ) : (
                         <div className="session-list">
                             {sessions.map((session) => {
-                                const duration = Math.round((session.lastSeen - session.firstSeen) / 1000);
+                                const duration = Math.round(
+                                    (session.lastSeen - session.firstSeen) /
+                                        1000
+                                );
                                 const minutes = Math.floor(duration / 60);
                                 const seconds = duration % 60;
-                                const durationStr = minutes > 0 ? `${minutes}m ${seconds}s` : `${seconds}s`;
+                                const durationStr =
+                                    minutes > 0
+                                        ? `${minutes}m ${seconds}s`
+                                        : `${seconds}s`;
 
                                 return (
                                     <div
                                         key={session.sessionId}
-                                        className={`session-item ${selectedSessionId === session.sessionId ? 'selected' : ''}`}
-                                        onClick={() => onSelectSession(session.sessionId)}
+                                        className={`session-item ${
+                                            selectedSessionId ===
+                                            session.sessionId
+                                                ? 'selected'
+                                                : ''
+                                        }`}
+                                        onClick={() =>
+                                            onSelectSession(session.sessionId)
+                                        }
                                     >
-                                        <Box variant="strong">{session.sessionId}</Box>
+                                        <Box variant="strong">
+                                            {session.sessionId}
+                                        </Box>
                                         <div style={{ marginTop: '4px' }}>
-                                            <Box variant="small" color="text-body-secondary">
-                                                {session.eventCount} events • {durationStr}
+                                            <Box
+                                                variant="small"
+                                                color="text-body-secondary"
+                                            >
+                                                {session.eventCount} events •{' '}
+                                                {durationStr}
                                             </Box>
-                                            <Box variant="small" color="text-body-secondary">
-                                                {new Date(session.lastSeen).toLocaleString()}
+                                            <Box
+                                                variant="small"
+                                                color="text-body-secondary"
+                                            >
+                                                {new Date(
+                                                    session.lastSeen
+                                                ).toLocaleString()}
                                             </Box>
                                         </div>
                                     </div>
@@ -103,7 +142,9 @@ export function SessionReplayTab({
             </div>
 
             <div className="replay-main">
-                <Container header={<Header variant="h2">Session Replay</Header>}>
+                <Container
+                    header={<Header variant="h2">Session Replay</Header>}
+                >
                     {loadingSessions || loadingEvents ? (
                         <div className="skeleton-player">
                             <div className="skeleton-player-screen">
@@ -117,7 +158,10 @@ export function SessionReplayTab({
                                 </div>
                                 <div className="skeleton-player-buttons">
                                     {[1, 2, 3, 4, 5].map((i) => (
-                                        <div key={i} className="skeleton skeleton-player-button" />
+                                        <div
+                                            key={i}
+                                            className="skeleton skeleton-player-button"
+                                        />
                                     ))}
                                 </div>
                             </div>
@@ -125,11 +169,22 @@ export function SessionReplayTab({
                     ) : sessions.length === 0 || !selectedSessionId ? (
                         <div className="skeleton-player">
                             <div className="skeleton-player-screen">
-                                <Box textAlign="center" padding={{ vertical: 'xxl' }}>
-                                    <Box variant="strong" fontSize="heading-m" color="text-body-secondary">
+                                <Box
+                                    textAlign="center"
+                                    padding={{ vertical: 'xxl' }}
+                                >
+                                    <Box
+                                        variant="strong"
+                                        fontSize="heading-m"
+                                        color="text-body-secondary"
+                                    >
                                         No replay to display
                                     </Box>
-                                    <Box variant="p" color="text-body-secondary" padding={{ top: 's' }}>
+                                    <Box
+                                        variant="p"
+                                        color="text-body-secondary"
+                                        padding={{ top: 's' }}
+                                    >
                                         Select a session to view the replay
                                     </Box>
                                 </Box>
@@ -142,7 +197,10 @@ export function SessionReplayTab({
                                 </div>
                                 <div className="skeleton-player-buttons">
                                     {[1, 2, 3, 4, 5].map((i) => (
-                                        <div key={i} className="skeleton skeleton-player-button" />
+                                        <div
+                                            key={i}
+                                            className="skeleton skeleton-player-button"
+                                        />
                                     ))}
                                 </div>
                             </div>
@@ -151,8 +209,16 @@ export function SessionReplayTab({
                         <SpaceBetween size="m">
                             <ColumnLayout columns={1}>
                                 <div>
-                                    <Box variant="awsui-key-label">Session ID</Box>
-                                    <div style={{ fontFamily: 'monospace', fontSize: '14px', userSelect: 'all' }}>
+                                    <Box variant="awsui-key-label">
+                                        Session ID
+                                    </Box>
+                                    <div
+                                        style={{
+                                            fontFamily: 'monospace',
+                                            fontSize: '14px',
+                                            userSelect: 'all'
+                                        }}
+                                    >
                                         {selectedSessionId}
                                     </div>
                                 </div>
@@ -160,12 +226,24 @@ export function SessionReplayTab({
                             {selectedReplayEvents.length === 0 ? (
                                 <div className="skeleton-player">
                                     <div className="skeleton-player-screen">
-                                        <Box textAlign="center" padding={{ vertical: 'xxl' }}>
-                                            <Box variant="strong" fontSize="heading-m" color="text-body-secondary">
+                                        <Box
+                                            textAlign="center"
+                                            padding={{ vertical: 'xxl' }}
+                                        >
+                                            <Box
+                                                variant="strong"
+                                                fontSize="heading-m"
+                                                color="text-body-secondary"
+                                            >
                                                 No replay available
                                             </Box>
-                                            <Box variant="p" color="text-body-secondary" padding={{ top: 's' }}>
-                                                This session does not have replay data
+                                            <Box
+                                                variant="p"
+                                                color="text-body-secondary"
+                                                padding={{ top: 's' }}
+                                            >
+                                                This session does not have
+                                                replay data
                                             </Box>
                                         </Box>
                                     </div>
@@ -177,43 +255,102 @@ export function SessionReplayTab({
                                         </div>
                                         <div className="skeleton-player-buttons">
                                             {[1, 2, 3, 4, 5].map((i) => (
-                                                <div key={i} className="skeleton skeleton-player-button" />
+                                                <div
+                                                    key={i}
+                                                    className="skeleton skeleton-player-button"
+                                                />
                                             ))}
                                         </div>
                                     </div>
                                 </div>
                             ) : (
-                                <RrwebPlayer key={selectedSessionId} events={selectedReplayEvents} />
+                                <RrwebPlayer
+                                    key={selectedSessionId}
+                                    events={selectedReplayEvents}
+                                />
                             )}
-                            <Container header={<Header variant="h3">Payloads ({selectedRequests.length})</Header>}>
+                            <Container
+                                header={
+                                    <Header variant="h3">
+                                        Payloads ({selectedRequests.length})
+                                    </Header>
+                                }
+                            >
                                 {selectedRequests.length === 0 ? (
-                                    <Box padding={{ vertical: 'l' }} textAlign="center">
-                                        <Box variant="strong" fontSize="heading-m" color="text-body-secondary">
+                                    <Box
+                                        padding={{ vertical: 'l' }}
+                                        textAlign="center"
+                                    >
+                                        <Box
+                                            variant="strong"
+                                            fontSize="heading-m"
+                                            color="text-body-secondary"
+                                        >
                                             No payloads
                                         </Box>
-                                        <Box variant="p" color="text-body-secondary" padding={{ top: 's' }}>
-                                            No HTTP requests found for this session
+                                        <Box
+                                            variant="p"
+                                            color="text-body-secondary"
+                                            padding={{ top: 's' }}
+                                        >
+                                            No HTTP requests found for this
+                                            session
                                         </Box>
                                     </Box>
                                 ) : (
                                     <div className="events-list">
-                                        {selectedRequests.map((request, idx) => {
-                                            const requestSize = new Blob([JSON.stringify(request)]).size / 1024;
+                                        {selectedRequests.map(
+                                            (request, idx) => {
+                                                const requestSize =
+                                                    new Blob([
+                                                        JSON.stringify(request)
+                                                    ]).size / 1024;
 
-                                            return (
-                                                <div key={idx} className="event-item" onClick={() => onRequestClick(request)}>
-                                                    <div className="event-marker" style={{ backgroundColor: '#0972d3' }} />
-                                                    <div className="event-content">
-                                                        <Box variant="strong" fontSize="body-s">
-                                                            {request.method} {request.appmonitorId}
-                                                        </Box>
-                                                        <Box variant="small" color="text-body-secondary">
-                                                            {new Date(request.timestamp).toLocaleString()} • {requestSize.toFixed(2)} KB
-                                                        </Box>
+                                                return (
+                                                    <div
+                                                        key={idx}
+                                                        className="event-item"
+                                                        onClick={() =>
+                                                            onRequestClick(
+                                                                request
+                                                            )
+                                                        }
+                                                    >
+                                                        <div
+                                                            className="event-marker"
+                                                            style={{
+                                                                backgroundColor:
+                                                                    '#0972d3'
+                                                            }}
+                                                        />
+                                                        <div className="event-content">
+                                                            <Box
+                                                                variant="strong"
+                                                                fontSize="body-s"
+                                                            >
+                                                                {request.method}{' '}
+                                                                {
+                                                                    request.appmonitorId
+                                                                }
+                                                            </Box>
+                                                            <Box
+                                                                variant="small"
+                                                                color="text-body-secondary"
+                                                            >
+                                                                {new Date(
+                                                                    request.timestamp
+                                                                ).toLocaleString()}{' '}
+                                                                •{' '}
+                                                                {requestSize.toFixed(
+                                                                    2
+                                                                )}{' '}
+                                                                KB
+                                                            </Box>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            );
-                                        })}
+                                                );
+                                            }
+                                        )}
                                     </div>
                                 )}
                             </Container>
@@ -223,19 +360,33 @@ export function SessionReplayTab({
             </div>
 
             <div className="events-sidebar">
-                <Container 
+                <Container
                     header={
-                        <Header 
+                        <Header
                             variant="h2"
-                            description={loadingSessions || loadingEvents ? (
-                                <div className="skeleton skeleton-line short" style={{ width: '100px', height: '14px' }} />
-                            ) : eventView === 'rum' 
-                                ? `${selectedRumEvents.length} RUM events` 
-                                : `${selectedReplayEvents.length} RRWeb events`}
+                            description={
+                                loadingSessions || loadingEvents ? (
+                                    <div
+                                        className="skeleton skeleton-line short"
+                                        style={{
+                                            width: '100px',
+                                            height: '14px'
+                                        }}
+                                    />
+                                ) : eventView === 'rum' ? (
+                                    `${selectedRumEvents.length} RUM events`
+                                ) : (
+                                    `${selectedReplayEvents.length} RRWeb events`
+                                )
+                            }
                             actions={
                                 <SegmentedControl
                                     selectedId={eventView}
-                                    onChange={({ detail }) => handleEventViewChange(detail.selectedId as 'rum' | 'rrweb')}
+                                    onChange={({ detail }) =>
+                                        handleEventViewChange(
+                                            detail.selectedId as 'rum' | 'rrweb'
+                                        )
+                                    }
                                     options={[
                                         { id: 'rum', text: 'RUM' },
                                         { id: 'rrweb', text: 'RRWeb' }
@@ -258,43 +409,85 @@ export function SessionReplayTab({
                         </div>
                     ) : sessions.length === 0 || !selectedSessionId ? (
                         <Box padding={{ vertical: 'l' }}>
-                            <Box variant="strong" fontSize="heading-m" color="text-body-secondary">
+                            <Box
+                                variant="strong"
+                                fontSize="heading-m"
+                                color="text-body-secondary"
+                            >
                                 No events to display
                             </Box>
-                            <Box variant="p" color="text-body-secondary" padding={{ top: 's' }}>
-                                Events will appear here when a session is selected
+                            <Box
+                                variant="p"
+                                color="text-body-secondary"
+                                padding={{ top: 's' }}
+                            >
+                                Events will appear here when a session is
+                                selected
                             </Box>
                         </Box>
                     ) : eventView === 'rum' ? (
                         selectedRumEvents.length === 0 ? (
                             <Box padding={{ vertical: 'l' }}>
-                                <Box variant="strong" fontSize="heading-m" color="text-body-secondary">
+                                <Box
+                                    variant="strong"
+                                    fontSize="heading-m"
+                                    color="text-body-secondary"
+                                >
                                     No RUM events
                                 </Box>
                             </Box>
                         ) : (
                             <div className="events-list">
                                 {selectedRumEvents.map((event, idx) => {
-                                    const eventSize = new Blob([JSON.stringify(event)]).size / 1024;
-                                    const timestamp = event.event.timestamp < 946684800000 
-                                        ? event.event.timestamp * 1000 
-                                        : event.event.timestamp;
-                                    const color = getEventColor(event.event.type);
+                                    const eventSize =
+                                        new Blob([JSON.stringify(event)]).size /
+                                        1024;
+                                    const timestamp =
+                                        event.event.timestamp < 946684800000
+                                            ? event.event.timestamp * 1000
+                                            : event.event.timestamp;
+                                    const color = getEventColor(
+                                        event.event.type
+                                    );
 
                                     return (
-                                        <div key={idx} className="event-item" onClick={() => onRumEventClick(event)}>
-                                            <div className="event-marker" style={{ backgroundColor: color }} />
+                                        <div
+                                            key={idx}
+                                            className="event-item"
+                                            onClick={() =>
+                                                onRumEventClick(event)
+                                            }
+                                        >
+                                            <div
+                                                className="event-marker"
+                                                style={{
+                                                    backgroundColor: color
+                                                }}
+                                            />
                                             <div className="event-content">
-                                                <Box variant="strong" fontSize="body-s">
-                                                    {getEventLabel(event.event.type)}
+                                                <Box
+                                                    variant="strong"
+                                                    fontSize="body-s"
+                                                >
+                                                    {getEventLabel(
+                                                        event.event.type
+                                                    )}
                                                 </Box>
-                                                <Box variant="small" color="text-body-secondary">
-                                                    {new Date(timestamp).toLocaleTimeString('en-US', {
-                                                        hour12: false,
-                                                        hour: '2-digit',
-                                                        minute: '2-digit',
-                                                        second: '2-digit'
-                                                    })}{' '}
+                                                <Box
+                                                    variant="small"
+                                                    color="text-body-secondary"
+                                                >
+                                                    {new Date(
+                                                        timestamp
+                                                    ).toLocaleTimeString(
+                                                        'en-US',
+                                                        {
+                                                            hour12: false,
+                                                            hour: '2-digit',
+                                                            minute: '2-digit',
+                                                            second: '2-digit'
+                                                        }
+                                                    )}{' '}
                                                     • {eventSize.toFixed(2)} KB
                                                 </Box>
                                             </div>
@@ -303,41 +496,67 @@ export function SessionReplayTab({
                                 })}
                             </div>
                         )
-                    ) : (
-                        selectedReplayEvents.length === 0 ? (
-                            <Box padding={{ vertical: 'l' }}>
-                                <Box variant="strong" fontSize="heading-m" color="text-body-secondary">
-                                    No RRWeb events
-                                </Box>
+                    ) : selectedReplayEvents.length === 0 ? (
+                        <Box padding={{ vertical: 'l' }}>
+                            <Box
+                                variant="strong"
+                                fontSize="heading-m"
+                                color="text-body-secondary"
+                            >
+                                No RRWeb events
                             </Box>
-                        ) : (
-                            <div className="events-list">
-                                {selectedReplayEvents.map((event, idx) => {
-                                    const eventSize = new Blob([JSON.stringify(event)]).size / 1024;
-                                    const timestamp = event.timestamp < 946684800000 ? event.timestamp * 1000 : event.timestamp;
+                        </Box>
+                    ) : (
+                        <div className="events-list">
+                            {selectedReplayEvents.map((event, idx) => {
+                                const eventSize =
+                                    new Blob([JSON.stringify(event)]).size /
+                                    1024;
+                                const timestamp =
+                                    event.timestamp < 946684800000
+                                        ? event.timestamp * 1000
+                                        : event.timestamp;
 
-                                    return (
-                                        <div key={idx} className="event-item" onClick={() => onEventClick(event, idx)}>
-                                            <div className="event-marker" style={{ backgroundColor: '#8b6ccf' }} />
-                                            <div className="event-content">
-                                                <Box variant="strong" fontSize="body-s">
-                                                    {RRWEB_EVENT_TYPE_NAMES[event.type] || `Type ${event.type}`}
-                                                </Box>
-                                                <Box variant="small" color="text-body-secondary">
-                                                    {new Date(timestamp).toLocaleTimeString('en-US', {
-                                                        hour12: false,
-                                                        hour: '2-digit',
-                                                        minute: '2-digit',
-                                                        second: '2-digit'
-                                                    })}{' '}
-                                                    • {eventSize.toFixed(2)} KB
-                                                </Box>
-                                            </div>
+                                return (
+                                    <div
+                                        key={idx}
+                                        className="event-item"
+                                        onClick={() => onEventClick(event, idx)}
+                                    >
+                                        <div
+                                            className="event-marker"
+                                            style={{
+                                                backgroundColor: '#8b6ccf'
+                                            }}
+                                        />
+                                        <div className="event-content">
+                                            <Box
+                                                variant="strong"
+                                                fontSize="body-s"
+                                            >
+                                                {RRWEB_EVENT_TYPE_NAMES[
+                                                    event.type
+                                                ] || `Type ${event.type}`}
+                                            </Box>
+                                            <Box
+                                                variant="small"
+                                                color="text-body-secondary"
+                                            >
+                                                {new Date(
+                                                    timestamp
+                                                ).toLocaleTimeString('en-US', {
+                                                    hour12: false,
+                                                    hour: '2-digit',
+                                                    minute: '2-digit',
+                                                    second: '2-digit'
+                                                })}{' '}
+                                                • {eventSize.toFixed(2)} KB
+                                            </Box>
                                         </div>
-                                    );
-                                })}
-                            </div>
-                        )
+                                    </div>
+                                );
+                            })}
+                        </div>
                     )}
                 </Container>
             </div>
