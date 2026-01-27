@@ -1,6 +1,6 @@
-# Hacker News SPA Demo
+# SPA React Demo
 
-A production-quality Hacker News reader built for testing AWS RUM Web Client.
+A production-quality Single Page Application (SPA) built with React for testing AWS RUM Web Client.
 
 ## Features
 
