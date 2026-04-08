@@ -1,4 +1,4 @@
-import { defaultIgnore } from '@aws-rum/web-core/plugins/utils/performance-utils';
+import { defaultIgnore } from '@billyzh-aws-rum/web-core/plugins/utils/performance-utils';
 
 describe('performance-utils', () => {
     describe('defaultPerformanceIgnore', () => {

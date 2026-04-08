@@ -1,6 +1,6 @@
-jest.mock('@aws-rum/web-core/utils/common-utils', () => {
+jest.mock('@billyzh-aws-rum/web-core/utils/common-utils', () => {
     const originalModule = jest.requireActual(
-        '@aws-rum/web-core/utils/common-utils'
+        '@billyzh-aws-rum/web-core/utils/common-utils'
     );
     return {
         __esModule: true,
@@ -8,7 +8,7 @@ jest.mock('@aws-rum/web-core/utils/common-utils', () => {
         isLCPSupported: jest.fn().mockReturnValue(true)
     };
 });
-import { ResourceType } from '@aws-rum/web-core/utils/common-utils';
+import { ResourceType } from '@billyzh-aws-rum/web-core/utils/common-utils';
 import {
     CLS_EVENT_TYPE,
     FID_EVENT_TYPE,
@@ -16,15 +16,15 @@ import {
     LCP_EVENT_TYPE,
     PERFORMANCE_NAVIGATION_EVENT_TYPE,
     PERFORMANCE_RESOURCE_EVENT_TYPE
-} from '@aws-rum/web-core/plugins/utils/constant';
+} from '@billyzh-aws-rum/web-core/plugins/utils/constant';
 import {
     context,
     record,
     recordCandidate
-} from '@aws-rum/web-core/test-utils/test-utils';
-import { Topic } from '@aws-rum/web-core/event-bus/EventBus';
-import { WebVitalsPlugin } from '@aws-rum/web-core/plugins/event-plugins/WebVitalsPlugin';
-import { navigationEvent } from '@aws-rum/web-core/test-utils/mock-data';
+} from '@billyzh-aws-rum/web-core/test-utils/test-utils';
+import { Topic } from '@billyzh-aws-rum/web-core/event-bus/EventBus';
+import { WebVitalsPlugin } from '@billyzh-aws-rum/web-core/plugins/event-plugins/WebVitalsPlugin';
+import { navigationEvent } from '@billyzh-aws-rum/web-core/test-utils/mock-data';
 import {
     INPMetricWithAttribution,
     CLSMetricWithAttribution,

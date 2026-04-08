@@ -1,5 +1,5 @@
 import { CommandQueue, AwsRumClientInit } from '../src/CommandQueue';
-import { performanceEvent } from '@aws-rum/web-core/test-utils/mock-data';
+import { performanceEvent } from '@billyzh-aws-rum/web-core/test-utils/mock-data';
 
 global.fetch = jest.fn();
 

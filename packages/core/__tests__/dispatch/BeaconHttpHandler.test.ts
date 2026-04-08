@@ -1,9 +1,9 @@
-import * as Utils from '@aws-rum/web-core/test-utils/test-utils';
-import { BeaconHttpHandler } from '@aws-rum/web-core/dispatch/BeaconHttpHandler';
+import * as Utils from '@billyzh-aws-rum/web-core/test-utils/test-utils';
+import { BeaconHttpHandler } from '@billyzh-aws-rum/web-core/dispatch/BeaconHttpHandler';
 import {
     DataPlaneClient,
     SigningConfig
-} from '@aws-rum/web-core/dispatch/DataPlaneClient';
+} from '@billyzh-aws-rum/web-core/dispatch/DataPlaneClient';
 import { HttpHandler, HttpRequest, HttpResponse } from '@smithy/protocol-http';
 import { advanceTo } from 'jest-date-mock';
 import { SignatureV4 } from '@smithy/signature-v4';

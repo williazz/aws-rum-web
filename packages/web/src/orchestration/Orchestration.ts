@@ -1,28 +1,28 @@
-import { InternalPlugin } from '@aws-rum/web-core/plugins/InternalPlugin';
-import { BasicAuthentication } from '@aws-rum/web-core/dispatch/BasicAuthentication';
-import { EnhancedAuthentication } from '@aws-rum/web-core/dispatch/EnhancedAuthentication';
-import { PluginManager } from '@aws-rum/web-core/plugins/PluginManager';
-import { Dispatch } from '@aws-rum/web-core/dispatch/Dispatch';
+import { InternalPlugin } from '@billyzh-aws-rum/web-core/plugins/InternalPlugin';
+import { BasicAuthentication } from '@billyzh-aws-rum/web-core/dispatch/BasicAuthentication';
+import { EnhancedAuthentication } from '@billyzh-aws-rum/web-core/dispatch/EnhancedAuthentication';
+import { PluginManager } from '@billyzh-aws-rum/web-core/plugins/PluginManager';
+import { Dispatch } from '@billyzh-aws-rum/web-core/dispatch/Dispatch';
 import {
     DomEventPlugin,
     DOM_EVENT_PLUGIN_ID,
     TargetDomEvent
-} from '@aws-rum/web-core/plugins/event-plugins/DomEventPlugin';
+} from '@billyzh-aws-rum/web-core/plugins/event-plugins/DomEventPlugin';
 import {
     JsErrorPlugin,
     JS_ERROR_EVENT_PLUGIN_ID
-} from '@aws-rum/web-core/plugins/event-plugins/JsErrorPlugin';
-import { NavigationPlugin } from '@aws-rum/web-core/plugins/event-plugins/NavigationPlugin';
-import { ResourcePlugin } from '@aws-rum/web-core/plugins/event-plugins/ResourcePlugin';
-import { WebVitalsPlugin } from '@aws-rum/web-core/plugins/event-plugins/WebVitalsPlugin';
-import { XhrPlugin } from '@aws-rum/web-core/plugins/event-plugins/XhrPlugin';
-import { FetchPlugin } from '@aws-rum/web-core/plugins/event-plugins/FetchPlugin';
-import { RRWebPlugin } from '@aws-rum/web-core/plugins/event-plugins/RRWebPlugin';
-import { InternalLogger } from '@aws-rum/web-core/utils/InternalLogger';
+} from '@billyzh-aws-rum/web-core/plugins/event-plugins/JsErrorPlugin';
+import { NavigationPlugin } from '@billyzh-aws-rum/web-core/plugins/event-plugins/NavigationPlugin';
+import { ResourcePlugin } from '@billyzh-aws-rum/web-core/plugins/event-plugins/ResourcePlugin';
+import { WebVitalsPlugin } from '@billyzh-aws-rum/web-core/plugins/event-plugins/WebVitalsPlugin';
+import { XhrPlugin } from '@billyzh-aws-rum/web-core/plugins/event-plugins/XhrPlugin';
+import { FetchPlugin } from '@billyzh-aws-rum/web-core/plugins/event-plugins/FetchPlugin';
+import { RRWebPlugin } from '@billyzh-aws-rum/web-core/plugins/event-plugins/RRWebPlugin';
+import { InternalLogger } from '@billyzh-aws-rum/web-core/utils/InternalLogger';
 import { createSigningConfig } from '../dispatch/signing';
-import { Orchestration as SlimOrchestration } from '@aws-rum/web-slim/orchestration/Orchestration';
+import { Orchestration as SlimOrchestration } from '@billyzh-aws-rum/web-slim/orchestration/Orchestration';
 import { TelemetryEnum } from './config';
-import { PartialConfig } from '@aws-rum/web-core/orchestration/config';
+import { PartialConfig } from '@billyzh-aws-rum/web-core/orchestration/config';
 
 // Re-export config types for public API
 export {

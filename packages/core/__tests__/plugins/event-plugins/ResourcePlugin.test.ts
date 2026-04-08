@@ -7,17 +7,17 @@ import {
     doMockPerformanceObserver,
     cssResourceEvent,
     scriptResourceEvent
-} from '@aws-rum/web-core/test-utils/mock-data';
-import { ResourcePlugin } from '@aws-rum/web-core/plugins/event-plugins/ResourcePlugin';
+} from '@billyzh-aws-rum/web-core/test-utils/mock-data';
+import { ResourcePlugin } from '@billyzh-aws-rum/web-core/plugins/event-plugins/ResourcePlugin';
 import { mockRandom } from 'jest-mock-random';
 import {
     context,
     DEFAULT_CONFIG,
     record
-} from '@aws-rum/web-core/test-utils/test-utils';
-import { PERFORMANCE_RESOURCE_EVENT_TYPE } from '@aws-rum/web-core/plugins/utils/constant';
-import { ResourceEvent } from '@aws-rum/web-core/events/resource-event';
-import { PerformancePluginConfig } from '@aws-rum/web-core/plugins/utils/performance-utils';
+} from '@billyzh-aws-rum/web-core/test-utils/test-utils';
+import { PERFORMANCE_RESOURCE_EVENT_TYPE } from '@billyzh-aws-rum/web-core/plugins/utils/constant';
+import { ResourceEvent } from '@billyzh-aws-rum/web-core/events/resource-event';
+import { PerformancePluginConfig } from '@billyzh-aws-rum/web-core/plugins/utils/performance-utils';
 
 const buildResourcePlugin = (config?: Partial<PerformancePluginConfig>) => {
     return new ResourcePlugin(config);

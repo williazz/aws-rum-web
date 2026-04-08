@@ -1,20 +1,20 @@
-import * as Utils from '@aws-rum/web-core/test-utils/test-utils';
-import { BeaconHttpHandler } from '@aws-rum/web-core/dispatch/BeaconHttpHandler';
+import * as Utils from '@billyzh-aws-rum/web-core/test-utils/test-utils';
+import { BeaconHttpHandler } from '@billyzh-aws-rum/web-core/dispatch/BeaconHttpHandler';
 import {
     DataPlaneClient,
     SigningConfig
-} from '@aws-rum/web-core/dispatch/DataPlaneClient';
+} from '@billyzh-aws-rum/web-core/dispatch/DataPlaneClient';
 import { HttpRequest } from '@smithy/protocol-http';
 import { advanceTo } from 'jest-date-mock';
 import { HeaderBag } from '@aws-sdk/types';
-import * as compression from '@aws-rum/web-core/dispatch/compression';
+import * as compression from '@billyzh-aws-rum/web-core/dispatch/compression';
 import { SignatureV4 } from '@smithy/signature-v4';
 import { Sha256 } from '@aws-crypto/sha256-js';
 import { toHex } from '@smithy/util-hex-encoding';
 import { RequestPresigningArguments } from '@aws-sdk/types';
 
 const beaconHandler = jest.fn(() => Promise.resolve());
-jest.mock('@aws-rum/web-core/dispatch/BeaconHttpHandler', () => ({
+jest.mock('@billyzh-aws-rum/web-core/dispatch/BeaconHttpHandler', () => ({
     BeaconHttpHandler: jest
         .fn()
         .mockImplementation(() => ({ handle: beaconHandler }))

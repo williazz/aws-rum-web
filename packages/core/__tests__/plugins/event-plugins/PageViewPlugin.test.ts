@@ -1,6 +1,6 @@
-import { context } from '@aws-rum/web-core/test-utils/test-utils';
-import { PageViewPlugin } from '@aws-rum/web-core/plugins/event-plugins/PageViewPlugin';
-import { PageIdFormatEnum } from '@aws-rum/web-core/orchestration/config';
+import { context } from '@billyzh-aws-rum/web-core/test-utils/test-utils';
+import { PageViewPlugin } from '@billyzh-aws-rum/web-core/plugins/event-plugins/PageViewPlugin';
+import { PageIdFormatEnum } from '@billyzh-aws-rum/web-core/orchestration/config';
 
 const PAGE_VIEW_ONE_PATH = '/page_view_one?region=us-west-1#lang';
 const PAGE_VIEW_TWO_PATH = '/page_view_two?region=us-west-1#lang';

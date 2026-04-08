@@ -10,9 +10,9 @@
         "target": "es2018",
         "types": ["node", "jest", "@testing-library/jest-dom"],
         "paths": {
-            "@aws-rum/web-core": ["./packages/core/src"],
-            "@aws-rum/web-core/*": ["./packages/core/src/*"],
-            "@aws-rum/web-slim/*": ["./packages/slim/src/*"]
+            "@billyzh-aws-rum/web-core": ["./packages/core/src"],
+            "@billyzh-aws-rum/web-core/*": ["./packages/core/src/*"],
+            "@billyzh-aws-rum/web-slim/*": ["./packages/slim/src/*"]
         }
     },
     "include": [

@@ -1,20 +1,26 @@
-import { mockLongTaskPerformanceObserver } from '@aws-rum/web-core/test-utils/mock-data';
-import { TTIPlugin } from '@aws-rum/web-core/plugins/event-plugins/TTIPlugin';
-import { context, record } from '@aws-rum/web-core/test-utils/test-utils';
-import { TIME_TO_INTERACTIVE_EVENT_TYPE } from '@aws-rum/web-core/plugins/utils/constant';
+import { mockLongTaskPerformanceObserver } from '@billyzh-aws-rum/web-core/test-utils/mock-data';
+import { TTIPlugin } from '@billyzh-aws-rum/web-core/plugins/event-plugins/TTIPlugin';
+import {
+    context,
+    record
+} from '@billyzh-aws-rum/web-core/test-utils/test-utils';
+import { TIME_TO_INTERACTIVE_EVENT_TYPE } from '@billyzh-aws-rum/web-core/plugins/utils/constant';
 
 const mockTTIData = {
     name: 'TTI',
     value: 201.2
 };
 
-jest.mock('@aws-rum/web-core/time-to-interactive/TimeToInteractive', () => {
-    return {
-        onTTI: jest.fn().mockImplementation((callback) => {
-            callback(mockTTIData);
-        })
-    };
-});
+jest.mock(
+    '@billyzh-aws-rum/web-core/time-to-interactive/TimeToInteractive',
+    () => {
+        return {
+            onTTI: jest.fn().mockImplementation((callback) => {
+                callback(mockTTIData);
+            })
+        };
+    }
+);
 
 describe('Time to Interactive - Plugin Tests', () => {
     let originalPerformance: any;

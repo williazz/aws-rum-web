@@ -2,7 +2,7 @@ import {
     X_AMZN_TRACE_ID,
     W3C_TRACEPARENT_HEADER_NAME,
     getTraceHeader
-} from '@aws-rum/web-core/plugins/utils/http-utils';
+} from '@billyzh-aws-rum/web-core/plugins/utils/http-utils';
 
 const Request = function (input: RequestInfo, init?: RequestInit) {
     if (typeof input === 'string') {

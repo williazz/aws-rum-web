@@ -3,15 +3,15 @@ import {
     defaultConfig,
     defaultCookieAttributes
 } from '../../src/orchestration/Orchestration';
-import { Dispatch } from '@aws-rum/web-core/dispatch/Dispatch';
-import { EventCache } from '@aws-rum/web-core/event-cache/EventCache';
-import { DomEventPlugin } from '@aws-rum/web-core/plugins/event-plugins/DomEventPlugin';
-import { JsErrorPlugin } from '@aws-rum/web-core/plugins/event-plugins/JsErrorPlugin';
-import { PluginManager } from '@aws-rum/web-core/plugins/PluginManager';
-import { PageAttributes } from '@aws-rum/web-core/sessions/PageManager';
-import { INSTALL_SCRIPT } from '@aws-rum/web-core/utils/constants';
-import { performanceEvent } from '@aws-rum/web-core/test-utils/mock-data';
-import { DEFAULT_CONFIG } from '@aws-rum/web-core/test-utils/test-utils';
+import { Dispatch } from '@billyzh-aws-rum/web-core/dispatch/Dispatch';
+import { EventCache } from '@billyzh-aws-rum/web-core/event-cache/EventCache';
+import { DomEventPlugin } from '@billyzh-aws-rum/web-core/plugins/event-plugins/DomEventPlugin';
+import { JsErrorPlugin } from '@billyzh-aws-rum/web-core/plugins/event-plugins/JsErrorPlugin';
+import { PluginManager } from '@billyzh-aws-rum/web-core/plugins/PluginManager';
+import { PageAttributes } from '@billyzh-aws-rum/web-core/sessions/PageManager';
+import { INSTALL_SCRIPT } from '@billyzh-aws-rum/web-core/utils/constants';
+import { performanceEvent } from '@billyzh-aws-rum/web-core/test-utils/mock-data';
+import { DEFAULT_CONFIG } from '@billyzh-aws-rum/web-core/test-utils/test-utils';
 
 global.fetch = jest.fn();
 
@@ -22,7 +22,7 @@ const setCognitoCredentials = jest.fn();
 const setCognitoCredentialProviderFactory = jest.fn();
 const setSigningConfigFactory = jest.fn();
 
-jest.mock('@aws-rum/web-core/dispatch/Dispatch', () => ({
+jest.mock('@billyzh-aws-rum/web-core/dispatch/Dispatch', () => ({
     Dispatch: jest.fn().mockImplementation(() => ({
         enable: enableDispatch,
         disable: disableDispatch,
@@ -33,9 +33,9 @@ jest.mock('@aws-rum/web-core/dispatch/Dispatch', () => ({
     }))
 }));
 
-jest.mock('@aws-rum/web-core/utils/common-utils', () => {
+jest.mock('@billyzh-aws-rum/web-core/utils/common-utils', () => {
     const originalModule = jest.requireActual(
-        '@aws-rum/web-core/utils/common-utils'
+        '@billyzh-aws-rum/web-core/utils/common-utils'
     );
     return {
         __esModule: true,
@@ -52,7 +52,7 @@ const recordEvent = jest.fn();
 
 let samplingDecision = true;
 const isSessionSampled = jest.fn().mockImplementation(() => samplingDecision);
-jest.mock('@aws-rum/web-core/event-cache/EventCache', () => ({
+jest.mock('@billyzh-aws-rum/web-core/event-cache/EventCache', () => ({
     EventCache: jest.fn().mockImplementation(() => ({
         enable: enableEventCache,
         disable: disableEventCache,
@@ -70,7 +70,7 @@ const updatePlugin = jest.fn();
 const enablePlugins = jest.fn();
 const disablePlugins = jest.fn();
 
-jest.mock('@aws-rum/web-core/plugins/PluginManager', () => ({
+jest.mock('@billyzh-aws-rum/web-core/plugins/PluginManager', () => ({
     PluginManager: jest.fn().mockImplementation(() => ({
         addPlugin,
         enable: enablePlugins,

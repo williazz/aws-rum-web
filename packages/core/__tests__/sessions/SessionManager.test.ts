@@ -3,29 +3,29 @@ import {
     NIL_UUID,
     Session,
     SessionManager
-} from '@aws-rum/web-core/sessions/SessionManager';
+} from '@billyzh-aws-rum/web-core/sessions/SessionManager';
 import {
     getCookie,
     removeCookie,
     storeCookie
-} from '@aws-rum/web-core/utils/cookies-utils';
+} from '@billyzh-aws-rum/web-core/utils/cookies-utils';
 import * as uuid from 'uuid';
-import { navigationEvent } from '@aws-rum/web-core/test-utils/mock-data';
-import { Config } from '@aws-rum/web-core/orchestration/config';
-import * as configModule from '@aws-rum/web-core/orchestration/config';
+import { navigationEvent } from '@billyzh-aws-rum/web-core/test-utils/mock-data';
+import { Config } from '@billyzh-aws-rum/web-core/orchestration/config';
+import * as configModule from '@billyzh-aws-rum/web-core/orchestration/config';
 import { mockRandom } from 'jest-mock-random';
-import { PageManager } from '@aws-rum/web-core/sessions/PageManager';
+import { PageManager } from '@billyzh-aws-rum/web-core/sessions/PageManager';
 import {
     SESSION_COOKIE_NAME,
     USER_COOKIE_NAME
-} from '@aws-rum/web-core/utils/constants';
+} from '@billyzh-aws-rum/web-core/utils/constants';
 import {
     APPLICATION_ID,
     APP_MONITOR_DETAILS,
     DEFAULT_CONFIG,
     mockFetch
-} from '@aws-rum/web-core/test-utils/test-utils';
-import { SESSION_START_EVENT_TYPE } from '@aws-rum/web-core/plugins/utils/constant';
+} from '@billyzh-aws-rum/web-core/test-utils/test-utils';
+import { SESSION_START_EVENT_TYPE } from '@billyzh-aws-rum/web-core/plugins/utils/constant';
 
 global.fetch = mockFetch;
 const NAVIGATION = 'navigation';

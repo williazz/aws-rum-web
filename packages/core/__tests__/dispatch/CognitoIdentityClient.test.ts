@@ -1,14 +1,14 @@
-import * as Utils from '@aws-rum/web-core/test-utils/test-utils';
+import * as Utils from '@billyzh-aws-rum/web-core/test-utils/test-utils';
 import { FetchHttpHandler } from '@smithy/fetch-http-handler';
 import { advanceTo } from 'jest-date-mock';
-import { CognitoIdentityClient } from '@aws-rum/web-core/dispatch/CognitoIdentityClient';
+import { CognitoIdentityClient } from '@billyzh-aws-rum/web-core/dispatch/CognitoIdentityClient';
 import { AwsCredentialIdentity } from '@aws-sdk/types';
 import {
     APPLICATION_ID,
     getReadableStream,
     DEFAULT_CONFIG
-} from '@aws-rum/web-core/test-utils/test-utils';
-import { IDENTITY_KEY } from '@aws-rum/web-core/utils/constants';
+} from '@billyzh-aws-rum/web-core/test-utils/test-utils';
+import { IDENTITY_KEY } from '@billyzh-aws-rum/web-core/utils/constants';
 
 const mockCredentials =
     '{ "IdentityId": "a", "Credentials": { "AccessKeyId": "x", "SecretKey": "y", "SessionToken": "z" } }';

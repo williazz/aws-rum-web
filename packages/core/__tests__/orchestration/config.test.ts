@@ -1,4 +1,4 @@
-import { userAgentDataProvider } from '@aws-rum/web-core/orchestration/config';
+import { userAgentDataProvider } from '@billyzh-aws-rum/web-core/orchestration/config';
 
 describe('userAgentDataProvider', () => {
     const originalUserAgentData = Object.getOwnPropertyDescriptor(

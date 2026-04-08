@@ -1,8 +1,8 @@
 import {
     Config,
     CookieAttributes
-} from '@aws-rum/web-core/orchestration/config';
-import { INSTALL_MODULE } from '@aws-rum/web-core/utils/constants';
+} from '@billyzh-aws-rum/web-core/orchestration/config';
+import { INSTALL_MODULE } from '@billyzh-aws-rum/web-core/utils/constants';
 
 // Re-export core types for backward compatibility
 export {
@@ -13,7 +13,7 @@ export {
     CompressionStrategy,
     Telemetry,
     PageIdFormat
-} from '@aws-rum/web-core/orchestration/config';
+} from '@billyzh-aws-rum/web-core/orchestration/config';
 
 export enum TelemetryEnum {
     Errors = 'errors',

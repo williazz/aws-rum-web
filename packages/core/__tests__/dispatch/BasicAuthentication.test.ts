@@ -1,22 +1,22 @@
-import { BasicAuthentication } from '@aws-rum/web-core/dispatch/BasicAuthentication';
-import { CRED_KEY } from '@aws-rum/web-core/utils/constants';
+import { BasicAuthentication } from '@billyzh-aws-rum/web-core/dispatch/BasicAuthentication';
+import { CRED_KEY } from '@billyzh-aws-rum/web-core/utils/constants';
 import {
     APPLICATION_ID,
     DEFAULT_CONFIG
-} from '@aws-rum/web-core/test-utils/test-utils';
+} from '@billyzh-aws-rum/web-core/test-utils/test-utils';
 
 const assumeRole = jest.fn();
 const mockGetId = jest.fn();
 const mockGetIdToken = jest.fn();
 
-jest.mock('@aws-rum/web-core/dispatch/CognitoIdentityClient', () => ({
+jest.mock('@billyzh-aws-rum/web-core/dispatch/CognitoIdentityClient', () => ({
     CognitoIdentityClient: jest.fn().mockImplementation(() => ({
         getId: mockGetId,
         getOpenIdToken: mockGetIdToken
     }))
 }));
 
-jest.mock('@aws-rum/web-core/dispatch/StsClient', () => ({
+jest.mock('@billyzh-aws-rum/web-core/dispatch/StsClient', () => ({
     StsClient: jest.fn().mockImplementation(() => ({
         assumeRoleWithWebIdentity: assumeRole
     }))

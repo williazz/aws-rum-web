@@ -1,18 +1,21 @@
-import { Dispatch } from '@aws-rum/web-core/dispatch/Dispatch';
-import * as Utils from '@aws-rum/web-core/test-utils/test-utils';
-import { DataPlaneClient } from '@aws-rum/web-core/dispatch/DataPlaneClient';
+import { Dispatch } from '@billyzh-aws-rum/web-core/dispatch/Dispatch';
+import * as Utils from '@billyzh-aws-rum/web-core/test-utils/test-utils';
+import { DataPlaneClient } from '@billyzh-aws-rum/web-core/dispatch/DataPlaneClient';
 import { AwsCredentialIdentityProvider } from '@aws-sdk/types';
 import {
     DEFAULT_CONFIG,
     mockFetch
-} from '@aws-rum/web-core/test-utils/test-utils';
-import { EventCache } from '@aws-rum/web-core/event-cache/EventCache';
-import { CRED_KEY, IDENTITY_KEY } from '@aws-rum/web-core/utils/constants';
+} from '@billyzh-aws-rum/web-core/test-utils/test-utils';
+import { EventCache } from '@billyzh-aws-rum/web-core/event-cache/EventCache';
+import {
+    CRED_KEY,
+    IDENTITY_KEY
+} from '@billyzh-aws-rum/web-core/utils/constants';
 
 global.fetch = mockFetch;
 const sendFetch = jest.fn(() => Promise.resolve());
 const sendBeacon = jest.fn(() => Promise.resolve());
-jest.mock('@aws-rum/web-core/dispatch/DataPlaneClient', () => ({
+jest.mock('@billyzh-aws-rum/web-core/dispatch/DataPlaneClient', () => ({
     DataPlaneClient: jest
         .fn()
         .mockImplementation(() => ({ sendFetch, sendBeacon }))

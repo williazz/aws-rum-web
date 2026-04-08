@@ -5,10 +5,12 @@
         "rootDir": "src",
         "noEmit": true,
         "paths": {
-            "@aws-rum/web-core": ["../core/src"],
-            "@aws-rum/web-core/*": ["../core/src/*"],
-            "@aws-rum/web-slim/CommandQueue": ["../slim/src/CommandQueue"],
-            "@aws-rum/web-slim/orchestration/Orchestration": [
+            "@billyzh-aws-rum/web-core": ["../core/src"],
+            "@billyzh-aws-rum/web-core/*": ["../core/src/*"],
+            "@billyzh-aws-rum/web-slim/CommandQueue": [
+                "../slim/src/CommandQueue"
+            ],
+            "@billyzh-aws-rum/web-slim/orchestration/Orchestration": [
                 "../slim/src/orchestration/Orchestration"
             ]
         }

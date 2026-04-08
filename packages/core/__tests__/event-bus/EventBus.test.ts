@@ -1,7 +1,7 @@
-import { context } from '@aws-rum/web-core/test-utils/test-utils';
-import EventBus, { Topic } from '@aws-rum/web-core/event-bus/EventBus';
-import { InternalPlugin } from '@aws-rum/web-core/plugins/InternalPlugin';
-import { PluginContext } from '@aws-rum/web-core/plugins/types';
+import { context } from '@billyzh-aws-rum/web-core/test-utils/test-utils';
+import EventBus, { Topic } from '@billyzh-aws-rum/web-core/event-bus/EventBus';
+import { InternalPlugin } from '@billyzh-aws-rum/web-core/plugins/InternalPlugin';
+import { PluginContext } from '@billyzh-aws-rum/web-core/plugins/types';
 
 export enum MockTopics {
     FOOD = 'food',

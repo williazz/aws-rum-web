@@ -1,8 +1,8 @@
-import * as Utils from '@aws-rum/web-core/test-utils/test-utils';
-import { DataPlaneClient } from '@aws-rum/web-core/dispatch/DataPlaneClient';
+import * as Utils from '@billyzh-aws-rum/web-core/test-utils/test-utils';
+import { DataPlaneClient } from '@billyzh-aws-rum/web-core/dispatch/DataPlaneClient';
 import { HttpResponse } from '@smithy/protocol-http';
 import { advanceTo } from 'jest-date-mock';
-import { RetryHttpHandler } from '@aws-rum/web-core/dispatch/RetryHttpHandler';
+import { RetryHttpHandler } from '@billyzh-aws-rum/web-core/dispatch/RetryHttpHandler';
 import { FetchHttpHandler } from '@smithy/fetch-http-handler';
 
 const fetchHandler = jest.fn<Promise<Record<string, unknown>>, []>(() =>

@@ -6,11 +6,14 @@ import {
     MockPerformanceTiming,
     mockPerformanceObjectWith,
     putRumEventsDocument
-} from '@aws-rum/web-core/test-utils/mock-data';
-import { NavigationPlugin } from '@aws-rum/web-core/plugins/event-plugins/NavigationPlugin';
-import { context, record } from '@aws-rum/web-core/test-utils/test-utils';
-import { PERFORMANCE_NAVIGATION_EVENT_TYPE } from '@aws-rum/web-core/plugins/utils/constant';
-import { PerformancePluginConfig } from '@aws-rum/web-core/plugins/utils/performance-utils';
+} from '@billyzh-aws-rum/web-core/test-utils/mock-data';
+import { NavigationPlugin } from '@billyzh-aws-rum/web-core/plugins/event-plugins/NavigationPlugin';
+import {
+    context,
+    record
+} from '@billyzh-aws-rum/web-core/test-utils/test-utils';
+import { PERFORMANCE_NAVIGATION_EVENT_TYPE } from '@billyzh-aws-rum/web-core/plugins/utils/constant';
+import { PerformancePluginConfig } from '@billyzh-aws-rum/web-core/plugins/utils/performance-utils';
 
 const buildNavigationPlugin = (config?: Partial<PerformancePluginConfig>) => {
     return new NavigationPlugin(config);

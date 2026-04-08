@@ -1,6 +1,6 @@
-import { VisuallyReadySearch } from '@aws-rum/web-core/time-to-interactive/VisuallyReadySearch';
-import { mockLongTaskPerformanceObserver } from '@aws-rum/web-core/test-utils/mock-data';
-import { QuietWindowSearch } from '@aws-rum/web-core/time-to-interactive/QuietWindowSearch';
+import { VisuallyReadySearch } from '@billyzh-aws-rum/web-core/time-to-interactive/VisuallyReadySearch';
+import { mockLongTaskPerformanceObserver } from '@billyzh-aws-rum/web-core/test-utils/mock-data';
+import { QuietWindowSearch } from '@billyzh-aws-rum/web-core/time-to-interactive/QuietWindowSearch';
 
 describe('Visually ready search tests', () => {
     beforeEach(() => {

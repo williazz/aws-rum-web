@@ -1,5 +1,5 @@
 import { HttpRequest, HttpResponse } from '@smithy/protocol-http';
-import { FetchHttpHandler } from '@aws-rum/web-core/dispatch/FetchHttpHandler';
+import { FetchHttpHandler } from '@billyzh-aws-rum/web-core/dispatch/FetchHttpHandler';
 
 // jsdom does not provide Request — polyfill for tests
 global.Request = jest.fn().mockImplementation((url, options) => ({

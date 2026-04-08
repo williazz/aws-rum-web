@@ -1,4 +1,4 @@
-import { compressIfBeneficial } from '@aws-rum/web-core/dispatch/compression';
+import { compressIfBeneficial } from '@billyzh-aws-rum/web-core/dispatch/compression';
 import * as zlib from 'zlib';
 
 const setupCompressionPolyfill = () => {

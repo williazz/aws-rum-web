@@ -6,10 +6,10 @@ import {
     mockPartialOtaConfigFile,
     mockPartialOtaConfigObject,
     dummyOtaConfigURL
-} from '@aws-rum/web-core/test-utils/mock-remote-config';
+} from '@billyzh-aws-rum/web-core/test-utils/mock-remote-config';
 import { Response } from 'node-fetch';
 import * as RemoteConfig from '../src/remote-config/remote-config';
-import { INSTALL_SCRIPT } from '@aws-rum/web-core/utils/constants';
+import { INSTALL_SCRIPT } from '@billyzh-aws-rum/web-core/utils/constants';
 
 const mockFetch = jest.fn();
 

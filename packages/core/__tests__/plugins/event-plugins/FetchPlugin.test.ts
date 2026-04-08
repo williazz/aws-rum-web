@@ -1,9 +1,9 @@
-import { FetchPlugin } from '@aws-rum/web-core/plugins/event-plugins/FetchPlugin';
+import { FetchPlugin } from '@billyzh-aws-rum/web-core/plugins/event-plugins/FetchPlugin';
 import {
     HttpPluginConfig,
     X_AMZN_TRACE_ID,
     W3C_TRACEPARENT_HEADER_NAME
-} from '@aws-rum/web-core/plugins/utils/http-utils';
+} from '@billyzh-aws-rum/web-core/plugins/utils/http-utils';
 import { advanceTo } from 'jest-date-mock';
 import {
     getSession,
@@ -18,16 +18,19 @@ import {
     mockFetchWithErrorObjectAndStack,
     mockFetchWith400,
     mockFetchWith429
-} from '@aws-rum/web-core/test-utils/test-utils';
-import { GetSession, PluginContext } from '@aws-rum/web-core/plugins/types';
+} from '@billyzh-aws-rum/web-core/test-utils/test-utils';
+import {
+    GetSession,
+    PluginContext
+} from '@billyzh-aws-rum/web-core/plugins/types';
 import {
     XRAY_TRACE_EVENT_TYPE,
     HTTP_EVENT_TYPE
-} from '@aws-rum/web-core/plugins/utils/constant';
-import { HttpEvent } from '@aws-rum/web-core/events/http-event';
+} from '@billyzh-aws-rum/web-core/plugins/utils/constant';
+import { HttpEvent } from '@billyzh-aws-rum/web-core/events/http-event';
 
 // Mock getRandomValues -- since it does nothing, the 'random' number will be 0.
-jest.mock('@aws-rum/web-core/utils/random');
+jest.mock('@billyzh-aws-rum/web-core/utils/random');
 
 const URL = 'https://aws.amazon.com';
 

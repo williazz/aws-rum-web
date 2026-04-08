@@ -1,21 +1,21 @@
-import { InternalPluginContext } from '@aws-rum/web-core/plugins/types';
-import { PluginManager } from '@aws-rum/web-core/plugins/PluginManager';
-import { EventCache } from '@aws-rum/web-core/event-cache/EventCache';
+import { InternalPluginContext } from '@billyzh-aws-rum/web-core/plugins/types';
+import { PluginManager } from '@billyzh-aws-rum/web-core/plugins/PluginManager';
+import { EventCache } from '@billyzh-aws-rum/web-core/event-cache/EventCache';
 import {
     Dispatch,
     SigningConfigFactory
-} from '@aws-rum/web-core/dispatch/Dispatch';
-import { PageViewPlugin } from '@aws-rum/web-core/plugins/event-plugins/PageViewPlugin';
-import { PageAttributes } from '@aws-rum/web-core/sessions/PageManager';
-import { INSTALL_MODULE } from '@aws-rum/web-core/utils/constants';
-import EventBus, { Topic } from '@aws-rum/web-core/event-bus/EventBus';
-import { InternalLogger } from '@aws-rum/web-core/utils/InternalLogger';
-import { Plugin } from '@aws-rum/web-core/plugins/Plugin';
+} from '@billyzh-aws-rum/web-core/dispatch/Dispatch';
+import { PageViewPlugin } from '@billyzh-aws-rum/web-core/plugins/event-plugins/PageViewPlugin';
+import { PageAttributes } from '@billyzh-aws-rum/web-core/sessions/PageManager';
+import { INSTALL_MODULE } from '@billyzh-aws-rum/web-core/utils/constants';
+import EventBus, { Topic } from '@billyzh-aws-rum/web-core/event-bus/EventBus';
+import { InternalLogger } from '@billyzh-aws-rum/web-core/utils/InternalLogger';
+import { Plugin } from '@billyzh-aws-rum/web-core/plugins/Plugin';
 import {
     type Config,
     type PartialConfig as CorePartialConfig,
     type CookieAttributes
-} from '@aws-rum/web-core/orchestration/config';
+} from '@billyzh-aws-rum/web-core/orchestration/config';
 import {
     AwsCredentialIdentityProvider,
     AwsCredentialIdentity
@@ -25,7 +25,7 @@ export {
     type Config,
     type CookieAttributes,
     type PageIdFormat
-} from '@aws-rum/web-core/orchestration/config';
+} from '@billyzh-aws-rum/web-core/orchestration/config';
 
 /** Slim config omits `telemetries` — use `eventPluginsToLoad` instead. */
 export type PartialConfig = Omit<CorePartialConfig, 'telemetries'>;

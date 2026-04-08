@@ -1,4 +1,4 @@
-import * as utils from '@aws-rum/web-core/utils/common-utils';
+import * as utils from '@billyzh-aws-rum/web-core/utils/common-utils';
 
 describe('Common utils tests', () => {
     test('When URL has "png" file extension then return file type as "image"', async () => {

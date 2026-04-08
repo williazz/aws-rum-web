@@ -1,12 +1,12 @@
-import { Page } from '@aws-rum/web-core/sessions/PageManager';
+import { Page } from '@billyzh-aws-rum/web-core/sessions/PageManager';
 import { advanceTo } from 'jest-date-mock';
-import { PageManager } from '@aws-rum/web-core/sessions/PageManager';
+import { PageManager } from '@billyzh-aws-rum/web-core/sessions/PageManager';
 import {
     DEFAULT_CONFIG,
     mockFetch
-} from '@aws-rum/web-core/test-utils/test-utils';
-import { Config } from '@aws-rum/web-core/orchestration/config';
-import { PAGE_VIEW_EVENT_TYPE } from '@aws-rum/web-core/plugins/utils/constant';
+} from '@billyzh-aws-rum/web-core/test-utils/test-utils';
+import { Config } from '@billyzh-aws-rum/web-core/orchestration/config';
+import { PAGE_VIEW_EVENT_TYPE } from '@billyzh-aws-rum/web-core/plugins/utils/constant';
 
 import mock from 'xhr-mock';
 

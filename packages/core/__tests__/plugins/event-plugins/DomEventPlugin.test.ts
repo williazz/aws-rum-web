@@ -1,6 +1,9 @@
-import { DomEventPlugin } from '@aws-rum/web-core/plugins/event-plugins/DomEventPlugin';
-import { context, record } from '@aws-rum/web-core/test-utils/test-utils';
-import { DOM_EVENT_TYPE } from '@aws-rum/web-core/plugins/utils/constant';
+import { DomEventPlugin } from '@billyzh-aws-rum/web-core/plugins/event-plugins/DomEventPlugin';
+import {
+    context,
+    record
+} from '@billyzh-aws-rum/web-core/test-utils/test-utils';
+import { DOM_EVENT_TYPE } from '@billyzh-aws-rum/web-core/plugins/utils/constant';
 
 describe('DomEventPlugin tests', () => {
     beforeEach(() => {

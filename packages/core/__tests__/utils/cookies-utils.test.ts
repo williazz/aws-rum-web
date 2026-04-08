@@ -1,4 +1,4 @@
-import * as utils from '@aws-rum/web-core/utils/cookies-utils';
+import * as utils from '@billyzh-aws-rum/web-core/utils/cookies-utils';
 
 const COOKIE_PREFIX = 'rum_cookies_util_test';
 

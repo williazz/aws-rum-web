@@ -1,4 +1,4 @@
-import { requestTimeout } from '@aws-rum/web-core/dispatch/request-timeout';
+import { requestTimeout } from '@billyzh-aws-rum/web-core/dispatch/request-timeout';
 
 describe('requestTimeout', () => {
     beforeEach(() => {

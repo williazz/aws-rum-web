@@ -1,14 +1,14 @@
-import { CRED_KEY } from '@aws-rum/web-core/utils/constants';
-import { EnhancedAuthentication } from '@aws-rum/web-core/dispatch/EnhancedAuthentication';
+import { CRED_KEY } from '@billyzh-aws-rum/web-core/utils/constants';
+import { EnhancedAuthentication } from '@billyzh-aws-rum/web-core/dispatch/EnhancedAuthentication';
 import {
     APPLICATION_ID,
     DEFAULT_CONFIG
-} from '@aws-rum/web-core/test-utils/test-utils';
+} from '@billyzh-aws-rum/web-core/test-utils/test-utils';
 
 const mockGetId = jest.fn();
 const getCredentials = jest.fn();
 
-jest.mock('@aws-rum/web-core/dispatch/CognitoIdentityClient', () => ({
+jest.mock('@billyzh-aws-rum/web-core/dispatch/CognitoIdentityClient', () => ({
     CognitoIdentityClient: jest.fn().mockImplementation(() => ({
         getId: mockGetId,
         getCredentialsForIdentity: getCredentials

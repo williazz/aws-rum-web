@@ -1,6 +1,6 @@
-import { mockLongTaskPerformanceObserver } from '@aws-rum/web-core/test-utils/mock-data';
-import { QuietWindowSearch } from '@aws-rum/web-core/time-to-interactive/QuietWindowSearch';
-import { TTIMetric } from '@aws-rum/web-core/time-to-interactive/TimeToInteractive';
+import { mockLongTaskPerformanceObserver } from '@billyzh-aws-rum/web-core/test-utils/mock-data';
+import { QuietWindowSearch } from '@billyzh-aws-rum/web-core/time-to-interactive/QuietWindowSearch';
+import { TTIMetric } from '@billyzh-aws-rum/web-core/time-to-interactive/TimeToInteractive';
 
 describe('Quiet window search tests', () => {
     const originalPerformance = global.performance;

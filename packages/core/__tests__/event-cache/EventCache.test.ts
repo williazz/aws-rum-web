@@ -1,22 +1,22 @@
-import { EventCache } from '@aws-rum/web-core/event-cache/EventCache';
+import { EventCache } from '@billyzh-aws-rum/web-core/event-cache/EventCache';
 import { advanceTo } from 'jest-date-mock';
 import {
     createEventCache,
     createDefaultEventCache,
     createExpectedEvents
-} from '@aws-rum/web-core/test-utils/test-utils';
-import { WEB_CLIENT_VERSION } from '@aws-rum/web-core/test-utils/test-utils';
-import { RumEvent } from '@aws-rum/web-core/dispatch/dataplane';
+} from '@billyzh-aws-rum/web-core/test-utils/test-utils';
+import { WEB_CLIENT_VERSION } from '@billyzh-aws-rum/web-core/test-utils/test-utils';
+import { RumEvent } from '@billyzh-aws-rum/web-core/dispatch/dataplane';
 import {
     DEFAULT_CONFIG,
     mockFetch
-} from '@aws-rum/web-core/test-utils/test-utils';
+} from '@billyzh-aws-rum/web-core/test-utils/test-utils';
 import {
     INSTALL_MODULE,
     INSTALL_SCRIPT
-} from '@aws-rum/web-core/utils/constants';
-import EventBus, { Topic } from '@aws-rum/web-core/event-bus/EventBus';
-jest.mock('@aws-rum/web-core/event-bus/EventBus');
+} from '@billyzh-aws-rum/web-core/utils/constants';
+import EventBus, { Topic } from '@billyzh-aws-rum/web-core/event-bus/EventBus';
+jest.mock('@billyzh-aws-rum/web-core/event-bus/EventBus');
 
 global.fetch = mockFetch;
 
@@ -60,7 +60,7 @@ const addSessionAttributes = jest.fn();
 const isSampled = jest.fn().mockImplementation(() => samplingDecision);
 
 /** Init Mock SessionManager */
-jest.mock('@aws-rum/web-core/sessions/SessionManager', () => ({
+jest.mock('@billyzh-aws-rum/web-core/sessions/SessionManager', () => ({
     SessionManager: jest.fn().mockImplementation(() => ({
         getSession,
         getUserId,

@@ -5,14 +5,14 @@ import {
     RRWebPlugin,
     RRWEB_CONFIG_PROD,
     RRWEB_CONFIG_DEV
-} from '@aws-rum/web-core/plugins/event-plugins/RRWebPlugin';
+} from '@billyzh-aws-rum/web-core/plugins/event-plugins/RRWebPlugin';
 import {
     context,
     record,
     getSession
-} from '@aws-rum/web-core/test-utils/test-utils';
-import { RRWEB_EVENT_TYPE } from '@aws-rum/web-core/plugins/utils/constant';
-import type { RRWebEvent } from '@aws-rum/web-core/events/rrweb-event';
+} from '@billyzh-aws-rum/web-core/test-utils/test-utils';
+import { RRWEB_EVENT_TYPE } from '@billyzh-aws-rum/web-core/plugins/utils/constant';
+import type { RRWebEvent } from '@billyzh-aws-rum/web-core/events/rrweb-event';
 import { record as rrwebRecord } from 'rrweb';
 
 jest.mock('rrweb', () => ({

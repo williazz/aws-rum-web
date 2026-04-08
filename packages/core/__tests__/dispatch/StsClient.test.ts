@@ -1,9 +1,9 @@
-import * as Utils from '@aws-rum/web-core/test-utils/test-utils';
+import * as Utils from '@billyzh-aws-rum/web-core/test-utils/test-utils';
 import { AwsCredentialIdentity } from '@aws-sdk/types';
 import { FetchHttpHandler } from '@smithy/fetch-http-handler';
 import { advanceTo } from 'jest-date-mock';
-import { getReadableStream } from '@aws-rum/web-core/test-utils/test-utils';
-import { StsClient } from '@aws-rum/web-core/dispatch/StsClient';
+import { getReadableStream } from '@billyzh-aws-rum/web-core/test-utils/test-utils';
+import { StsClient } from '@billyzh-aws-rum/web-core/dispatch/StsClient';
 
 const mockCredentials =
     '<AccessKeyId>x</AccessKeyId><SecretAccessKey>y</SecretAccessKey><SessionToken>z</SessionToken><Expiration>2020</Expiration>';

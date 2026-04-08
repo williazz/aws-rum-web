@@ -1,13 +1,16 @@
-import { INSTALL_SCRIPT } from '@aws-rum/web-core/utils/constants';
+import { INSTALL_SCRIPT } from '@billyzh-aws-rum/web-core/utils/constants';
 import {
     CommandQueue as SlimCommandQueue,
     type AwsRumClientInit as SlimAwsRumClientInit
-} from '@aws-rum/web-slim/CommandQueue';
-import { PartialConfig } from '@aws-rum/web-core/orchestration/config';
+} from '@billyzh-aws-rum/web-slim/CommandQueue';
+import { PartialConfig } from '@billyzh-aws-rum/web-core/orchestration/config';
 import { Orchestration } from './orchestration/Orchestration';
 import { getRemoteConfig } from './remote-config/remote-config';
 
-export type { Command, CommandFunction } from '@aws-rum/web-slim/CommandQueue';
+export type {
+    Command,
+    CommandFunction
+} from '@billyzh-aws-rum/web-slim/CommandQueue';
 
 /** Extends slim's init type to accept `telemetries` in the config. */
 export type AwsRumClientInit = Omit<SlimAwsRumClientInit, 'c'> & {

@@ -1,8 +1,8 @@
 import { Orchestration } from '../../src/orchestration/Orchestration';
-import { Dispatch } from '@aws-rum/web-core/dispatch/Dispatch';
-import { EventCache } from '@aws-rum/web-core/event-cache/EventCache';
-import { PluginManager } from '@aws-rum/web-core/plugins/PluginManager';
-import { performanceEvent } from '@aws-rum/web-core/test-utils/mock-data';
+import { Dispatch } from '@billyzh-aws-rum/web-core/dispatch/Dispatch';
+import { EventCache } from '@billyzh-aws-rum/web-core/event-cache/EventCache';
+import { PluginManager } from '@billyzh-aws-rum/web-core/plugins/PluginManager';
+import { performanceEvent } from '@billyzh-aws-rum/web-core/test-utils/mock-data';
 
 global.fetch = jest.fn();
 
@@ -11,7 +11,7 @@ const disableDispatch = jest.fn();
 const setAwsCredentials = jest.fn();
 const setSigningConfigFactory = jest.fn();
 
-jest.mock('@aws-rum/web-core/dispatch/Dispatch', () => ({
+jest.mock('@billyzh-aws-rum/web-core/dispatch/Dispatch', () => ({
     Dispatch: jest.fn().mockImplementation(() => ({
         enable: enableDispatch,
         disable: disableDispatch,
@@ -25,7 +25,7 @@ const disableEventCache = jest.fn();
 const recordPageView = jest.fn();
 const addSessionAttributes = jest.fn();
 const recordEvent = jest.fn();
-jest.mock('@aws-rum/web-core/event-cache/EventCache', () => ({
+jest.mock('@billyzh-aws-rum/web-core/event-cache/EventCache', () => ({
     EventCache: jest.fn().mockImplementation(() => ({
         enable: enableEventCache,
         disable: disableEventCache,
@@ -41,7 +41,7 @@ const updatePlugin = jest.fn();
 const enablePlugins = jest.fn();
 const disablePlugins = jest.fn();
 const pluginRecord = jest.fn();
-jest.mock('@aws-rum/web-core/plugins/PluginManager', () => ({
+jest.mock('@billyzh-aws-rum/web-core/plugins/PluginManager', () => ({
     PluginManager: jest.fn().mockImplementation(() => ({
         addPlugin,
         enable: enablePlugins,

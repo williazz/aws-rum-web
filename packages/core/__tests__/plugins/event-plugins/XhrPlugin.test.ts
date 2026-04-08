@@ -1,6 +1,6 @@
-import { HttpPluginConfig } from '@aws-rum/web-core/plugins/utils/http-utils';
+import { HttpPluginConfig } from '@billyzh-aws-rum/web-core/plugins/utils/http-utils';
 import { advanceTo } from 'jest-date-mock';
-import { XhrPlugin } from '@aws-rum/web-core/plugins/event-plugins/XhrPlugin';
+import { XhrPlugin } from '@billyzh-aws-rum/web-core/plugins/event-plugins/XhrPlugin';
 import {
     context as mockContext,
     xRayOffContext,
@@ -8,14 +8,14 @@ import {
     w3cTraceIdOnContext,
     xRayOffW3COnContext,
     record
-} from '@aws-rum/web-core/test-utils/test-utils';
+} from '@billyzh-aws-rum/web-core/test-utils/test-utils';
 import mock from 'xhr-mock';
-import { GetSession } from '@aws-rum/web-core/plugins/types';
+import { GetSession } from '@billyzh-aws-rum/web-core/plugins/types';
 import {
     XRAY_TRACE_EVENT_TYPE,
     HTTP_EVENT_TYPE
-} from '@aws-rum/web-core/plugins/utils/constant';
-import { DEFAULT_CONFIG } from '@aws-rum/web-core/test-utils/test-utils';
+} from '@billyzh-aws-rum/web-core/plugins/utils/constant';
+import { DEFAULT_CONFIG } from '@billyzh-aws-rum/web-core/test-utils/test-utils';
 import { MockHeaders } from 'xhr-mock/lib/types';
 
 const actualUserAgent = navigator.userAgent;
@@ -23,7 +23,7 @@ const SYNTHETIC_USER_AGENT =
     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_3) AppleWebKit/536.11 (KHTML, like Gecko) Chrome/20.0.1132.57 Safari/536.11 CloudWatchSynthetics/arn:aws:synthetics:us-west-2:0000000000000:canary:test-canary-name';
 
 // Mock getRandomValues -- since it does nothing, the 'random' number will be 0.
-jest.mock('@aws-rum/web-core/utils/random');
+jest.mock('@billyzh-aws-rum/web-core/utils/random');
 
 describe('XhrPlugin tests', () => {
     beforeEach(() => {

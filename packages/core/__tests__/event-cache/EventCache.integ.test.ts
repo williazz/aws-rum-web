@@ -5,9 +5,9 @@ import {
     testMetaData,
     testCommonMetaData,
     mockFetch
-} from '@aws-rum/web-core/test-utils/test-utils';
-import type { RumEvent } from '@aws-rum/web-core/dispatch/dataplane';
-import { SESSION_START_EVENT_TYPE } from '@aws-rum/web-core/plugins/utils/constant';
+} from '@billyzh-aws-rum/web-core/test-utils/test-utils';
+import type { RumEvent } from '@billyzh-aws-rum/web-core/dispatch/dataplane';
+import { SESSION_START_EVENT_TYPE } from '@billyzh-aws-rum/web-core/plugins/utils/constant';
 
 global.fetch = mockFetch;
 describe('EventCache tests', () => {

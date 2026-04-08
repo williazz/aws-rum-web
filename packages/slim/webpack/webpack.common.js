@@ -7,7 +7,10 @@ module.exports = {
     resolve: {
         extensions: ['.ts', '.js', '.json'],
         alias: {
-            '@aws-rum/web-core': path.resolve(__dirname, '../../core/src')
+            '@billyzh-aws-rum/web-core': path.resolve(
+                __dirname,
+                '../../core/src'
+            )
         }
     },
     plugins: [new CaseSensitivePathsPlugin()],

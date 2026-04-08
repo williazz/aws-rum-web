@@ -1,10 +1,10 @@
-import { PluginManager } from '@aws-rum/web-core/plugins/PluginManager';
+import { PluginManager } from '@billyzh-aws-rum/web-core/plugins/PluginManager';
 import {
     DemoPlugin,
     DEMO_EVENT_TYPE,
     DEMO_PLUGIN_ID
-} from '@aws-rum/web-core/plugins/event-plugins/DemoPlugin';
-import { context } from '@aws-rum/web-core/test-utils/test-utils';
+} from '@billyzh-aws-rum/web-core/plugins/event-plugins/DemoPlugin';
+import { context } from '@billyzh-aws-rum/web-core/test-utils/test-utils';
 
 describe('Plugins tests', () => {
     test('add a valid plugin', async () => {

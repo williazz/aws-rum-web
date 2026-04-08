@@ -1,5 +1,8 @@
 import { advanceTo } from 'jest-date-mock';
-import { Page, PageManager } from '@aws-rum/web-core/sessions/PageManager';
+import {
+    Page,
+    PageManager
+} from '@billyzh-aws-rum/web-core/sessions/PageManager';
 import {
     DEFAULT_CONFIG,
     mockFetch,
@@ -7,11 +10,11 @@ import {
     mockFetchWithError,
     mockFetchWithErrorObject,
     mockFetchWithErrorObjectAndStack
-} from '@aws-rum/web-core/test-utils/test-utils';
-import { Config } from '@aws-rum/web-core/orchestration/config';
-import { PERFORMANCE_NAVIGATION_EVENT_TYPE } from '@aws-rum/web-core/plugins/utils/constant';
+} from '@billyzh-aws-rum/web-core/test-utils/test-utils';
+import { Config } from '@billyzh-aws-rum/web-core/orchestration/config';
+import { PERFORMANCE_NAVIGATION_EVENT_TYPE } from '@billyzh-aws-rum/web-core/plugins/utils/constant';
 import mock from 'xhr-mock';
-import { VirtualPageLoadTimer } from '@aws-rum/web-core/sessions/VirtualPageLoadTimer';
+import { VirtualPageLoadTimer } from '@billyzh-aws-rum/web-core/sessions/VirtualPageLoadTimer';
 
 const record = jest.fn();
 
@@ -29,7 +32,7 @@ const page: Page = {
     start: 0
 };
 const getPage = jest.fn(() => page);
-jest.mock('@aws-rum/web-core/sessions/PageManager', () => ({
+jest.mock('@billyzh-aws-rum/web-core/sessions/PageManager', () => ({
     PageManager: jest.fn().mockImplementation(() => ({
         getPage
     }))

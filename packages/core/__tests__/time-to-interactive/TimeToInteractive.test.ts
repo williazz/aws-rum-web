@@ -1,7 +1,7 @@
-import { TimeToInteractive } from '@aws-rum/web-core/time-to-interactive/TimeToInteractive';
-import { mockLongTaskPerformanceObserver } from '@aws-rum/web-core/test-utils/mock-data';
-import { VisuallyReadySearch } from '@aws-rum/web-core/time-to-interactive/VisuallyReadySearch';
-import { QuietWindowSearch } from '@aws-rum/web-core/time-to-interactive/QuietWindowSearch';
+import { TimeToInteractive } from '@billyzh-aws-rum/web-core/time-to-interactive/TimeToInteractive';
+import { mockLongTaskPerformanceObserver } from '@billyzh-aws-rum/web-core/test-utils/mock-data';
+import { VisuallyReadySearch } from '@billyzh-aws-rum/web-core/time-to-interactive/VisuallyReadySearch';
+import { QuietWindowSearch } from '@billyzh-aws-rum/web-core/time-to-interactive/QuietWindowSearch';
 
 describe('Time To Interactive tests', () => {
     beforeEach(() => {

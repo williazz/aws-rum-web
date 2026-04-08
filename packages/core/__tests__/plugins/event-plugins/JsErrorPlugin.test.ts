@@ -1,10 +1,10 @@
-import { JsErrorPlugin } from '@aws-rum/web-core/plugins/event-plugins/JsErrorPlugin';
+import { JsErrorPlugin } from '@billyzh-aws-rum/web-core/plugins/event-plugins/JsErrorPlugin';
 import {
     context,
     getSession,
     record
-} from '@aws-rum/web-core/test-utils/test-utils';
-import { JS_ERROR_EVENT_TYPE } from '@aws-rum/web-core/plugins/utils/constant';
+} from '@billyzh-aws-rum/web-core/test-utils/test-utils';
+import { JS_ERROR_EVENT_TYPE } from '@billyzh-aws-rum/web-core/plugins/utils/constant';
 
 declare global {
     namespace jest {
